@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "strictPropertyInitialization":false,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "noImplicitAny": false,
+    "declaration": true,
+    "esModuleInterop": true,
+    "incremental": false,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noUncheckedIndexedAccess": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+  },
+  "exclude": ["node_modules"]
+}

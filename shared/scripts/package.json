@@ -1,0 +1,18 @@
+{
+  "name": "@shared/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+ "scripts": {
+    "clean": "tsx command/clean.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@shared/typescript-config": "workspace:*",
+    "@types/node": "^22.13.5",
+    "tsx": "^4.19.3",
+    "typescript": "^5.3.3",
+    "chalk": "^5.4.1",
+    "inquirer": "^12.4.2"
+  }
+}

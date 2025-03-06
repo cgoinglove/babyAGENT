@@ -1,0 +1,28 @@
+{
+  "name": "@shared/env",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/load.ts",
+    "./load": "./src/index.ts",
+    "./global": "./src/global/index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@shared/eslint-config": "workspace:*",
+    "@shared/typescript-config": "workspace:*",
+    "@types/node": "^22.13.5",
+    "typescript": "^5.3.3",
+    "vitest": "^2.1.1",
+    "eslint": "^9.20.0"
+  }
+}
