@@ -1,6 +1,6 @@
 # babyAGENT
 
-langgraph와 baby-agi에서 영감을 받은 간단한 에이전트
+[langgraph](https://github.com/langchain-ai/langgraph)와 [babyAGI](https://github.com/yoheinakajima/babyagi)에서 영감을 받은 간단한 에이전트
 
 ## 시작하기
 
@@ -17,7 +17,7 @@ pnpm test
 
 - `baby`: 에이전트 구현을 위한 메인 소스 코드
 - `shared`: 공유 유틸리티, 환경 설정 및 공통 도구
-- `ui`: 에이전트를 위한 시각적 인터페이스 🚧(개발 예정)
+- `ui`: 에이전트를 위한 시각적 인터페이스 🚧
 
 ## 환경 설정
 
