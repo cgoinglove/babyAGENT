@@ -1,22 +1,25 @@
-import { ollama } from "ollama-ai-provider";
-import { xai } from "@ai-sdk/xai";
-import { openai } from "@ai-sdk/openai";
-import { generateText, LanguageModelV1 } from "ai";
+import { ollama } from 'ollama-ai-provider';
+import { xai } from '@ai-sdk/xai';
+import { openai } from '@ai-sdk/openai';
+import { generateText, LanguageModelV1 } from 'ai';
+
+export const STUPID_MODEL = 'qwen2.5-coder:1.5b' as const;
 
 export const models = {
-  stupid: ollama("qwen2.5-coder:1.5b"),
+  stupid: ollama(STUPID_MODEL),
   ollama: {
-    lama3: ollama("llama3.1:8b"),
-    deepseekr1: ollama("deepseek-r1:7b"),
+    llama3: ollama('llama3.1:8b'),
+    deepseekr1: ollama('deepseek-r1:7b'),
   },
   grok: {
-    grok2: xai("grok-2-1212"),
-    beta: xai("grok-beta"),
+    grok2: xai('grok-2-1212'),
+    beta: xai('grok-beta'),
   },
   openai: {
-    o1mini: openai("o1-mini"),
-    gpt4omini: openai("gpt-4o-mini"),
-    gpt4o: openai("gpt-4o"),
+    o1mini: openai('o1-mini'),
+    o3mini: openai('o3-mini'),
+    gpt4omini: openai('gpt-4o-mini'),
+    gpt4o: openai('gpt-4o'),
   },
 };
 

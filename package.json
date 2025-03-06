@@ -8,7 +8,7 @@
     "check-types": "turbo run check-types",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "turbo -F @shared/scripts clean"
+    "clean": "pnpm -F @shared/scripts clean"
   },
   "devDependencies": {
     "prettier": "^3.5.0",
@@ -17,5 +17,25 @@
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "quoteProps": "as-needed",
+    "jsxSingleQuote": false,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "embeddedLanguageFormatting": "auto"
   }
 }

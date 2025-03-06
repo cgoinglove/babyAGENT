@@ -1,11 +1,11 @@
-import { suite, expect, test } from "vitest";
-import { pureLLM, models } from "../src/models";
+import { suite, expect, test } from 'vitest';
+import { pureLLM, models } from '../src/models';
 
-suite.skip("model", () => {
-  test("pure model", async () => {
+suite('model', () => {
+  test('pure model', async () => {
     const llm = pureLLM(models.stupid);
-    const answer = await llm("hello");
+    const answer = await llm('hello');
     console.log(answer);
-    expect(answer).toBeTypeOf("string");
+    expect(answer).toBeTypeOf('string');
   });
 });

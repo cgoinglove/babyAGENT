@@ -1,10 +1,10 @@
-import { suite, expect, test } from "vitest";
-import { models, pureLLM } from "../src/models";
-import z from "zod";
-import { generateObject } from "ai";
+import { suite, expect, test } from 'vitest';
+import { models, pureLLM } from '../src/models';
+import z from 'zod';
+import { generateObject } from 'ai';
 
-suite.skip("prompt", () => {
-  test("schema model from pure model", async () => {
+suite('prompt', () => {
+  test('schema model from pure model', async () => {
     const llm = pureLLM(models.stupid);
 
     const answer = await llm(
@@ -24,8 +24,8 @@ suite.skip("prompt", () => {
           {
             // 추출된 JSON 여기에 입력
           }
-          사용자 텍스트: "${"나의 이름은 kim 이고 18세 입니다."}"
-`,
+          사용자 텍스트: "${'나의 이름은 kim 이고 18세 입니다.'}"
+`
     );
     console.log(answer);
     const softJsonParser = (text: string) => {
@@ -33,18 +33,18 @@ suite.skip("prompt", () => {
       const match = text.match(regex);
 
       if (!match) {
-        throw new Error("No JSON found in markdown code blocks");
+        throw new Error('No JSON found in markdown code blocks');
       }
 
       return JSON.parse(match[1]);
     };
     const json = softJsonParser(answer);
     console.log(json);
-    expect(json).toHaveProperty("name");
-    expect(json).toHaveProperty("age");
+    expect(json).toHaveProperty('name');
+    expect(json).toHaveProperty('age');
   });
 
-  test("tool call", async () => {
+  test('tool call', async () => {
     const schema = z.object({
       a: z.number(),
       b: z.number(),
@@ -67,26 +67,22 @@ suite.skip("prompt", () => {
           사용자 입력: "${userInput}"
     `;
 
-    const notUseToolAnswer = await llm(
-      toolPrompt(`안녕하세요? 당신의 이름은 무엇입니까?`),
-    );
+    const notUseToolAnswer = await llm(toolPrompt(`안녕하세요? 당신의 이름은 무엇입니까?`));
 
     expect(notUseToolAnswer.needTool).toBe(false);
 
     const useToolAnswer = await llm(
-      toolPrompt(
-        `나는 사과 6개가 있었고,마트에서 3개를 구매했습니다. 나는 총 몇개의 사과가 있나요?`,
-      ),
+      toolPrompt(`나는 사과 6개가 있었고,마트에서 3개를 구매했습니다. 나는 총 몇개의 사과가 있나요?`)
     );
     expect(useToolAnswer.needTool).toBe(true);
     const addTool = (v: { a: number; b: number }) => v.a + v.b;
 
-    expect(addTool(useToolAnswer)).toBeTypeOf("number");
+    expect(addTool(useToolAnswer)).toBeTypeOf('number');
   });
 
-  test("chain of thout", async () => {
+  test('chain of thout', async () => {
     const problem =
-      "민수는 사과 5개를 가지고 있었습니다. 친구에게 2개를 주었고, 슈퍼마켓에서 3개를 더 샀습니다. 민수는 현재 몇 개의 사과를 가지고 있을까요?";
+      '민수는 사과 5개를 가지고 있었습니다. 친구에게 2개를 주었고, 슈퍼마켓에서 3개를 더 샀습니다. 민수는 현재 몇 개의 사과를 가지고 있을까요?';
 
     // Non-COT 프롬프트 - 단순히 문제만 제시
     const nonCotPrompt = problem;

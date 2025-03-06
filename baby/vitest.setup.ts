@@ -1,1 +1,1 @@
-import "@shared/env/global";
+import '@shared/env/global';

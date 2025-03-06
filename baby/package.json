@@ -1,30 +1,35 @@
 {
   "name": "baby",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "ts": "pnpm tsx selector.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "pnpm check-model && vitest run",
+    "test:watch": "pnpm check-model && vitest",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "check-model": "pnpm tsx __check__.ts",
+    "postinstall": "pnpm run check-model"
   },
   "devDependencies": {
-    "@shared/eslint-config": "workspace:*",
     "@shared/env": "workspace:*",
-    "@shared/util": "workspace:*",
+    "@shared/eslint-config": "workspace:*",
     "@shared/typescript-config": "workspace:*",
+    "@shared/util": "workspace:*",
     "@types/node": "^22.13.8",
     "eslint": "^9.20.0",
+    "tsx": "^4.19.3",
     "typescript": "^5.3.3",
     "vitest": "^2.1.1"
   },
   "dependencies": {
-    "ai": "^4.1.45",
     "@ai-sdk/openai": "^1.1.13",
     "@ai-sdk/xai": "^1.1.12",
+    "ai": "^4.1.45",
+    "chalk": "^5.4.1",
     "ollama-ai-provider": "^1.2.0",
     "ts-edge": "^0.0.3",
     "ts-safe": "^0.0.2",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "inquirer": "^12.4.2"
   }
 }

@@ -1,8 +1,8 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
-import { spawn } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
+import chalk from 'chalk';
+import inquirer from 'inquirer';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 
 interface FileItem {
   name: string;
@@ -19,7 +19,7 @@ function ls(rootPath: string, currentPath: string) {
     const isDirectory = fs.statSync(itemPath).isDirectory();
 
     return {
-      name: `${isDirectory ? "📂" : "📎"} ${gray(isRoot ? "" : chalk.rgb(120, 120, 120)(currentPath.replace(rootPath, "").replace("/", "")) + "/")}${item}${isDirectory ? "/" : ""}`,
+      name: `${isDirectory ? '📂' : '📎'} ${gray(isRoot ? '' : chalk.rgb(120, 120, 120)(currentPath.replace(rootPath, '').replace('/', '')) + '/')}${item}${isDirectory ? '/' : ''}`,
       value: itemPath,
       isDirectory,
     };
@@ -27,12 +27,12 @@ function ls(rootPath: string, currentPath: string) {
 
   if (!isRoot) {
     fileItems.unshift({
-      name: `📂 ${gray("..")}`,
-      value: path.join(currentPath, ".."),
+      name: `📂 ${gray('..')}`,
+      value: path.join(currentPath, '..'),
       isDirectory: true,
     });
   }
-  return fileItems.filter((v) => v.isDirectory || v.value.endsWith(".ts"));
+  return fileItems.filter((v) => v.isDirectory || v.value.endsWith('.ts'));
 }
 
 // Recursively find all .ts files in a directory and its subdirectories
@@ -48,7 +48,7 @@ function lsFlatTs(dirPath: string): string[] {
     if (isDirectory) {
       // Recursively search subdirectories
       result = result.concat(lsFlatTs(itemPath));
-    } else if (item.endsWith(".ts")) {
+    } else if (item.endsWith('.ts')) {
       // Add TypeScript file to results
       result.push(itemPath);
     }
@@ -62,9 +62,9 @@ async function exploreDirectory(rootPath: string): Promise<string> {
   while (true) {
     const { selectedPath } = await inquirer.prompt([
       {
-        type: "list",
-        name: "selectedPath",
-        message: "",
+        type: 'list',
+        name: 'selectedPath',
+        message: '',
         choices: () => ls(rootPath, currentPath),
       },
     ]);
@@ -81,7 +81,7 @@ const args = process.argv.slice(2);
 if (args.length > 0) {
   // Search mode - find first matching .ts file
   const searchPattern = args[0];
-  const rootDir = path.join(process.cwd(), "src");
+  const rootDir = path.join(process.cwd(), 'src');
 
   // Get all .ts files recursively
   const allTsFiles = lsFlatTs(rootDir);
@@ -90,10 +90,10 @@ if (args.length > 0) {
   const matchingFiles = allTsFiles
     .map((file) => ({
       file,
-      relativePath: file.replace(process.cwd(), "").replace(/^\//, ""),
+      relativePath: file.replace(process.cwd(), '').replace(/^\//, ''),
     }))
     .filter(({ relativePath }) => {
-      const regex = new RegExp(searchPattern, "i");
+      const regex = new RegExp(searchPattern, 'i');
       return regex.test(relativePath);
     })
     .sort((a, b) => a.relativePath.localeCompare(b.relativePath));
@@ -102,15 +102,15 @@ if (args.length > 0) {
     // Run the first matching file
     const selectedFile = matchingFiles[0].relativePath;
     console.log(`✨ Running: ${chalk.green(selectedFile)}`);
-    spawn(`pnpm tsx ${selectedFile}`, { shell: true, stdio: "inherit" });
+    spawn(`pnpm tsx ${selectedFile}`, { shell: true, stdio: 'inherit' });
   } else {
     console.log(`❌ No .ts files found matching: ${chalk.red(searchPattern)}`);
   }
 } else {
   // Interactive mode
-  console.log("✨ select file:");
-  exploreDirectory(path.join(process.cwd(), "src")).then((file) => {
-    const result = file.replace(process.cwd(), "").replace(/^\//, "");
-    spawn(`pnpm tsx ${result}`, { shell: true, stdio: "inherit" });
+  console.log('✨ select file:');
+  exploreDirectory(path.join(process.cwd(), 'src')).then((file) => {
+    const result = file.replace(process.cwd(), '').replace(/^\//, '');
+    spawn(`pnpm tsx ${result}`, { shell: true, stdio: 'inherit' });
   });
 }
