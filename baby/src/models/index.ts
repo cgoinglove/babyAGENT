@@ -3,6 +3,12 @@ import { xai } from '@ai-sdk/xai';
 import { openai } from '@ai-sdk/openai';
 import { generateText, LanguageModelV1 } from 'ai';
 
+/**
+ * STUPID_MODEL: 의도적으로 수준이 낮은 모델을 사용함으로써
+ * 프롬프트 엔지니어링의 효과를 검증하기 위한 목적으로 선택된 모델입니다.
+ * 일반적으로 성능이 낮은 모델에서도 효과적인 프롬프팅 기법은
+ * 더 큰 모델에서도 잘 작동한다는 가설을 테스트합니다.
+ */
 export const STUPID_MODEL = 'qwen2.5-coder:1.5b' as const;
 
 export const models = {
