@@ -1,12 +1,14 @@
 {
-  "name": "baby",
+  "name": "examples",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "pnpm check-model && vitest run",
+    "test:watch": "pnpm check-model && vitest",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "check-model": "pnpm tsx __check__.ts",
+    "postinstall": "pnpm run check-model"
   },
   "devDependencies": {
     "@shared/env": "workspace:*",

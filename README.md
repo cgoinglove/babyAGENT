@@ -1,21 +1,20 @@
 # babyAGENT
 
-[langgraph](https://github.com/langchain-ai/langgraph)와 [babyAGI](https://github.com/yoheinakajima/babyagi)에서 영감을 받은 간단한 에이전트
-
 ## 시작하기
 
 ```bash
 # 의존성 설치
 pnpm install
 
-# baby 디렉토리로 이동하여 테스트 실행
-cd baby
+# examples 디렉토리로 이동하여 테스트 실행
+cd examples
 pnpm test
 ```
 
 ## 프로젝트 구조
 
-- `baby`: 에이전트 구현을 위한 메인 소스 코드
+- `baby`: 구현체 🚧
+- `examples`: 에이전트 구현을 위한 예제
 - `shared`: 공유 유틸리티, 환경 설정 및 공통 도구
 - `ui`: 에이전트를 위한 시각적 인터페이스 🚧
 
