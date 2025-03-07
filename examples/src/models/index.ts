@@ -1,7 +1,8 @@
 import { ollama } from 'ollama-ai-provider';
 import { xai } from '@ai-sdk/xai';
 import { openai } from '@ai-sdk/openai';
-import { generateText, LanguageModelV1 } from 'ai';
+import { generateObject, generateText, LanguageModelV1 } from 'ai';
+import { ZodSchema } from 'zod';
 
 /**
  * STUPID_MODEL: 의도적으로 수준이 낮은 모델을 사용함으로써
@@ -51,3 +52,13 @@ export const pureLLM = (model: LanguageModelV1) => (prompt: string) => {
     model,
   }).then((res) => res.text);
 };
+
+export const objectLLM =
+  (model: LanguageModelV1) =>
+  <T>(prompt: string, schema: ZodSchema<T>) => {
+    return generateObject({
+      prompt,
+      schema,
+      model,
+    }).then((res) => res.object as T);
+  };

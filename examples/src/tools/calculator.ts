@@ -10,7 +10,7 @@ const CalculatorSchema = z.object({
 export const calculator: Tool<z.infer<typeof CalculatorSchema>, number> = {
   name: 'Calculator',
   description: '계산이 가능한 계산기 입니다.',
-  parameters: CalculatorSchema,
+  schema: CalculatorSchema,
   execute: ({ a, b, operation }) => {
     switch (operation) {
       case 'add':

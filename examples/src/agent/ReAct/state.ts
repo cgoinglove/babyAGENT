@@ -10,11 +10,13 @@ export const ReactStateSchema = z.object({
 
   action: z.object({
     tool: z.string().optional(), // 도구 이름
-    input: z.any().optional(), // 도구 인자
-    output: z.any().optional(),
+    output: z.string().optional(), // llm 이 읽을 수있도록 직렬화 처리까지 해야함
+    input: z.string().optional(), // llm 이 읽을 수있도록 직렬화 처리까지 해야함
   }),
 
-  observation: z.enum(['need_action', 'complete']),
+  observation: z.enum(['complete', 'use_action']),
+
+  limitTry: z.number().optional(),
 });
 
 export type ReactState = z.infer<typeof ReactStateSchema>;

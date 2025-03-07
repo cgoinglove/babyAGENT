@@ -13,7 +13,7 @@ export const searchEngine: Tool<
 > = {
   name: 'SearchEngine',
   description: '웹 검색을 시뮬레이션하는 가상 검색 엔진입니다',
-  parameters: SearchEngineSchema,
+  schema: SearchEngineSchema,
   execute: ({ query, limit }) => {
     const mockResults = {
       AI: [
