@@ -16,4 +16,4 @@ const workflow = createGraph()
   .edge('🛠️ acting', '🧠 reasoning');
 
 export const ReActAgent = workflow.compile('input', 'output'); //startnode, endnode
-// ReActAgent('안녕안녕')
+// ReActAgent({prompt:'5 + 3 은 얼마야?',tools:[?,?] })
