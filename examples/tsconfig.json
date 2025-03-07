@@ -1,4 +1,11 @@
 {
   "extends": "@shared/typescript-config/base.json",
-  "include": ["src", "__test__", "__check__.ts", "global-type.ts", "vitest.setup.ts", "vitest.config.ts"]
+  "include": ["src", "__test__", "__check__.ts", "interface.ts", "vitest.setup.ts", "vitest.config.ts"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@examples/*": ["src/*"],
+      "@interface": ["interface.ts"]
+    }
+  }
 }

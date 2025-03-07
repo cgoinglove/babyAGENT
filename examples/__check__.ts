@@ -2,7 +2,7 @@ import '@shared/env/global';
 import chalk from 'chalk';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { STUPID_MODEL } from './src/models';
+import { STUPID_MODEL } from '@examples/models';
 import { exit } from 'process';
 import fs from 'fs';
 import path from 'path';

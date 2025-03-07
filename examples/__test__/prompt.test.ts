@@ -1,5 +1,5 @@
 import { suite, expect, test } from 'vitest';
-import { models, pureLLM } from '../src/models';
+import { models, pureLLM } from '@examples/models';
 import z from 'zod';
 import { generateObject } from 'ai';
 

@@ -1,5 +1,5 @@
 import { suite, expect, test } from 'vitest';
-import { pureLLM, models } from '../src/models';
+import { pureLLM, models } from '@examples/models';
 
 suite('model', () => {
   test('pure model', async () => {

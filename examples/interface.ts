@@ -1,4 +1,4 @@
-import { type ZodType } from "zod";
+import { type ZodType } from 'zod';
 
 export interface Tool<Input = unknown, Output = unknown> {
   name: string;
