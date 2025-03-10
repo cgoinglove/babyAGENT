@@ -97,8 +97,8 @@ importers:
         specifier: ^0.0.10
         version: 0.0.10
       ts-safe:
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.4
+        version: 0.0.4
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -2455,6 +2455,10 @@ packages:
 
   ts-safe@0.0.2:
     resolution: {integrity: sha512-BbSVD2EPWJFdmu+qAYiohByTDfIItKkAt33+ECa+iA7aOM/zjlk4j1pLYomG+MSmTMACdOq0xEwFYfXwElcsjg==}
+    engines: {node: '>=14.0.0'}
+
+  ts-safe@0.0.4:
+    resolution: {integrity: sha512-UmrDAIUiqzSJrSa4VuJPdvcuPC7cHg/3GBm0iBApHhurXdJ5SAUaSocZcaJnPkSV8V1sE4v5SapCo9wDU4T1cg==}
     engines: {node: '>=14.0.0'}
 
   tsconfck@3.1.5:
@@ -4845,6 +4849,8 @@ snapshots:
       zod: 3.24.2
 
   ts-safe@0.0.2: {}
+
+  ts-safe@0.0.4: {}
 
   tsconfck@3.1.5(typescript@5.7.3):
     optionalDependencies:
