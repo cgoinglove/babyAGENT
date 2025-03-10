@@ -1,20 +1,21 @@
 import { stupidCalculator } from '@examples/tools/stupid-calculator';
-import { createReactAgent } from '.';
+import { createSelfReflectionAgent } from '.';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import inquirer from 'inquirer';
+import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 
-const agent = createReactAgent();
+const agent = createSelfReflectionAgent();
 
 const answer = await inquirer.prompt([
   {
     type: 'input',
     name: 'input',
     message: '\n\n🤖 질문 하세요',
-    default: '145*25+21 은 몇이야?',
+    default: '592 * 721 * 50 은 몇 입니까? 절대 틀리면 안됩니다.',
   },
 ]);
 
 agent.run({
   prompt: answer.input,
-  tools: [stupidCalculator, stupidSearchEngine],
+  tools: [stupidCalculator, stupidSearchEngine, stupidStringCounter],
 });

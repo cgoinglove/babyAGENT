@@ -1,46 +1,61 @@
 import { graphNode } from 'ts-edge';
-import { ReactState } from '../state';
+import { ReflectiveStage, ReflectiveState } from '../state';
 import { models, objectLLM } from '@examples/models';
 
+// 도구 실행 노드
 export const actingNode = graphNode({
-  name: '🛠️ acting',
-  async execute(state: ReactState): Promise<ReactState> {
-    const llm = objectLLM(models.stupid);
+  name: 'acting',
+  async execute(state: ReflectiveState): Promise<ReflectiveState> {
+    // 마지막 기록에서 도구 이름 가져오기
+    const lastRecord = state.history[state.history.length - 1];
+    const toolName = lastRecord.tool.name;
+    const lastTool = state.history[state.history.length - 2];
 
-    // search Tool
-    const tool = state.tools.find((tool) => tool.name == state.action.tool);
-    if (!tool) throw new Error('Tool Not Found');
+    if (!toolName) {
+      throw new Error('도구 이름이 없습니다');
+    }
 
-    // 도구 입력 생성을 위한 프롬프트 - 간결하게 수정
-    const inputPrompt = `
-사용자 질문: "${state.userPrompt}"
+    console.log(`\n🛠️ ACTING: ${toolName}`);
 
-선택한 도구: "${tool.name}"
-도구 설명: ${tool.description}
+    const tool = state.tools.find((t) => t.name === toolName);
+    if (!tool) {
+      throw new Error(`도구를 찾을 수 없습니다: ${toolName}`);
+    }
 
-추론: ${state.thought}
+    const llm = objectLLM(models.custom.standard);
 
-이 도구를 실행하기 위해 필요한 입력을 정확하게 생성하세요. 도구의 스키마에 맞는 형식으로 입력값을 제공해야 합니다.`;
+    const prompt = `사용자 질문: "${state.userPrompt}"
+    선택한 도구: "${tool.name}"
+    도구 설명: ${tool.description}
+    추론: ${lastRecord.thought}
+    ${lastTool ? `이전 도구 사용:${JSON.stringify(lastTool)}` : ''}
+    반성: ${lastRecord.reflection}
+    
+    이전 도구사용 내용이 있다면, 이 부분을 참고하고 이전과 다른 값을 사용 해야합니다.
 
-    // 도구 스키마를 사용하여 입력 생성
-    const toolInput = await llm(inputPrompt, tool.schema);
+    이 도구를 실행하기 위한 정확한 입력을 생성하세요.
+    JSON 형식으로 응답하세요:
+    `;
+    // 도구 입력 생성
+    const toolInput = await llm(prompt, tool.schema);
 
-    // Tool 실행
+    // 도구 실행
     const result = await tool.execute(toolInput);
 
-    // 결과 저장
-    const newState = { ...state };
+    const inputStr = typeof toolInput === 'string' ? toolInput : JSON.stringify(toolInput);
+    const outputStr = typeof result === 'string' ? result : JSON.stringify(result);
 
-    const stringify = (data: any) => (typeof data === 'string' ? data : JSON.stringify(data));
-    newState.action = {
-      ...newState.action,
-      input: stringify(toolInput),
-      output: stringify(result),
+    console.log(`입력: ${inputStr}`);
+    console.log(`출력: ${outputStr}`);
+
+    // 마지막 기록 업데이트
+    lastRecord.tool.input = inputStr;
+    lastRecord.tool.output = outputStr;
+
+    // 상태 업데이트
+    return {
+      ...state,
+      stage: ReflectiveStage.REFLECTING, // 도구 실행 후 반성 단계로
     };
-    console.log(`\n\n🛠️ ACTING NODE\n`);
-    console.log(`도구    : ${newState.action.tool}`);
-    console.log(`input  : ${newState.action.input}`);
-    console.log(`output : ${newState.action.output}`);
-    return newState;
   },
 });

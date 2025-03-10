@@ -12,17 +12,22 @@ import { ZodSchema } from 'zod';
  */
 export const STUPID_MODEL = 'qwen2.5-coder:1.5b' as const;
 
+export const STANDARD_MODEL = 'mistral' as const;
+
 export const models = {
   stupid: ollama(STUPID_MODEL),
   custom: {
-    basic: ollama(STUPID_MODEL), // 가벼운
-    standard: ollama('llama3.1:8b'), // 중간
-    smart: ollama('deepseek-r1:7b'), // 추론모델
+    /** 1~3B */
+    basic: ollama(STUPID_MODEL),
+    /** 6~7B */
+    standard: ollama(STANDARD_MODEL),
+    /** 추론가능모델 */
+    smart: ollama('deepseek-r1:7b'), // object 안됨
   },
 
   ollama: {
     mistral: ollama('mistral'),
-    llama3: ollama('llama3.1:8b'),
+    llama3: ollama('amigo/llama3.2korean'), // 한국말잘함
     deepseekr1: ollama('deepseek-r1:7b'),
   },
   grok: {
