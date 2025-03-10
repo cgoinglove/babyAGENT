@@ -15,6 +15,7 @@ export const STUPID_MODEL = 'qwen2.5-coder:1.5b' as const;
 export const models = {
   stupid: ollama(STUPID_MODEL),
   ollama: {
+    mistral: ollama('mistral'),
     llama3: ollama('llama3.1:8b'),
     deepseekr1: ollama('deepseek-r1:7b'),
   },

@@ -1,17 +1,15 @@
-import { node } from 'ts-edge';
+import { graphNode } from 'ts-edge';
 import { ReactState } from '../state';
 import { Tool } from '@interface';
 
-export const inputNode = node({
+export const inputNode = graphNode({
   name: 'input',
-  execute(input: { prompt: string; tools: Tool<any, any>[]; limitTry?: number }) {
+  execute(input: { prompt: string; tools: Tool<any, any>[] }) {
     const initialState: ReactState = {
       userPrompt: input.prompt,
       tools: input.tools,
       thought: '',
-      observation: 'complete',
       action: {},
-      limitTry: input.limitTry || 5,
     };
     return initialState;
   },
