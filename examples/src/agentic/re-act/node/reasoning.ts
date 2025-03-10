@@ -10,7 +10,7 @@ export const reasoningNode = graphNode({
     // 도구 정보 포맷팅
     const toolsDescription = state.tools.map((tool: Tool) => `- ${tool.name}: ${tool.description}`).join('\n');
 
-    const llm = objectLLM(models.stupid);
+    const llm = objectLLM(models.custom.standard);
 
     const ReasoningSchema = z.object({
       thought: z.string(),
@@ -36,7 +36,8 @@ ${toolsDescription}
 }`,
       ReasoningSchema
     );
-
+    console.log(`\n\n🧠 REASONING NODE\n`);
+    console.log(`생각    : ${response.thought}`);
     const newState = { ...state, thought: response.thought };
 
     if (response.toolName) {

@@ -7,7 +7,7 @@ export const SearchEngineSchema = z.object({
   limit: z.number().default(3).optional(),
 });
 
-export const searchEngine: Tool<
+export const stupidSearchEngine: Tool<
   z.infer<typeof SearchEngineSchema>,
   Array<{ title: string; snippet: string; url: string }>
 > = {

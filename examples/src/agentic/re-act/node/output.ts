@@ -35,8 +35,8 @@ ${toolName ? `도구 사용 사실을 자연스럽게 언급하세요 (예: "검
 
 export const outputNode = graphNode({
   name: 'output',
-  execute(state: ReactState): Promise<string> {
-    const llm = pureLLM(models.stupid);
+  async execute(state: ReactState): Promise<string> {
+    const llm = pureLLM(models.custom.smart);
     const userPrompt = state.userPrompt;
     const toolName = state.action.tool; // optional
     const toolInput = state.action.input; // optional
@@ -44,6 +44,9 @@ export const outputNode = graphNode({
     const lastThought = state.thought;
 
     const prompt = outputPrompt({ userPrompt, toolName, toolInput, toolOutput, lastThought });
-    return llm(prompt);
+    const answer = await llm(prompt);
+    console.log(`\n\n✨ OUTPUT NODE\n`);
+    console.log(`최종답변 : ${answer}`);
+    return answer;
   },
 });

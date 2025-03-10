@@ -7,7 +7,7 @@ const CalculatorSchema = z.object({
   b: z.number(),
 });
 
-export const calculator: Tool<z.infer<typeof CalculatorSchema>, number> = {
+export const stupidCalculator: Tool<z.infer<typeof CalculatorSchema>, number> = {
   name: 'Calculator',
   description: '계산이 가능한 계산기 입니다.',
   schema: CalculatorSchema,

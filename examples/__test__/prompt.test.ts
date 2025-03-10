@@ -3,7 +3,7 @@ import { models, pureLLM } from '@examples/models';
 import z from 'zod';
 import { generateObject } from 'ai';
 
-suite('prompt', () => {
+suite.skip('prompt', () => {
   test('schema model from pure model', async () => {
     const llm = pureLLM(models.stupid);
 

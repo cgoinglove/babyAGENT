@@ -14,6 +14,12 @@ export const STUPID_MODEL = 'qwen2.5-coder:1.5b' as const;
 
 export const models = {
   stupid: ollama(STUPID_MODEL),
+  custom: {
+    basic: ollama(STUPID_MODEL), // 가벼운
+    standard: ollama('llama3.1:8b'), // 중간
+    smart: ollama('deepseek-r1:7b'), // 추론모델
+  },
+
   ollama: {
     mistral: ollama('mistral'),
     llama3: ollama('llama3.1:8b'),

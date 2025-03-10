@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "example": "pnpm tsx src/helper/__example_execute__.ts",
     "test": "pnpm check-model && vitest run",
     "test:watch": "pnpm check-model && vitest",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
-    "check-model": "pnpm tsx __check__.ts",
+    "check-model": "pnpm tsx src/helper/__check__.ts",
     "postinstall": "pnpm run check-model"
   },
   "devDependencies": {

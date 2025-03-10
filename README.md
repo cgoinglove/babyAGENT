@@ -8,7 +8,7 @@ pnpm install
 
 # examples 디렉토리로 이동하여 테스트 실행
 cd examples
-pnpm test
+pnpm example
 ```
 
 ## 프로젝트 구조
