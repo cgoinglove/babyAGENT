@@ -2,6 +2,7 @@
   "name": "workspace",
   "private": true,
   "scripts": {
+    "example": "pnpm -F examples example",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",

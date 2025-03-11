@@ -36,7 +36,7 @@ ${toolName ? `도구 사용 사실을 자연스럽게 언급하세요 (예: "검
 export const outputNode = graphNode({
   name: 'output',
   async execute(state: ReactState): Promise<string> {
-    const llm = pureLLM(models.custom.smart);
+    const llm = pureLLM(models.custom.standard);
     const userPrompt = state.userPrompt;
     const toolName = state.action.tool; // optional
     const toolInput = state.action.input; // optional

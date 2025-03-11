@@ -7,7 +7,9 @@ import { exit } from 'process';
 import fs from 'fs';
 import path from 'path';
 
-const FLAG_FILE = path.join(process.cwd(), 'node_modules/.__check__');
+const VERSION = '0.1';
+
+const FLAG_FILE = path.join(process.cwd(), `node_modules/.__check__${VERSION}`);
 
 function checkFlag() {
   // node_modules에 플래그 파일이 존재하는지 확인
@@ -70,7 +72,6 @@ async function checkOllamaAndModel() {
         chalk.cyan(`다음 명령어를 사용하여 다운로드할 수 있습니다: ${chalk.green(`ollama pull ${STUPID_MODEL}`)}\n\n`)
       );
     } else {
-      console.log(chalk.green(`\n✅ 필요한 모델을 찾았습니다: ${STUPID_MODEL}`));
       createFlag();
     }
   } catch {

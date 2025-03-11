@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "example": "pnpm tsx src/helper/__example_execute__.ts",
+    "example": "pnpm check-model && pnpm tsx src/helper/__example_execute__.ts",
     "test": "pnpm check-model && vitest run",
     "test:watch": "pnpm check-model && vitest",
     "lint": "eslint . --max-warnings 0",
