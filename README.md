@@ -11,6 +11,8 @@ cd examples
 pnpm example
 ```
 
+> 참고: 현재는 [examples](examples/README.md) 패키지에서 먼저 실험을 진행 중입니다. 실제 사용을 위해서는 examples 디렉토리로 이동하여 작업해주세요.
+
 ## 프로젝트 구조
 
 - `baby`: 구현체 🚧
