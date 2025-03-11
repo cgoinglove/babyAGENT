@@ -1,7 +1,9 @@
-export default function Home() {
+import WorkFlow from '@ui/components/workflow';
+
+export default function Page() {
   return (
-    <div className="h-screen w-full flex items-center justify-center">
-      <h1 className="font-semibold text-9xl animate-pulse">babyAGENT.</h1>
-    </div>
+    <>
+      <WorkFlow />
+    </>
   );
 }

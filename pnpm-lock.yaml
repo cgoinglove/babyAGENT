@@ -117,6 +117,9 @@ importers:
       inquirer:
         specifier: ^12.4.2
         version: 12.4.2(@types/node@22.13.9)
+      lucide-react:
+        specifier: ^0.479.0
+        version: 0.479.0(react@19.0.0)
       next:
         specifier: ^15.1.6
         version: 15.2.1(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -136,8 +139,8 @@ importers:
         specifier: ^4.0.11
         version: 4.0.11
       ts-edge:
-        specifier: ^0.0.11
-        version: 0.0.11
+        specifier: ^0.0.13
+        version: 0.0.13
       ts-safe:
         specifier: ^0.0.4
         version: 0.0.4
@@ -2046,6 +2049,11 @@ packages:
   loupe@3.1.3:
     resolution: {integrity: sha512-kkIp7XSkP78ZxJEsSxW3712C6teJVoeHHwgo9zJ380de7IYyJ2ISlxojcH2pC5OFLewESmnRi/+XCDIEEVyoug==}
 
+  lucide-react@0.479.0:
+    resolution: {integrity: sha512-aBhNnveRhorBOK7uA4gDjgaf+YlHMdMhQ/3cupk6exM10hWlEU+2QtWYOfhXhjAsmdb6LeKR+NZnow4UxRRiTQ==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
@@ -2468,8 +2476,8 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
-  ts-edge@0.0.11:
-    resolution: {integrity: sha512-QVcfWpPxstf25wj/trxvriBtpqOix3gnqmyp4V6iTR+5SccqI4kRVYoXCqJSgB/y5+xfUPfctbjhg27LBcHNCQ==}
+  ts-edge@0.0.13:
+    resolution: {integrity: sha512-AwtzGSdFFWumpaqjNKm6Jl09epWb04df3VKYFeRpmGn9dV0E5/LWekz11hyJNFkv5Erbl3vgOqk+T+AG5LXv5g==}
     engines: {node: '>=14.0.0'}
 
   ts-edge@0.0.3:
@@ -4385,6 +4393,10 @@ snapshots:
 
   loupe@3.1.3: {}
 
+  lucide-react@0.479.0(react@19.0.0):
+    dependencies:
+      react: 19.0.0
+
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -4862,7 +4874,7 @@ snapshots:
     dependencies:
       typescript: 5.7.3
 
-  ts-edge@0.0.11:
+  ts-edge@0.0.13:
     dependencies:
       ts-safe: 0.0.2
 

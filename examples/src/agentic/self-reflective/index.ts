@@ -31,4 +31,4 @@ const workflow = createGraph()
   });
 
 // 에이전트 생성 함수
-export const createSelfReflectionAgent = () => workflow.compile('input', 'output');
+export const createReflectionAgent = () => workflow.compile('input', 'output');

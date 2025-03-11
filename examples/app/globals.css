@@ -1,2 +1,21 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+@theme {
+  --color-background: #f6f6f6;
+  --color-soft-background: white;
+  --color-default-text: rgb(23, 23, 23);
+  --color-sub-text: hsla(0, 0%, 40%, 1);
+  --color-hover-color: hsla(0, 0%, 0%, 0.08);
+  --default-ring-color: hsla(0, 0%, 0%, 0.08);
+  --default-border-color: hsla(0, 0%, 0%, 0.08);
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--default-border-color, currentColor);
+  }
+}

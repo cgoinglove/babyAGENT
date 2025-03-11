@@ -1,10 +1,10 @@
 import { stupidCalculator } from '@examples/tools/stupid-calculator';
-import { createSelfReflectionAgent } from '.';
+import { createReflectionAgent } from '.';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import inquirer from 'inquirer';
 import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 
-const agent = createSelfReflectionAgent();
+const agent = createReflectionAgent();
 
 const answer = await inquirer.prompt([
   {

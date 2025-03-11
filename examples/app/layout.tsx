@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <title>Agentic UI</title>
-      <body className={`bg-black text-white ${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`bg-background text-default-text ${geistSans.variable} ${geistMono.variable}`}>{children}</body>
     </html>
   );
 }

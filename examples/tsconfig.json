@@ -21,7 +21,8 @@
     "baseUrl": ".",
     "paths": {
       "@examples/*": ["src/*"],
-      "@interface": ["interface.ts"]
+      "@interface": ["interface.ts"],
+      "@ui/*": ["app/*"]
     }
   }
 }
