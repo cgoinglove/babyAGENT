@@ -9,7 +9,8 @@
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
     "check-model": "pnpm tsx src/helper/__check__.ts",
-    "postinstall": "pnpm run check-model"
+    "postinstall": "pnpm run check-model",
+    "ui": "next dev --turbopack --port 5001"
   },
   "devDependencies": {
     "@shared/env": "workspace:*",
@@ -21,9 +22,10 @@
     "tsx": "^4.19.3",
     "typescript": "^5.3.3",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.1"
-  },
-  "dependencies": {
+    "vitest": "^2.1.1",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "@ai-sdk/openai": "^1.1.13",
     "@ai-sdk/xai": "^1.1.12",
     "ai": "^4.1.45",
@@ -32,6 +34,11 @@
     "ollama-ai-provider": "^1.2.0",
     "ts-edge": "^0.0.10",
     "ts-safe": "^0.0.4",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "@tailwindcss/postcss": "^4.0.11",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.0.11"
   }
 }

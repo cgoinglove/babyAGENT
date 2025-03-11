@@ -1,7 +1,23 @@
 {
-  "extends": "@shared/typescript-config/base.json",
-  "include": ["src", "__test__", "interface.ts", "vitest.setup.ts", "vitest.config.ts"],
+  "extends": "@shared/typescript-config/nextjs.json",
+  "include": [
+    "src",
+    "__test__",
+    "interface.ts",
+    "app",
+    "vitest.setup.ts",
+    "vitest.config.ts",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+  ],
+
   "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "baseUrl": ".",
     "paths": {
       "@examples/*": ["src/*"],
