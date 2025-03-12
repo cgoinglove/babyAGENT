@@ -1,13 +1,22 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-background: #f6f6f6;
-  --color-soft-background: white;
-  --color-default-text: rgb(23, 23, 23);
-  --color-sub-text: hsla(0, 0%, 40%, 1);
-  --color-hover-color: hsla(0, 0%, 0%, 0.08);
+  --color-background: hsla(0, 0%, 98%, 1);
+  --color-soft-background: hsla(0, 0%, 100%, 1);
+  --color-default-text: hsla(0, 0%, 9%, 1);
+  --color-sub-text: #666666d3;
+  --color-hover-color: hsla(0, 0%, 92%, 1);
   --default-ring-color: hsla(0, 0%, 0%, 0.08);
   --default-border-color: hsla(0, 0%, 0%, 0.08);
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 @layer base {

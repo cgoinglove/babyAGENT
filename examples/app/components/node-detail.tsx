@@ -1,7 +1,7 @@
 import { NodeStatus } from '@ui/actions/workflow/workflow-action';
 import { Code, Terminal } from 'lucide-react';
 
-export function NodeDetail({ node }: { node: NodeStatus }) {
+export default function NodeDetail({ node }: { node: NodeStatus }) {
   const duration = node.startedAt && node.endedAt ? ((node.endedAt - node.startedAt) / 1000).toFixed(2) : null;
 
   return (

@@ -48,8 +48,8 @@ export default function ThreadSidebar({
         </div>
       </div>
 
-      <div className="flex-1">
-        <div className="p-2">
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col">
           {nodes.map((node, index) => (
             <NodeCard
               key={`${node.name}-${index}`}
@@ -57,6 +57,7 @@ export default function ThreadSidebar({
               title={node.name}
               onClick={onSelectNode.bind(null, node)}
               isSelected={node === selectedNode}
+              isLast={index + 1 == nodes.length}
             />
           ))}
         </div>

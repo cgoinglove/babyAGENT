@@ -12,7 +12,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Agentic UI',
+  title: 'babyAGENT examples',
 };
 
 export default function RootLayout({
@@ -22,7 +22,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <title>Agentic UI</title>
       <body className={`bg-background text-default-text ${geistSans.variable} ${geistMono.variable}`}>{children}</body>
     </html>
   );
