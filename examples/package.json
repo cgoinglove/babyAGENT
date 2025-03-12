@@ -38,7 +38,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.11",
-    "ts-edge": "^0.0.14",
+    "ts-edge": "^0.0.16",
     "ts-safe": "^0.0.4",
     "tsx": "^4.19.3",
     "typescript": "^5.3.3",

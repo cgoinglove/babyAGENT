@@ -1,4 +1,4 @@
-export const PromiseQueue = () => {
+export const PromiseChain = () => {
   let promise: Promise<any> = Promise.resolve();
   return <T>(asyncFunction: () => Promise<T>): Promise<T> => {
     const resultPromise = promise.then(() => asyncFunction());
@@ -8,11 +8,11 @@ export const PromiseQueue = () => {
 };
 
 export class LimitedTaskExecutor {
-  private queues: Array<ReturnType<typeof PromiseQueue>>;
+  private queues: Array<ReturnType<typeof PromiseChain>>;
   private cursor = 0;
 
   constructor(concurrency: number) {
-    this.queues = Array.from({ length: concurrency }).map(PromiseQueue);
+    this.queues = Array.from({ length: concurrency }).map(PromiseChain);
   }
   runTask<T>(task: () => Promise<T>): Promise<T> {
     const queue = this.queues[this.cursor % this.queues.length]!;

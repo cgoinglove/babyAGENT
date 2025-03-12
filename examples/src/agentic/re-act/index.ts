@@ -10,9 +10,12 @@ const workflow = createGraph()
   .addNode(actingNode)
   .addNode(outputNode)
   .edge('input', '🧠 reasoning')
-  .dynamicEdge('🧠 reasoning', (state) => {
-    return state.action.tool ? '🛠️ acting' : 'output';
+  .dynamicEdge('🧠 reasoning', {
+    possibleTargets: ['output', '🛠️ acting'],
+    router: (state) => {
+      return state.action.tool ? '🛠️ acting' : 'output';
+    },
   })
   .edge('🛠️ acting', 'output');
 
-export const createReactAgent = () => workflow.compile('input', 'output');
+export const createReactAgent = () => workflow;

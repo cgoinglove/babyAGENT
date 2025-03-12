@@ -1,12 +1,13 @@
 'use server';
 
-import { createWorkflowActions } from './workflow-action';
+import { createWorkflowActions } from './create-workflow-action';
 import { stupidCalculator } from '@examples/tools/stupid-calculator';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import { createReflectionAgent } from '@examples/agentic/self-reflective';
 
 const agent = createReflectionAgent();
-const api = createWorkflowActions(agent);
+
+const api = createWorkflowActions(agent, 'input');
 
 export async function reflectionAgentStartAction(prompt: string) {
   api.start({
@@ -22,5 +23,5 @@ export async function reflectionAgentResumeAction() {
   return api.resume();
 }
 export async function reflectionAgentGetFlowAction() {
-  return api.getFlow();
+  return api.getFlowInfo();
 }

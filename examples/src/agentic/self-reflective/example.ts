@@ -4,7 +4,7 @@ import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import inquirer from 'inquirer';
 import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 
-const agent = createReflectionAgent();
+const agent = createReflectionAgent().compile('input');
 
 const answer = await inquirer.prompt([
   {

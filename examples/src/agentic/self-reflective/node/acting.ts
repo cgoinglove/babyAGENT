@@ -5,6 +5,7 @@ import { models, objectLLM } from '@examples/models';
 // 도구 실행 노드
 export const actingNode = graphNode({
   name: 'acting',
+  description: 'Executes selected tools and collects results',
   async execute(state: ReflectiveState): Promise<ReflectiveState> {
     // 마지막 기록에서 도구 이름 가져오기
     const lastRecord = state.history[state.history.length - 1];

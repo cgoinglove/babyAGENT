@@ -1,13 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { CirclePause, Play, Send } from 'lucide-react';
-import { NodeStatus } from '@ui/actions/workflow/workflow-action';
-import NodeCard from './node-card';
+import { NodeThread } from '@ui/actions/workflow/create-workflow-action';
+import ThreadCard from './thread-card';
 
 interface Props {
-  onSelectNode: (node: NodeStatus) => void;
-  selectedNode?: NodeStatus;
-  nodes: NodeStatus[];
+  onSelectThread: (thread: NodeThread) => void;
+  selectedThread?: NodeThread;
+  threads: NodeThread[];
   isRunning: boolean;
   isLock?: boolean;
   start(prompt: string);
@@ -21,9 +21,9 @@ export default function ThreadSidebar({
   resume,
   start,
   stop,
-  selectedNode,
-  onSelectNode,
-  nodes,
+  selectedThread,
+  onSelectThread,
+  threads,
 }: Props) {
   const [prompt, setPrompt] = useState('');
 
@@ -49,17 +49,22 @@ export default function ThreadSidebar({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col">
-          {nodes.map((node, index) => (
-            <NodeCard
-              key={`${node.name}-${index}`}
-              node={node}
-              title={node.name}
-              onClick={onSelectNode.bind(null, node)}
-              isSelected={node === selectedNode}
-              isLast={index + 1 == nodes.length}
-            />
-          ))}
+        <div className="flex flex-col h-full">
+          {threads.length ? (
+            threads.map((thread, index) => (
+              <ThreadCard
+                key={`${thread.name}-${index}`}
+                thread={thread}
+                onClick={onSelectThread.bind(null, thread)}
+                isSelected={thread === selectedThread}
+                isLast={index + 1 == threads.length}
+              />
+            ))
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <h4 className="font-bold text-5xl">Try Example</h4>
+            </div>
+          )}
         </div>
       </div>
 

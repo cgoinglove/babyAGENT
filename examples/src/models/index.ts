@@ -22,7 +22,7 @@ export const models = {
     /** 6~7B */
     standard: ollama(STANDARD_MODEL),
     /** 추론가능모델 */
-    smart: ollama('deepseek-r1:8b'), // object 안됨
+    smart: ollama('deepseek-r1:7b'), // object 안됨
   },
 
   ollama: {

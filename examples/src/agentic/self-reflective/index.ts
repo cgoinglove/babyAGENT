@@ -18,13 +18,15 @@ const workflow = createGraph()
   .edge('input', 'reasoning')
 
   // 동적 엣지: 단계에 따라 다음 노드 결정
-  .dynamicEdge('reasoning', (state) => {
-    return state.stage === ReflectiveStage.ACTING ? 'acting' : 'reflecting';
+  .dynamicEdge('reasoning', {
+    possibleTargets: ['acting', 'reflecting'],
+    router: (state) => {
+      return state.stage === ReflectiveStage.ACTING ? 'acting' : 'reflecting';
+    },
   })
 
   // Acting -> Reflecting
   .edge('acting', 'reflecting')
-
   // 동적 엣지: 반성 결과에 따라 다음 노드 결정
   .dynamicEdge('reflecting', {
     possibleTargets: ['output', 'reasoning'],
@@ -34,4 +36,4 @@ const workflow = createGraph()
   });
 
 // 에이전트 생성 함수
-export const createReflectionAgent = () => workflow.compile('input', 'output');
+export const createReflectionAgent = () => workflow;
