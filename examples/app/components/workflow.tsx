@@ -12,23 +12,27 @@ import {
 import NodeDetail from './node-detail';
 import { safe } from 'ts-safe';
 import { GraphStructure } from 'ts-edge';
+// import WorkflowGraph from './workflow-chart';
 
 export default function WorkFlow() {
   const [workflowStatus, setWorkflowStatus] = useState<'ready' | 'lock' | 'running'>('ready');
   const [selectedNode, setSelectedNode] = useState<NodeStatus | undefined>();
   const [histories, setHistories] = useState<NodeStatus[]>([]);
-  const [, setStructure] = useState<GraphStructure>([]);
+  // const [, setStructure] = useState<GraphStructure>([]);
 
   const fetchFlow = useCallback(async () => {
-    return safe()
-      .map(reflectionAgentGetFlowAction)
-      .effect((flow) => setHistories(flow.histories))
-      .effect((flow) => setStructure(flow.structure))
-      .effect((flow) => {
-        if (flow.isRunning) setTimeout(() => fetchFlow(), 1000);
-        if (workflowStatus != 'lock') setWorkflowStatus(flow.isRunning ? 'running' : 'ready');
-      })
-      .unwrap();
+    return (
+      safe()
+        .map(reflectionAgentGetFlowAction)
+        .effect((flow) => setHistories(flow.histories))
+        // .effect((flow) => setStructure(flow.structure))
+        .effect((flow) => {
+          console.log(flow);
+          if (flow.isRunning) setTimeout(() => fetchFlow(), 1000);
+          if (workflowStatus != 'lock') setWorkflowStatus(flow.isRunning ? 'running' : 'ready');
+        })
+        .unwrap()
+    );
   }, []);
   const start = useCallback(
     (prompt: string) => {
@@ -69,7 +73,10 @@ export default function WorkFlow() {
         onSelectNode={setSelectedNode}
         selectedNode={selectedNode}
       />
-      <div className="flex-1 overflow-y-auto">{selectedNode ? <NodeDetail node={selectedNode} /> : <></>}</div>
+      <div className="flex-1 overflow-y-auto">
+        {/* {selectedNode ? <NodeDetail node={selectedNode} /> : <WorkflowGraph />} */}
+        {/* {selectedNode ? <NodeDetail node={selectedNode} /> : <WorkflowGraph />} */}
+      </div>
     </div>
   );
 }

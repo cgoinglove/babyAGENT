@@ -4,15 +4,12 @@ import { safe } from 'ts-safe';
 
 const normalize = (data: any) => JSON.parse(JSON.stringify(data));
 
-type Parser<T> = (original: T) => {
-  input: any;
-} & {
-  [key: string]: any;
-};
+type Parser<T> = (original: T) => { label: string; value: any }[];
 
 type AgenticActionOptions<Runnable> = {
-  inputParser: Runnable extends GraphRunnable<infer Node> ? Parser<GraphNodeWithOutOutput<Node>> : never;
-  outputParser: Runnable extends GraphRunnable<infer Node> ? Parser<Node> : never;
+  graphDirection: 'TB' | 'LR';
+  inputViewParser: Runnable extends GraphRunnable<infer Node> ? Parser<GraphNodeWithOutOutput<Node>> : never;
+  outputViewParser: Runnable extends GraphRunnable<infer Node> ? Parser<Node> : never;
 };
 
 export type NodeStatus = {
@@ -24,6 +21,17 @@ export type NodeStatus = {
   output?: any;
   name: string;
   id: string;
+};
+
+export type XXX = {
+  status: 'running' | 'success' | 'fail' | 'ready' | 'stop';
+  name: string;
+  edge?: {
+    type: 'direct' | 'dynamic';
+    name: string[];
+  };
+  isMergeNode: boolean;
+  description?: string;
 };
 
 export const createWorkflowActions = <Runnable extends GraphRunnable<any>>(
@@ -39,14 +47,14 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any>>(
 
   const inputParser = (v: any) =>
     safe(v)
-      .map(options?.inputParser ?? (() => ({ input: v })))
+      .map(options?.inputViewParser ?? (() => [{ label: 'input', value: v }]))
       .map(normalize)
-      .orElse({ input: v });
+      .orElse([{ label: 'input', value: v }]);
   const outputParser = (v: any) =>
     safe(v)
-      .map(options?.outputParser ?? (() => ({ input: v })))
+      .map(options?.outputViewParser ?? (() => [{ label: 'output', value: v }]))
       .map(normalize)
-      .orElse({ input: v });
+      .orElse([{ label: 'output', value: v }]);
 
   const histories: NodeStatus[] = [];
 
@@ -74,16 +82,16 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any>>(
   };
 
   const getFlow = () => {
-    const structure = runner.getStructure().map((node) => {
+    const nodes = runner.getStructure().map((node) => {
       const latestHistory: Partial<NodeStatus> =
         [...histories].reverse().find((status) => status.name == node.name) ?? {};
       return {
         ...node,
-        ...latestHistory,
+        status: latestHistory.status || 'ready',
       };
     });
     return {
-      structure,
+      nodes,
       histories,
       isRunning,
     };
