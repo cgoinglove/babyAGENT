@@ -13,7 +13,8 @@
     "ui": "next dev --turbopack --port 5001"
   },
   "dependencies": {
-    "@xyflow/react": "^12.4.4"
+    "@xyflow/react": "^12.4.4",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
     "@ai-sdk/openai": "^1.1.13",

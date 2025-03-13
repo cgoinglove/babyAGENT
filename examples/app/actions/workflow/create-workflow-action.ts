@@ -32,6 +32,8 @@ export type NodeStructure = GraphNodeStructure & {
   duration?: string;
   toMergeNode: boolean;
   isStartNode: boolean;
+  inEdgeCount: number;
+  outEdgeCount: number;
 };
 
 const isStart = (e: GraphEvent): e is GraphNodeStartEvent => e.eventType == 'NODE_START';
@@ -106,6 +108,8 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
         toMergeNode: node.edge?.name.some((n) => mergeNodes.includes(n)),
         duration: calcDuration(latestThread as NodeThread),
         status: latestThread.status || 'ready',
+        inEdgeCount: 0,
+        outEdgeCount: 0,
       } as NodeStructure;
     });
     return {

@@ -16,10 +16,15 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { NodeStructure } from '@ui/actions/workflow/create-workflow-action';
+import CustomDefaultNode from './custom-flow-node/default';
 
 interface Props {
   structures: NodeStructure[];
 }
+
+const nodeTypes = {
+  customDefault: CustomDefaultNode,
+};
 
 const nodeWidth = 150;
 const nodeHeight = 100;
@@ -30,7 +35,11 @@ const getFlow = (structures: NodeStructure[]) => {
   g.setDefaultEdgeLabel(() => ({}));
 
   structures.forEach((node) => {
-    g.setNode(node.name, { width: nodeWidth, height: nodeHeight, label: node.name });
+    g.setNode(node.name, {
+      width: nodeWidth,
+      height: nodeHeight,
+      label: node.name,
+    });
   });
 
   structures.forEach((node) => {
@@ -45,16 +54,20 @@ const getFlow = (structures: NodeStructure[]) => {
   layout(g);
 
   // React Flow 노드로 변환
-  const nodes: RFNode[] = structures.map((node) => {
+  const nodes: RFNode<NodeStructure>[] = structures.map((node) => {
     const dagreNode = g.node(node.name);
     return {
       id: node.name,
-      data: { label: node.name, status: node.status },
+      type: 'customDefault',
       position: {
         x: dagreNode.x - nodeWidth / 2,
         y: dagreNode.y - nodeHeight / 2,
       },
-    } as RFNode;
+      data: {
+        ...node,
+        label: node.name,
+      },
+    };
   });
 
   // React Flow 엣지로 변환
@@ -63,11 +76,12 @@ const getFlow = (structures: NodeStructure[]) => {
       return node.edge.name.map(
         (target) =>
           ({
+            data: node,
+            selectable: true,
             id: `${node.name}-${target}`,
             source: node.name,
             target,
             animated: node.edge?.type == 'dynamic',
-
             markerEnd: {
               type: MarkerType.ArrowClosed,
             },
@@ -88,11 +102,18 @@ export default function WorkFlowVisual({ structures }: Props) {
     const flow = getFlow(structures);
     setNodes(flow.nodes);
     setEdges(flow.edges);
-  }, []);
+  }, [structures]);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      <ReactFlow nodes={nodes} edges={edges} fitView onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}>
+      <ReactFlow
+        nodeTypes={nodeTypes}
+        nodes={nodes}
+        edges={edges}
+        fitView
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+      >
         <MiniMap />
         <Controls />
         <Background />

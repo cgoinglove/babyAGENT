@@ -9,7 +9,7 @@ export const outputNode = graphNode({
   async execute(state: ReflectiveState): Promise<string> {
     console.log(`\n✨ OUTPUT`);
 
-    const llm = pureLLM(models.custom.smart);
+    const llm = pureLLM(models.custom.standard);
 
     // 워크플로우 요약 (도구 사용 결과만 포함)
     const toolResults = state.history
