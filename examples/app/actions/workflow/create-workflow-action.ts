@@ -2,9 +2,11 @@ import { GraphEvent, GraphNodeStartEvent, GraphNodeStructure, GraphNodeWithOutOu
 import { Locker } from '@shared/util';
 import { safe } from 'ts-safe';
 
+type Data = { label: string; value: any };
+
 const normalize = (data: any) => JSON.parse(JSON.stringify(data));
 
-type Parser<T> = (original: T) => { label: string; value: any }[];
+type Parser<T> = (original: T) => Data[];
 
 type AgenticActionOptions<Workflow> = {
   graphDirection: 'TB' | 'LR';
@@ -19,17 +21,14 @@ export type NodeThread = {
   startedAt?: number;
   endedAt?: number;
   threadId?: string;
-  description?: string;
-  input?: any;
-  output?: any;
+  input: Data[];
+  output?: Data[];
   name: string;
   id: string;
   duration?: string;
 };
 
 export type NodeStructure = GraphNodeStructure & {
-  status: WorkflowStatus;
-  duration?: string;
   toMergeNode: boolean;
   isStartNode: boolean;
   inEdgeCount: number;
@@ -39,7 +38,7 @@ export type NodeStructure = GraphNodeStructure & {
 const isStart = (e: GraphEvent): e is GraphNodeStartEvent => e.eventType == 'NODE_START';
 
 const calcDuration = (thread: Partial<NodeThread>) =>
-  thread.startedAt ? (((thread.endedAt ?? Date.now()) - thread.startedAt) / 1000).toFixed(2) : undefined;
+  thread.startedAt ? (((thread.endedAt || Date.now()) - thread.startedAt) / 1000).toFixed(2) : undefined;
 
 export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
   workflow: Workflow,
@@ -51,11 +50,28 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
 
   const runner = workflow.compile(start);
 
-  const structure = runner.getStructure().reduce((prev, node) => ({ ...prev, [node.name]: node }), {});
-  const mergeNodes = runner
-    .getStructure()
-    .filter((node) => node.isMergeNode)
-    .map((node) => node.name);
+  const { inEdgeCountMap, mergeNodeList } = runner.getStructure().reduce(
+    (prev, node) => {
+      if (node.isMergeNode) prev.mergeNodeList.push(node.name);
+      node.edge?.name.forEach((out) => {
+        prev.inEdgeCountMap[out] = (prev.inEdgeCountMap[out] ?? 0) + 1;
+      });
+      return prev;
+    },
+    {
+      mergeNodeList: [] as string[],
+      inEdgeCountMap: {} as Record<string, number>,
+    }
+  );
+
+  const structure: NodeStructure[] = runner.getStructure().map((node) => ({
+    ...node,
+    inEdgeCount: inEdgeCountMap[node.name] ?? 0,
+    outEdgeCount: node.edge?.name.length || 0,
+    isStartNode: node.name == start,
+    toMergeNode: mergeNodeList.includes(node.name),
+  }));
+
   runner.use(async () => {
     await locker.wait();
   });
@@ -87,7 +103,6 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
       status: isStart(event) ? 'running' : event.isOk ? 'success' : 'fail',
       threadId: event.threadId,
       startedAt: event.startedAt,
-      description: structure[event.node.name].description,
       endedAt: isStart(event) ? undefined : event.endedAt,
       input: inputParser(event.node),
       output: outputParser(isStart(event) ? {} : normalize(event.node)),
@@ -95,36 +110,16 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
       id: event.nodeExecutionId,
       duration: calcDuration(event),
     };
+    console.log(nodeThread.name, nodeThread.duration);
     const prev = threads.find((v) => v.id == event.nodeExecutionId);
     if (prev) Object.assign(prev, nodeThread);
     else threads.push(nodeThread);
   };
-
-  const getFlowInfo = () => {
-    const nodeStructures = runner.getStructure().map((node) => {
-      const latestThread: Partial<NodeThread> = [...threads].reverse().find((status) => status.name == node.name) ?? {};
-      return {
-        ...node,
-        toMergeNode: node.edge?.name.some((n) => mergeNodes.includes(n)),
-        duration: calcDuration(latestThread as NodeThread),
-        status: latestThread.status || 'ready',
-        inEdgeCount: 0,
-        outEdgeCount: 0,
-      } as NodeStructure;
-    });
-    return {
-      nodeStructures,
-      threads,
-      workflowStatus,
-      startThread: {
-        name: start,
-        description: structure[start as string].description,
-        status: 'ready',
-        id: start,
-      } as NodeThread,
-    };
+  const reset = () => {
+    locker.unLock();
+    threads.length = 0;
+    workflowStatus = 'ready';
   };
-
   return {
     stop() {
       if (workflowStatus != 'running') return;
@@ -136,8 +131,18 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
       workflowStatus = 'running';
       locker.unLock();
     },
-    getFlowInfo() {
-      return getFlowInfo();
+    getNodeStructures() {
+      return structure;
+    },
+    getStatus() {
+      return {
+        threads,
+        workflowStatus,
+      };
+    },
+    reset() {
+      reset();
+      runner.exit();
     },
     async start(...params: Parameters<typeof runner.run>) {
       locker.unLock();

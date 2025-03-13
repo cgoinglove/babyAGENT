@@ -22,6 +22,12 @@ export async function reflectionAgentStopAction() {
 export async function reflectionAgentResumeAction() {
   return api.resume();
 }
-export async function reflectionAgentGetFlowAction() {
-  return api.getFlowInfo();
+export async function reflectionAgentGetStatusAction() {
+  return api.getStatus();
+}
+export async function reflectionAgentGetStructuresAction() {
+  return api.getNodeStructures();
+}
+export async function reflectionAgentReset() {
+  return api.reset();
 }

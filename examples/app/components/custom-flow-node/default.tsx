@@ -1,68 +1,50 @@
 import { Handle, Node, Position, type NodeProps } from '@xyflow/react';
-import { GitMerge, Flag } from 'lucide-react';
-import { NodeStructure } from '@ui/actions/workflow/create-workflow-action';
-import clsx from 'clsx';
 
-type Props = NodeProps<Node<NodeStructure>>;
+import clsx from 'clsx';
+import { FlowNode } from '../helper/create-flow';
+import { MousePointer2 } from 'lucide-react';
+
+type Props = NodeProps<Node<FlowNode>>;
 
 export default function CustomDefaultNode({ data, isConnectable }: Props) {
   return (
     <div
       className={clsx(
-        'px-4 py-3 rounded-lg border shadow-sm bg-white dark:bg-slate-800 w-[220px]',
-        data.isMergeNode && 'border-indigo-400 dark:border-indigo-500 bg-indigo-50 dark:bg-slate-800',
-        data.status === 'fail' && 'border-red-300 dark:border-red-700',
-        data.status === 'running' && 'border-blue-300 dark:border-blue-700 animate-pulse'
+        data.status == 'fail' && 'ring-red-500 bg-red-50',
+        data.status == 'running' && 'ring-sub-text',
+        'hover:bg-hover-color relative px-4 py-3 rounded-lg ring shadow-sm min-w-[200px] max-w-[300px] bg-background transition-all'
       )}
     >
-      {/* Handles for connections */}
-      <Handle type="target" position={Position.Top} isConnectable={isConnectable} className="w-2 h-2 bg-gray-400" />
-      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} className="w-2 h-2 bg-gray-400" />
-
-      <div className="flex items-center gap-2">
-        {data.isStartNode && <Flag className="h-4 w-4 text-green-500" />}
-        {data.isMergeNode && <GitMerge className="h-4 w-4 text-indigo-500" />}
-        <div className="flex-1 font-medium truncate">{data.name}</div>
-        {/* <div>{getStatusIcon()}</div> */}
-      </div>
-
-      {data.metadata.description && (data.status === 'fail' || data.status === 'running') && (
-        <div
-          className={clsx(
-            'mt-2 text-xs p-2 rounded',
-            data.status === 'fail'
-              ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-              : 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-          )}
-        >
-          {data.metadata.description}
-        </div>
-      )}
-
-      {data.edge && (
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          <div className="flex items-center gap-1">
-            <span className="font-medium">Edge:</span>
-            <span>{data.edge.type}</span>
-          </div>
-          {data.edge.name.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1">
-              {data.edge.name.map((name, i) => (
-                <span key={i} className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-                  {name}
-                </span>
-              ))}
+      {data.isStartNode && (
+        <div className="shadow-xl shadow-default-text/30 diagonal-arrow absolute flex left-[-125px] top-[-30px] bg-default-text text-soft-background px-4 py-2 rounded-full">
+          <h2 className="font-bold text-xs">
+            Start Here. 😉
+            <div className="">
+              <MousePointer2
+                className=" fill-default-text stroke-default-text rotate-180 absolute right-[-4px] bottom-[-2px]"
+                size={14}
+              />
             </div>
-          )}
+          </h2>
         </div>
       )}
 
-      {data.toMergeNode && (
-        <div className="mt-2 flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400">
-          <GitMerge className="h-3 w-3" />
-          <span>Connects to merge node</span>
-        </div>
-      )}
+      {data.inEdgeCount ? (
+        <Handle type="target" position={Position.Top} isConnectable={isConnectable} className="w-2 h-2 bg-gray-400" />
+      ) : null}
+      {data.outEdgeCount ? (
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          isConnectable={isConnectable}
+          className="w-2 h-2 bg-gray-400"
+        />
+      ) : null}
+
+      <div className="flex items-center flex-col w-full">
+        <div className="flex-1 font-semibold text-lg truncate text-center">{data.name}</div>
+        {/* <p className="text-xs text-sub-text py-2">{data.metadata.description}</p> */}
+      </div>
     </div>
   );
 }

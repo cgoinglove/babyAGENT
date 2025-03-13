@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CirclePause, Play, Send } from 'lucide-react';
 import { NodeThread } from '@ui/actions/workflow/create-workflow-action';
 import ThreadCard from './thread-card';
+import SelectBox from './shared/select-box';
 
 interface Props {
-  onSelectThread: (thread: NodeThread) => void;
+  onSelectThread: (thread?: NodeThread) => void;
   selectedThread?: NodeThread;
   threads: NodeThread[];
   isRunning: boolean;
@@ -13,6 +14,9 @@ interface Props {
   start(prompt: string);
   stop();
   resume();
+  onChangeIndex(index: number);
+  agents: { name: string; description?: string }[];
+  curreuntIndex: number;
 }
 
 export default function ThreadSidebar({
@@ -24,6 +28,9 @@ export default function ThreadSidebar({
   selectedThread,
   onSelectThread,
   threads,
+  agents,
+  onChangeIndex,
+  curreuntIndex,
 }: Props) {
   const [prompt, setPrompt] = useState('');
 
@@ -40,12 +47,25 @@ export default function ThreadSidebar({
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (isRunning) {
+        setPrompt('');
+      }
+    };
+  }, [isRunning]);
+
   return (
     <div className="w-full md:w-1/3 border-r h-screen flex flex-col">
-      <div className="border-b p-4">
-        <div className=" flex items-center gap-1 text-sub-text">
+      <div className="border-b p-4 flex items-center">
+        <div className=" flex items-center gap-1 text-sub-text mr-auto">
           <span className="text-default-text font-bold">babyAGENT</span> examples
         </div>
+        <SelectBox
+          items={agents.map((v, i) => ({ label: v.name, value: i }))}
+          onChange={onChangeIndex}
+          value={curreuntIndex}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -55,14 +75,14 @@ export default function ThreadSidebar({
               <ThreadCard
                 key={`${thread.name}-${index}`}
                 thread={thread}
-                onClick={onSelectThread.bind(null, thread)}
+                onClick={onSelectThread.bind(null, thread === selectedThread ? undefined : thread)}
                 isSelected={thread === selectedThread}
                 isLast={index + 1 == threads.length}
               />
             ))
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <h4 className="font-bold text-5xl">Try Example</h4>
+              <h4 className="font-bold text-5xl animate-fade-in-slow">Try Example</h4>
             </div>
           )}
         </div>

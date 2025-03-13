@@ -22,6 +22,12 @@ export async function reActAgentStopAction() {
 export async function reActAgentResumeAction() {
   return api.resume();
 }
-export async function reActAgentGetFlowAction() {
-  return api.getFlowInfo();
+export async function reActAgentGetStatusAction() {
+  return api.getStatus();
+}
+export async function reActAgentGetStructuresAction() {
+  return api.getNodeStructures();
+}
+export async function reActAgentReset() {
+  return api.reset();
 }
