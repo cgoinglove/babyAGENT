@@ -10,25 +10,21 @@ import { ZodSchema } from 'zod';
  * 일반적으로 성능이 낮은 모델에서도 효과적인 프롬프팅 기법은
  * 더 큰 모델에서도 잘 작동한다는 가설을 테스트합니다.
  */
-export const STUPID_MODEL = 'qwen2.5-coder:1.5b' as const;
+export const STUPID_MODEL = 'gemma3:1b' as const;
 
-export const STANDARD_MODEL = 'mistral' as const;
+export const STANDARD_MODEL = 'gemma3:4b' as const;
 
 export const models = {
   stupid: ollama(STUPID_MODEL),
   custom: {
-    /** 1~3B */
+    /** 1~2B */
     basic: ollama(STUPID_MODEL),
-    /** 6~7B */
+    /** 3~7B */
     standard: ollama(STANDARD_MODEL),
-    /** 추론가능모델 */
-    smart: ollama('deepseek-r1:7b'), // object 안됨
-  },
-
-  ollama: {
-    mistral: ollama('mistral'),
-    llama3: ollama('amigo/llama3.2korean'), // 한국말잘함
-    deepseekr1: ollama('deepseek-r1:7b'),
+    /** 8B~?B */
+    smart: ollama('gemma3:12b'),
+    /** 추론모델 */
+    reasoning: ollama('deepseek-r1:8b'),
   },
   grok: {
     grok2: xai('grok-2-1212'),

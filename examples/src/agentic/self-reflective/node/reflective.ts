@@ -6,7 +6,7 @@ import { z } from 'zod';
 // 반성 노드
 export const reflectingNode = graphNode({
   name: 'reflecting',
-  description: 'Evaluates approach and decides next steps',
+  metadata: { description: 'Evaluates approach and decides next steps' },
   async execute(state: ReflectiveState): Promise<ReflectiveState> {
     console.log(`\n🔍 REFLECTING`);
 

@@ -1,4 +1,4 @@
-import { GraphEvent, GraphNodeStartEvent, GraphNodeWithOutOutput, GraphRegistry, GraphStructure } from 'ts-edge';
+import { GraphEvent, GraphNodeStartEvent, GraphNodeStructure, GraphNodeWithOutOutput, GraphRegistry } from 'ts-edge';
 import { Locker } from '@shared/util';
 import { safe } from 'ts-safe';
 
@@ -27,7 +27,7 @@ export type NodeThread = {
   duration?: string;
 };
 
-export type NodeStructure = GraphStructure[number] & {
+export type NodeStructure = GraphNodeStructure & {
   status: WorkflowStatus;
   duration?: string;
   toMergeNode: boolean;
@@ -60,14 +60,14 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
 
   const inputParser = (v: any) =>
     safe(v)
-      .map(options?.inputViewParser ?? (() => [{ label: 'input', value: v }]))
+      .map(options?.inputViewParser ?? (() => [{ label: 'value', value: v }]))
       .map(normalize)
-      .orElse([{ label: 'input', value: v }]);
+      .orElse([{ label: 'value', value: v }]);
   const outputParser = (v: any) =>
     safe(v)
-      .map(options?.outputViewParser ?? (() => [{ label: 'output', value: v }]))
+      .map(options?.outputViewParser ?? (() => [{ label: 'value', value: v }]))
       .map(normalize)
-      .orElse([{ label: 'output', value: v }]);
+      .orElse([{ label: 'value', value: v }]);
 
   const threads: NodeThread[] = [];
 

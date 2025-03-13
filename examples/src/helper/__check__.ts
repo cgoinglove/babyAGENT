@@ -7,7 +7,7 @@ import { exit } from 'process';
 import fs from 'fs';
 import path from 'path';
 
-const VERSION = '0.1';
+const VERSION = '0.3';
 
 const FLAG_FILE = path.join(process.cwd(), `node_modules/.__check__${VERSION}`);
 
@@ -55,21 +55,17 @@ if (!process.env.OPENAI_API_KEY) {
 
 const execAsync = promisify(exec);
 
-async function checkOllamaAndModel() {
+async function checkOllamaAndModel(model: string) {
   try {
     const { stdout } = await execAsync('ollama ls');
 
-    if (!stdout.includes(STUPID_MODEL) || !stdout.includes(STANDARD_MODEL)) {
-      if (!stdout.includes(STUPID_MODEL))
+    if (!stdout.includes(model)) {
+      if (!stdout.includes(model))
         console.warn(
-          chalk.yellow(`\n🦙🦙🦙 Ollama 기본 모델 ${chalk.cyan(STUPID_MODEL)}이(가) 설치되어 있지 않습니다.`)
-        );
-      if (!stdout.includes(STANDARD_MODEL))
-        console.warn(
-          chalk.yellow(`\n🦙🦙🦙 Ollama 기본 모델 ${chalk.cyan(STANDARD_MODEL)}이(가) 설치되어 있지 않습니다.`)
+          chalk.yellow(`\n🦙🦙🦙 Project에서 사용 할 기본 모델 ${chalk.cyan(model)}이(가) 설치되어 있지 않습니다.`)
         );
       console.warn(
-        chalk.cyan(`다음 명령어를 사용하여 다운로드할 수 있습니다: ${chalk.green(`ollama pull ${STUPID_MODEL}`)}\n\n`)
+        chalk.cyan(`다음 명령어를 사용하여 다운로드할 수 있습니다: ${chalk.green(`ollama pull ${model}`)}\n\n`)
       );
     } else {
       createFlag();
@@ -82,4 +78,5 @@ async function checkOllamaAndModel() {
   }
 }
 
-checkOllamaAndModel();
+await checkOllamaAndModel(STUPID_MODEL);
+await checkOllamaAndModel(STANDARD_MODEL);

@@ -6,7 +6,7 @@ import { z } from 'zod';
 // 추론 노드: 문제 분석 및 도구 선택
 export const reasoningNode = graphNode({
   name: 'reasoning',
-  description: 'Decides if and which tools to use',
+  metadata: { description: 'Decides if and which tools to use' },
   async execute(state: ReflectiveState): Promise<ReflectiveState> {
     console.log(`\n🧠 REASONING (남은 시도: ${state.retry})`);
 

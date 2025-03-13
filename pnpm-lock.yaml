@@ -146,8 +146,8 @@ importers:
         specifier: ^4.0.11
         version: 4.0.11
       ts-edge:
-        specifier: ^0.0.16
-        version: 0.0.16
+        specifier: ^0.0.18
+        version: 0.0.18
       ts-safe:
         specifier: ^0.0.4
         version: 0.0.4
@@ -2558,8 +2558,8 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
-  ts-edge@0.0.16:
-    resolution: {integrity: sha512-ddfyeCq1lv1QF/CBSlMP7LqiyarKU6B0Lt02U2UzdDe9WZb9C+VOOdb9sqAv1YxEp7fpmQtv16Js3dJh3SYX9A==}
+  ts-edge@0.0.18:
+    resolution: {integrity: sha512-d/L1+nkhAeSbc2lXjSWQTkHLSmoMp+q4s6lf4WiOUSkacMve+a8BtmtZ9NIsOtNtDgLU4y5/dkUxelYPvc34tQ==}
     engines: {node: '>=14.0.0'}
 
   ts-edge@0.0.3:
@@ -5057,7 +5057,7 @@ snapshots:
     dependencies:
       typescript: 5.7.3
 
-  ts-edge@0.0.16:
+  ts-edge@0.0.18:
     dependencies:
       ts-safe: 0.0.2
 

@@ -5,7 +5,7 @@ import { models, pureLLM } from '@examples/models';
 // 출력 노드
 export const outputNode = graphNode({
   name: 'output',
-  description: 'Generates final user-friendly response',
+  metadata: { description: 'Generates final user-friendly response' },
   async execute(state: ReflectiveState): Promise<string> {
     console.log(`\n✨ OUTPUT`);
 
