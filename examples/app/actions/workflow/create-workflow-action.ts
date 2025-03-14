@@ -1,4 +1,4 @@
-import { GraphEvent, GraphNodeStartEvent, GraphNodeStructure, GraphNodeWithOutOutput, GraphRegistry } from 'ts-edge';
+import { GraphEvent, GraphNodeEndEvent, GraphNodeStartEvent, GraphNodeStructure, GraphRegistry } from 'ts-edge';
 import { Locker } from '@shared/util';
 import { safe } from 'ts-safe';
 
@@ -6,12 +6,12 @@ type Data = { label: string; value: any };
 
 const normalize = (data: any) => JSON.parse(JSON.stringify(data));
 
-type Parser<T> = (original: T) => Data[];
+type Parser<T> = (event: T) => Data[];
 
 type AgenticActionOptions<Workflow> = {
   graphDirection: 'TB' | 'LR';
-  inputViewParser: Workflow extends GraphRegistry<infer Node> ? Parser<GraphNodeWithOutOutput<Node>> : never;
-  outputViewParser: Workflow extends GraphRegistry<infer Node> ? Parser<Node> : never;
+  inputViewParser: Workflow extends GraphRegistry<infer Node> ? Parser<GraphNodeStartEvent<Node>> : never;
+  outputViewParser: Workflow extends GraphRegistry<infer Node> ? Parser<GraphNodeEndEvent<Node>> : never;
 };
 
 export type WorkflowStatus = 'ready' | 'running' | 'success' | 'fail' | 'stop';
@@ -104,13 +104,12 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
       threadId: event.threadId,
       startedAt: event.startedAt,
       endedAt: isStart(event) ? undefined : event.endedAt,
-      input: inputParser(event.node),
-      output: outputParser(isStart(event) ? {} : normalize(event.node)),
+      input: inputParser(event),
+      output: outputParser(isStart(event) ? {} : normalize(event)),
       name: event.node.name,
       id: event.nodeExecutionId,
       duration: calcDuration(event),
     };
-    console.log(nodeThread.name, nodeThread.duration);
     const prev = threads.find((v) => v.id == event.nodeExecutionId);
     if (prev) Object.assign(prev, nodeThread);
     else threads.push(nodeThread);

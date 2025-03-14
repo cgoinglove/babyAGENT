@@ -18,4 +18,5 @@ const answer = await inquirer.prompt([
 agent.run({
   prompt: answer.input,
   tools: [stupidCalculator, stupidSearchEngine, stupidStringCounter],
+  debug: true,
 });

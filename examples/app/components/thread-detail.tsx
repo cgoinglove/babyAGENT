@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { NodeThread, WorkflowStatus } from '@ui/actions/workflow/create-workflow-action';
 import clsx from 'clsx';
-import { ArrowLeft, Clock, CheckCircle, XCircle, AlertCircle, Pause, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle, XCircle, AlertCircle, Pause } from 'lucide-react';
 
 // Update the type definition to include potential description
 type ExtendedNodeThread = NodeThread & {
@@ -11,13 +10,6 @@ type ExtendedNodeThread = NodeThread & {
 };
 
 export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeThread; goBack: () => void }) {
-  // State for collapsible sections
-  const [inputCollapsed, setInputCollapsed] = useState(false);
-  const [outputCollapsed, setOutputCollapsed] = useState(false);
-
-  // Thread might have a description in metadata
-  const description = thread.description;
-
   // Helper function to format timestamp
   const formatTimestamp = (timestamp?: number) => {
     if (!timestamp) return '-';
@@ -54,11 +46,30 @@ export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeT
     }
   };
 
+  // Get all process items (inputs and outputs) in a flat structure
+  const getAllProcessItems = () => {
+    const inputItems = thread.input.map((item) => ({
+      label: item.label,
+      value: item.value,
+    }));
+
+    const outputItems = thread.output
+      ? thread.output.map((item) => ({
+          label: item.label,
+          value: item.value,
+        }))
+      : [];
+
+    return [...inputItems, ...outputItems];
+  };
+
+  const processItems = getAllProcessItems();
+
   return (
     <div className="w-full h-full bg-white p-6 overflow-auto">
       {/* Header with back button */}
-      <div className="flex items-center mb-8">
-        <button onClick={goBack} className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Go back">
+      <div className="flex items-center mb-8 cursor-pointer" onClick={goBack}>
+        <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Go back">
           <ArrowLeft className="h-5 w-5 text-gray-700" />
         </button>
         <div className="ml-4">
@@ -97,76 +108,27 @@ export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeT
         </div>
       </div>
 
-      {/* Input data */}
-      <div className="mb-8">
-        <div
-          className="flex items-center cursor-pointer p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-          onClick={() => setInputCollapsed(!inputCollapsed)}
-        >
-          {inputCollapsed ? (
-            <ChevronRight className="h-5 w-5 text-gray-500 mr-2" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-gray-500 mr-2" />
-          )}
-          <h2 className="text-lg font-medium text-gray-900">Input</h2>
-          <span className="ml-2 text-sm text-gray-500 bg-white px-2 py-1 rounded-full">
-            {thread.input.length} items
-          </span>
-        </div>
-
-        {!inputCollapsed && thread.input.length > 0 ? (
-          <div className="space-y-4 mt-4 pl-2">
-            {thread.input.map((data, index) => (
-              <div
-                key={`input-${index}`}
-                className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <p className="text-sm font-medium text-gray-700 mb-2">{data.label}</p>
-                <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm whitespace-pre-wrap break-all max-h-96">
-                  {formatValue(data.value)}
-                </pre>
-              </div>
-            ))}
-          </div>
-        ) : !inputCollapsed && thread.input.length === 0 ? (
-          <p className="text-gray-500 italic mt-3 pl-10">No input data available</p>
-        ) : null}
-      </div>
-
-      {/* Output data */}
+      {/* Process Flow (Combined Input/Output as a simple flat list) */}
       <div>
-        <div
-          className="flex items-center cursor-pointer p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-          onClick={() => setOutputCollapsed(!outputCollapsed)}
-        >
-          {outputCollapsed ? (
-            <ChevronRight className="h-5 w-5 text-gray-500 mr-2" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-gray-500 mr-2" />
-          )}
-          <h2 className="text-lg font-medium text-gray-900">Output</h2>
-          <span className="ml-2 text-sm text-gray-500 bg-white px-2 py-1 rounded-full">
-            {thread.output ? thread.output.length : 0} items
-          </span>
-        </div>
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Process Items</h2>
 
-        {!outputCollapsed && thread.output && thread.output.length > 0 ? (
-          <div className="space-y-4 mt-4 pl-2">
-            {thread.output.map((data, index) => (
+        {processItems.length > 0 ? (
+          <div className="space-y-4">
+            {processItems.map((item, index) => (
               <div
-                key={`output-${index}`}
+                key={`process-${index}`}
                 className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
               >
-                <p className="text-sm font-medium text-gray-700 mb-2">{data.label}</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{item.label}</p>
                 <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm whitespace-pre-wrap break-all max-h-96">
-                  {formatValue(data.value)}
+                  {formatValue(item.value)}
                 </pre>
               </div>
             ))}
           </div>
-        ) : !outputCollapsed && (!thread.output || thread.output.length === 0) ? (
-          <p className="text-gray-500 italic mt-3 pl-10">No output data available</p>
-        ) : null}
+        ) : (
+          <p className="text-gray-500 italic">No process data available</p>
+        )}
       </div>
     </div>
   );

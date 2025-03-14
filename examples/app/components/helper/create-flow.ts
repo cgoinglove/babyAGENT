@@ -6,6 +6,7 @@ import { Node, Edge, MarkerType } from '@xyflow/react';
 export type FlowNode = NodeStructure & {
   status: NodeThread['status'];
   duration?: NodeThread['duration'];
+  masterStatus: NodeThread['status'];
 };
 
 export type FlowEdge = {};
@@ -52,6 +53,7 @@ export const createFlow = (
       data: {
         ...node,
         status: 'ready',
+        masterStatus: 'ready',
       },
     };
   });

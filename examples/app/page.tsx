@@ -116,7 +116,7 @@ export default function WorkFlow() {
         {selectedThread ? (
           <ThreadDetail goBack={setSelectedThread.bind(null, undefined)} thread={selectedThread} />
         ) : structures.length ? (
-          <WorkFlowVisual structures={structures} nodeStatusByName={nodeStatusByName} />
+          <WorkFlowVisual structures={structures} nodeStatusByName={nodeStatusByName} workflowStatus={workflowStatus} />
         ) : null}
       </div>
     </div>

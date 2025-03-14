@@ -9,31 +9,24 @@ export enum ReflectiveStage {
   COMPLETED = 'completed',
 }
 
-// 간소화된 기록 타입
-export interface Record {
-  stage: ReflectiveStage;
-  thought?: string;
-  tool: {
-    name?: string;
-    input?: string;
-    output?: string;
-  };
-  reflection?: string;
-}
-
 export const ReflectiveStateSchema = z.object({
   userPrompt: z.string(), // 유저 질문
   tools: z.array(z.any()) as z.ZodArray<z.ZodType<Tool>>, // 사용가능한 툴
   stage: z.nativeEnum(ReflectiveStage).default(ReflectiveStage.REASONING), //현 상태
   history: z.array(
     z.object({
-      stage: z.nativeEnum(ReflectiveStage),
-      thought: z.string().optional(),
+      error: z.string().optional(),
+      reasoing_prompt: z.string().optional(),
+      reasoing_output: z.string().optional(),
       tool: z.object({ name: z.string().optional(), input: z.string().optional(), output: z.string().optional() }),
-      reflection: z.string().optional(),
+      reflection_prompt: z.string().optional(),
+      reflection_output: z.string().optional(),
+      output_prompt: z.string().optional(),
+      output_output: z.string().optional(),
     })
   ),
   retry: z.number().default(5),
+  debug: z.boolean().default(false).optional(),
 });
 
 export type ReflectiveState = z.infer<typeof ReflectiveStateSchema>;

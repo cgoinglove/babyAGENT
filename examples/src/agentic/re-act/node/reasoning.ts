@@ -16,9 +16,7 @@ export const reasoningNode = graphNode({
       thought: z.string(),
       toolName: z.enum(['', ...state.tools.map((v) => v.name)] as [string, ...string[]]),
     });
-
-    const response = await llm(
-      `당신은 ReACT(Reasoning + Acting) 에이전트로, 사용자 질문에 대해 논리적으로 생각하고 필요시 도구를 사용합니다.
+    const prompt = `당신은 ReACT(Reasoning + Acting) 에이전트로, 사용자 질문에 대해 논리적으로 생각하고 필요시 도구를 사용합니다.
 
 사용자 질문: "${state.userPrompt}"
 
@@ -33,12 +31,13 @@ ${toolsDescription}
 {
   "thought": "질문 분석 및 도구 사용 여부에 대한 간결한 추론",
   "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 \"\")"
-}`,
-      ReasoningSchema
-    );
-    console.log(`\n\n🧠 REASONING NODE\n`);
-    console.log(`생각    : ${response.thought}`);
-    const newState = { ...state, thought: response.thought };
+}`;
+    const response = await llm(prompt, ReasoningSchema);
+    if (state.debug) {
+      console.log(`\n\n🧠 REASONING NODE\n`);
+      console.log(`생각    : ${response.thought}`);
+    }
+    const newState = { ...state, prompt, thought: response.thought };
 
     if (response.toolName) {
       // 도구 사용함

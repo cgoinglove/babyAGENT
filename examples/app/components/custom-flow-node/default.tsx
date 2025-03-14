@@ -10,6 +10,7 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
   return (
     <div
       className={clsx(
+        data.masterStatus != 'running' ? '' : ['running', 'fail'].includes(data.status) ? '' : 'opacity-50',
         data.status == 'fail' && 'ring-red-500 bg-red-50',
         data.status == 'running' && 'ring-sub-text',
         'hover:bg-hover-color relative px-4 py-3 rounded-lg ring shadow-sm min-w-[200px] max-w-[300px] bg-background transition-all'
@@ -43,7 +44,6 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
 
       <div className="flex items-center flex-col w-full">
         <div className="flex-1 font-semibold text-lg truncate text-center">{data.name}</div>
-        {/* <p className="text-xs text-sub-text py-2">{data.metadata.description}</p> */}
       </div>
     </div>
   );

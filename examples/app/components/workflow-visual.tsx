@@ -15,13 +15,14 @@ type NodeStatus = {
 interface Props {
   structures: NodeStructure[];
   nodeStatusByName: Record<string, NodeStatus>;
+  workflowStatus: NodeThread['status'];
 }
 
 const nodeTypes = {
   customDefault: CustomDefaultNode,
 };
 
-export default function WorkFlowVisual({ structures, nodeStatusByName }: Props) {
+export default function WorkFlowVisual({ structures, nodeStatusByName, workflowStatus }: Props) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<FlowNode>>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<FlowEdge>>([]);
 
@@ -32,13 +33,13 @@ export default function WorkFlowVisual({ structures, nodeStatusByName }: Props) 
   }, [structures]);
 
   useEffect(() => {
-    const isDiff = (a: NodeStatus, b: NodeStatus) => {
-      return a.duration != b.duration || a.status != b.status;
+    const isDiff = (a: any, b: any) => {
+      return a.duration != b.duration || a.status != b.status || a.masterStatus != b.masterStatus;
     };
     setNodes((nodes) => {
       return nodes.map((node) => {
-        const prev = { duration: node.data.duration, status: node.data.status };
-        const next = nodeStatusByName[node.data.name] ?? { status: 'ready' };
+        const prev = { duration: node.data.duration, status: node.data.status, masterStatus: node.data.masterStatus };
+        const next = { ...nodeStatusByName[node.data.name], masterStatus: workflowStatus };
         if (isDiff(prev, next)) {
           return {
             ...node,
@@ -48,7 +49,7 @@ export default function WorkFlowVisual({ structures, nodeStatusByName }: Props) 
         return node;
       });
     });
-  }, [nodeStatusByName]);
+  }, [nodeStatusByName, workflowStatus]);
 
   return (
     <div className="w-full h-full">

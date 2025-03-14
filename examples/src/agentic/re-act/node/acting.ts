@@ -5,7 +5,7 @@ import { models, objectLLM } from '@examples/models';
 export const actingNode = graphNode({
   name: '🛠️ acting',
   async execute(state: ReactState): Promise<ReactState> {
-    const llm = objectLLM(models.stupid);
+    const llm = objectLLM(models.custom.standard);
 
     // search Tool
     const tool = state.tools.find((tool) => tool.name == state.action.tool);
@@ -37,10 +37,12 @@ export const actingNode = graphNode({
       input: stringify(toolInput),
       output: stringify(result),
     };
-    console.log(`\n\n🛠️ ACTING NODE\n`);
-    console.log(`도구    : ${newState.action.tool}`);
-    console.log(`input  : ${newState.action.input}`);
-    console.log(`output : ${newState.action.output}`);
+    if (state.debug) {
+      console.log(`\n\n🛠️ ACTING NODE\n`);
+      console.log(`도구    : ${newState.action.tool}`);
+      console.log(`input  : ${newState.action.input}`);
+      console.log(`output : ${newState.action.output}`);
+    }
     return newState;
   },
 });
