@@ -18,7 +18,7 @@ export const createFlow = (
     height?: number;
   }
 ): { nodes: Node<FlowNode>[]; edges: Edge<FlowEdge>[] } => {
-  const { height, width } = { height: 100, width: 150, ...options };
+  const { height, width } = { height: 200, width: 400, ...options };
   const g = new graphlib.Graph();
   g.setGraph({ rankdir: 'TB' });
   g.setDefaultEdgeLabel(() => ({}));

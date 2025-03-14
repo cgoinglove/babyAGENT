@@ -8,14 +8,7 @@ type Props = NodeProps<Node<FlowNode>>;
 
 export default function CustomDefaultNode({ data, isConnectable }: Props) {
   return (
-    <div
-      className={clsx(
-        data.masterStatus != 'running' ? '' : ['running', 'fail'].includes(data.status) ? '' : 'opacity-50',
-        data.status == 'fail' && 'ring-red-500 bg-red-50',
-        data.status == 'running' && 'ring-sub-text',
-        'hover:bg-hover-color relative px-4 py-3 rounded-lg ring shadow-sm min-w-[200px] max-w-[300px] bg-background transition-all'
-      )}
-    >
+    <div className={clsx(data.status == 'running' && 'wobbling-square', 'relative')}>
       {data.isStartNode && (
         <div className="shadow-xl shadow-default-text/30 diagonal-arrow absolute flex left-[-125px] top-[-30px] bg-default-text text-soft-background px-4 py-2 rounded-full">
           <h2 className="font-bold text-xs">
@@ -42,8 +35,21 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
         />
       ) : null}
 
-      <div className="flex items-center flex-col w-full">
-        <div className="flex-1 font-semibold text-lg truncate text-center">{data.name}</div>
+      <div
+        className={clsx(
+          data.status == 'fail'
+            ? 'ring-red-400/40 bg-red-50'
+            : data.status == 'running'
+              ? 'bg-soft-background'
+              : data.masterStatus == 'running'
+                ? 'bg-background opacity-60'
+                : 'bg-background',
+          'hover:opacity-80 flex items-center justify-center rounded-3xl ring-16 shadow-lg w-[150px] h-[150px] transition-all'
+        )}
+      >
+        <div className={clsx(data.status == 'fail' && 'text-red-400', 'w-ful font-semibold truncate text-center')}>
+          {data.name}
+        </div>
       </div>
     </div>
   );

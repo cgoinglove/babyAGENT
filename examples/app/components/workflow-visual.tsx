@@ -52,7 +52,7 @@ export default function WorkFlowVisual({ structures, nodeStatusByName, workflowS
   }, [nodeStatusByName, workflowStatus]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full bg-hover-color">
       <ReactFlow
         nodeTypes={nodeTypes}
         nodes={nodes}

@@ -56,3 +56,24 @@
 .diagonal-arrow {
   animation: diagonalBounce 2.5s ease-in-out infinite;
 }
+
+@keyframes squareWobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(1deg) scale(1.01);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-1deg) scale(0.99);
+  }
+}
+
+.wobbling-square {
+  animation: squareWobble 2s ease-in-out infinite;
+  display: inline-block;
+}
