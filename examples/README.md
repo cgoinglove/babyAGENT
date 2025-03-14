@@ -30,6 +30,9 @@ pnpm example
 
 # 특정 예제 바로 실행
 pnpm example re-act
+
+# agent ui
+pnpm ui
 ```
 
 ## 테스트용 도구
