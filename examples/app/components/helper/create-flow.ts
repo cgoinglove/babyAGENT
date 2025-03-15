@@ -60,17 +60,25 @@ export const createFlow = (
 
   const edges: Edge<FlowEdge>[] = structures.flatMap((node) => {
     if (node.edge) {
-      return node.edge.name.map((target) => ({
-        data: node,
-        selectable: true,
-        id: `${node.name}-${target}`,
-        source: node.name,
-        target,
-        animated: node.edge?.type == 'dynamic',
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        },
-      }));
+      return node.edge.name.map(
+        (target) =>
+          ({
+            data: node,
+            selectable: true,
+            id: `${node.name}-${target}`,
+            source: node.name,
+            target,
+            animated: node.edge?.type == 'dynamic',
+            style: {
+              strokeWidth: 2,
+              stroke: '#FF0072',
+            },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: '#FF0072',
+            },
+          }) as Edge<FlowEdge>
+      );
     }
     return [];
   });

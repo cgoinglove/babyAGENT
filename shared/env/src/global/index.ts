@@ -1,3 +1,7 @@
-import { load } from "../load";
+import path from 'path';
+import { load } from '../load';
+import { fileURLToPath } from 'url';
 
-load(__dirname);
+const currentPaths = path.dirname(fileURLToPath(import.meta.url));
+
+load(currentPaths);

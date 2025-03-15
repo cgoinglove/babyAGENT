@@ -1,3 +1,4 @@
+import '@shared/env/global';
 import { ollama } from 'ollama-ai-provider';
 import { xai } from '@ai-sdk/xai';
 import { openai } from '@ai-sdk/openai';
