@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import path, { join } from 'node:path';
+import { join } from 'node:path';
 import { load } from '../src/load';
-import { fileURLToPath } from 'node:url';
 
 describe('unit test', () => {
   const testRoot = join(process.cwd(), `test-env-${new Date().toString()}`);
