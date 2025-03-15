@@ -22,27 +22,28 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
           </h2>
         </div>
       )}
+      {!data.edge && (
+        <div className="absolute flex left-0 bottom-[-45px] w-full justify-center">
+          <h2 className="shadow-xl shadow-default-text/30 bg-default-text text-soft-background px-4 py-2 rounded-full font-bold text-xs text-center">
+            End Point
+          </h2>
+        </div>
+      )}
 
-      <Handle
-        id="top"
-        type="target"
-        position={Position.Top}
-        isConnectable={isConnectable}
-        className="w-2 h-2 bg-gray-400"
-      />
+      <Handle id="top" type="target" position={Position.Top} isConnectable={isConnectable} className="opacity-0" />
 
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
         isConnectable={isConnectable}
-        className="w-2 h-2 bg-gray-400"
+        className="opacity-0"
       />
 
-      <Handle type="source" position={Position.Left} id="left" />
-      <Handle type="target" position={Position.Left} id="left" />
-      <Handle type="source" position={Position.Right} id="right" />
-      <Handle type="target" position={Position.Right} id="right" />
+      <Handle type="source" position={Position.Left} id="left" className="opacity-0" />
+      <Handle type="target" position={Position.Left} id="left" className="opacity-0" />
+      <Handle type="source" position={Position.Right} id="right" className="opacity-0" />
+      <Handle type="target" position={Position.Right} id="right" className="opacity-0" />
 
       <div
         className={clsx(
@@ -53,7 +54,7 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
               : data.masterStatus != 'running'
                 ? 'bg-background'
                 : 'bg-background opacity-50',
-          'hover:opacity-80 flex items-center justify-center rounded-3xl ring-16 shadow-lg w-[150px] h-[150px] transition-all'
+          'hover:opacity-80 flex items-center justify-center rounded-3xl ring-2 shadow-lg w-[150px] h-[150px] transition-all'
         )}
       >
         <div className={clsx(data.status == 'fail' && 'text-red-400', 'w-ful font-semibold truncate text-center')}>

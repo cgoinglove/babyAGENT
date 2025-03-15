@@ -93,11 +93,9 @@ export const createFlow = (
           type: 'smoothstep',
           style: {
             strokeWidth: 2,
-            stroke: '#FF0072',
           },
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: '#FF0072',
           },
         } as Edge<FlowEdge>;
       });
