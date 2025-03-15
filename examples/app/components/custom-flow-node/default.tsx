@@ -7,6 +7,8 @@ import { MousePointer2 } from 'lucide-react';
 type Props = NodeProps<Node<FlowNode>>;
 
 export default function CustomDefaultNode({ data, isConnectable }: Props) {
+  // const isEndNode = !data.outEdgeCount && data.inEdgeCount;
+
   return (
     <div className={clsx(data.status == 'running' && 'wobbling-square', 'relative')}>
       {data.isStartNode && (
@@ -41,9 +43,9 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
             ? 'ring-red-400/40 bg-red-50'
             : data.status == 'running'
               ? 'bg-soft-background'
-              : data.masterStatus == 'running'
-                ? 'bg-background opacity-60'
-                : 'bg-background',
+              : data.masterStatus != 'running'
+                ? 'bg-background'
+                : 'bg-background opacity-50',
           'hover:opacity-80 flex items-center justify-center rounded-3xl ring-16 shadow-lg w-[150px] h-[150px] transition-all'
         )}
       >

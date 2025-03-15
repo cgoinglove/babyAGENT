@@ -10,7 +10,7 @@
     "check-types": "tsc --noEmit",
     "check-model": "pnpm tsx src/helper/__check__.ts",
     "postinstall": "pnpm run check-model",
-    "ui": "next dev --turbopack --port 5001"
+    "ui": "pnpm check-model && next dev --turbopack --port 5001"
   },
   "dependencies": {
     "@xyflow/react": "^12.4.4",

@@ -50,6 +50,7 @@ export default function ThreadCard({ thread, onClick, isLast, isSelected }: Prop
           className={clsx(
             thread.status == 'running' && 'ring-sub-text animate-pulse',
             thread.status == 'fail' && 'ring-red-400/60',
+            thread.status == 'success' && 'ring-green-400/60',
             'rounded-full ring p-1.5'
           )}
         >
@@ -81,7 +82,7 @@ function StatusIcon({ status }: { status: NodeThread['status'] }) {
     case 'running':
       return <RefreshCw className="animate-spin h-2.5 w-2.5" />;
     case 'success':
-      return <Check className="h-2.5 w-2.5 stroke-3 stroke-sub-text/60" />;
+      return <Check className="h-2.5 w-2.5 stroke-3 stroke-green-400/60" />;
     case 'fail':
       return <X className="h-2.5 w-2.5 stroke-3 stroke-red-400/60" />;
     case 'stop':

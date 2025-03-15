@@ -104,6 +104,8 @@ export default function WorkFlow() {
         isLock={workflowStatus === 'stop'}
         start={start}
         stop={stop}
+        title={agentsInfo[index].name}
+        description={agentsInfo[index].description}
         resume={resume}
         threads={threads}
         onSelectThread={setSelectedThread}

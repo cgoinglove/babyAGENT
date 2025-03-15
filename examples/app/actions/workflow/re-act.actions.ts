@@ -9,10 +9,9 @@ import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 const agent = createReactAgent();
 
 const api = createWorkflowActions(agent, 'input', {
-  inputViewParser() {
-    return [];
-  },
-  outputViewParser({ node, isOk, error }) {
+  dataViewParser(event) {
+    if (event.eventType == 'NODE_START') return [];
+    const { node, isOk, error } = event;
     if (isOk)
       switch (node.name) {
         case 'input':

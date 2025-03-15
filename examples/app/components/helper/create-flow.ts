@@ -7,6 +7,7 @@ export type FlowNode = NodeStructure & {
   status: NodeThread['status'];
   duration?: NodeThread['duration'];
   masterStatus: NodeThread['status'];
+  level: number;
 };
 
 export type FlowEdge = {};
@@ -52,6 +53,7 @@ export const createFlow = (
       },
       data: {
         ...node,
+        level: dagreNode.rank || 0,
         status: 'ready',
         masterStatus: 'ready',
       },

@@ -20,7 +20,7 @@ import { NodeStructure, NodeThread, WorkflowStatus } from '@ui/actions/workflow/
 
 const agents: {
   name: string;
-  description?: string;
+  description: string;
   stopAction(): Promise<void>;
   resumeAction(): Promise<void>;
   startAction(prompt: string): Promise<void>;
@@ -33,6 +33,8 @@ const agents: {
 }[] = [
   {
     name: 'Reasoing Acting',
+    description:
+      'An agent that solves problems step by step through iterative reasoning and action, systematically handling complex tasks.',
     fetchStatusAction: reActAgentGetStatusAction,
     fetchStructureAction: reActAgentGetStructuresAction,
     startAction: reActAgentStartAction,
@@ -42,6 +44,8 @@ const agents: {
   },
   {
     name: 'Self Reflection',
+    description:
+      'An agent that analyzes and improves its own thought processes, continuously evaluating results to find better solutions.',
     fetchStatusAction: reflectionAgentGetStatusAction,
     fetchStructureAction: reflectionAgentGetStructuresAction,
     startAction: reflectionAgentStartAction,

@@ -17,6 +17,8 @@ interface Props {
   onChangeIndex(index: number);
   agents: { name: string; description?: string }[];
   curreuntIndex: number;
+  title: string;
+  description: string;
 }
 
 export default function ThreadSidebar({
@@ -31,6 +33,8 @@ export default function ThreadSidebar({
   agents,
   onChangeIndex,
   curreuntIndex,
+  description,
+  title,
 }: Props) {
   const [prompt, setPrompt] = useState('');
 
@@ -81,8 +85,9 @@ export default function ThreadSidebar({
               />
             ))
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <h4 className="font-bold text-5xl animate-fade-in-slow">Try Example</h4>
+            <div className="w-full h-full flex items-center justify-center flex-col px-12 animate-fade-in">
+              <h4 className="font-bold text-5xl mb-4">{title}</h4>
+              <h4 className="text-xl text-default-text/80">📌 {description}</h4>
             </div>
           )}
         </div>

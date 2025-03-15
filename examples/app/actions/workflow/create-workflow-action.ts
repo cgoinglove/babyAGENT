@@ -9,9 +9,9 @@ const normalize = (data: any) => JSON.parse(JSON.stringify(data));
 type Parser<T> = (event: T) => Data[];
 
 type AgenticActionOptions<Workflow> = {
-  graphDirection: 'TB' | 'LR';
-  inputViewParser: Workflow extends GraphRegistry<infer Node> ? Parser<GraphNodeStartEvent<Node>> : never;
-  outputViewParser: Workflow extends GraphRegistry<infer Node> ? Parser<GraphNodeEndEvent<Node>> : never;
+  dataViewParser: Workflow extends GraphRegistry<infer Node>
+    ? Parser<GraphNodeStartEvent<Node> | GraphNodeEndEvent<Node>>
+    : never;
 };
 
 export type WorkflowStatus = 'ready' | 'running' | 'success' | 'fail' | 'stop';
@@ -76,14 +76,9 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
     await locker.wait();
   });
 
-  const inputParser = (v: any) =>
+  const dataViewParser = (v: any) =>
     safe(v)
-      .map(options?.inputViewParser ?? (() => [{ label: 'value', value: v }]))
-      .map(normalize)
-      .orElse([{ label: 'value', value: v }]);
-  const outputParser = (v: any) =>
-    safe(v)
-      .map(options?.outputViewParser ?? (() => [{ label: 'value', value: v }]))
+      .map(options?.dataViewParser ?? (() => [{ label: 'value', value: v }]))
       .map(normalize)
       .orElse([{ label: 'value', value: v }]);
 
@@ -99,20 +94,23 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
       runner.unsubscribe(updateThread);
       return;
     }
-    const nodeThread: NodeThread = {
+    const nodeThread: Partial<NodeThread> = {
       status: isStart(event) ? 'running' : event.isOk ? 'success' : 'fail',
       threadId: event.threadId,
       startedAt: event.startedAt,
       endedAt: isStart(event) ? undefined : event.endedAt,
-      input: inputParser(event),
-      output: outputParser(isStart(event) ? {} : normalize(event)),
       name: event.node.name,
       id: event.nodeExecutionId,
       duration: calcDuration(event),
     };
+    if (isStart(event)) {
+      nodeThread.input = dataViewParser(event);
+    } else {
+      nodeThread.output = dataViewParser(event);
+    }
     const prev = threads.find((v) => v.id == event.nodeExecutionId);
     if (prev) Object.assign(prev, nodeThread);
-    else threads.push(nodeThread);
+    else threads.push(nodeThread as NodeThread);
   };
   const reset = () => {
     locker.unLock();

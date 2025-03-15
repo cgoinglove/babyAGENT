@@ -21,7 +21,7 @@ export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeT
     if (typeof value === 'object') {
       try {
         return JSON.stringify(value, null, 2);
-      } catch (error) {
+      } catch {
         return String(value);
       }
     }
