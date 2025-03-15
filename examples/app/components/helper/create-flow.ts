@@ -1,16 +1,17 @@
 import { NodeStructure, NodeThread } from '@ui/actions/workflow/create-workflow-action';
-import { graphlib, layout } from '@dagrejs/dagre';
 
 import { Node, Edge, MarkerType } from '@xyflow/react';
+import { calculateRanker } from './circulate-ranker';
 
 export type FlowNode = NodeStructure & {
   status: NodeThread['status'];
   duration?: NodeThread['duration'];
   masterStatus: NodeThread['status'];
   level: number;
+  index: number;
 };
 
-export type FlowEdge = {};
+export type FlowEdge = Record<string, any>;
 
 export const createFlow = (
   structures: NodeStructure[],
@@ -19,71 +20,90 @@ export const createFlow = (
     height?: number;
   }
 ): { nodes: Node<FlowNode>[]; edges: Edge<FlowEdge>[] } => {
-  const { height, width } = { height: 200, width: 400, ...options };
-  const g = new graphlib.Graph();
-  g.setGraph({ rankdir: 'TB' });
-  g.setDefaultEdgeLabel(() => ({}));
+  const { height, width } = { height: 250, width: 250, ...options };
 
-  structures.forEach((node) => {
-    g.setNode(node.name, {
-      width,
-      height,
-      label: node.name,
-    });
-  });
+  const sourceToTargets = structures.reduce((acc, node) => {
+    const targets = node.edge?.name || [];
+    acc[node.name] = targets;
+    return acc;
+  }, {});
 
-  structures.forEach((node) => {
-    if (node.edge) {
-      node.edge.name.forEach((target) => {
-        g.setEdge(node.name, target);
-      });
-    }
-  });
+  const levelByNode = calculateRanker(sourceToTargets);
 
-  layout(g);
+  const levelCount = Object.values(levelByNode).reduce((acc, node) => {
+    acc[node.level] = (acc[node.level] || 0) + 1;
+    return acc;
+  }, {});
 
-  const nodes: Node<FlowNode>[] = structures.map((node) => {
-    const dagreNode = g.node(node.name);
-    return {
-      id: node.name,
-      type: 'customDefault',
-      position: {
-        x: dagreNode.x - width / 2,
-        y: dagreNode.y - height / 2,
-      },
-      data: {
-        ...node,
-        level: dagreNode.rank || 0,
-        status: 'ready',
-        masterStatus: 'ready',
-      },
-    };
-  });
+  const nodes = structures.reduce(
+    (acc, node) => {
+      const xIndex = levelByNode[node.name].index - (levelCount[levelByNode[node.name].level] - 1) / 2 + 1;
+
+      const flowNode: Node<FlowNode> = {
+        id: node.name,
+        type: 'customDefault',
+        position: {
+          y: levelByNode[node.name].level * height,
+          x: xIndex * width,
+        },
+        data: {
+          ...node,
+          level: levelByNode[node.name].level,
+          index: levelByNode[node.name].index,
+          status: 'ready',
+          masterStatus: 'ready',
+        },
+      };
+      acc[node.name] = flowNode;
+      return acc;
+    },
+    {} as Record<string, Node<FlowNode>>
+  );
 
   const edges: Edge<FlowEdge>[] = structures.flatMap((node) => {
     if (node.edge) {
-      return node.edge.name.map(
-        (target) =>
-          ({
-            data: node,
-            selectable: true,
-            id: `${node.name}-${target}`,
-            source: node.name,
-            target,
-            animated: node.edge?.type == 'dynamic',
-            style: {
-              strokeWidth: 2,
-              stroke: '#FF0072',
-            },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: '#FF0072',
-            },
-          }) as Edge<FlowEdge>
-      );
+      return node.edge.name.map((target) => {
+        let sourceHandle: string | undefined = undefined;
+        let targetHandle: string | undefined = undefined;
+
+        const isSameLevel = levelByNode[node.name].level == levelByNode[target].level;
+        const isToUpperLevel = levelByNode[node.name].level > levelByNode[target].level;
+        if (isSameLevel) {
+          if (levelByNode[node.name].index < levelByNode[target].index) {
+            sourceHandle = 'right';
+            targetHandle = 'left';
+          } else {
+            sourceHandle = 'left';
+            targetHandle = 'right';
+          }
+        } else if (isToUpperLevel) {
+          sourceHandle = 'right';
+          targetHandle = 'right';
+        }
+
+        return {
+          data: node,
+          selectable: true,
+          id: `${node.name}-${target}`,
+          source: node.name,
+          sourceHandle,
+          targetHandle,
+          target,
+          animated: node.edge?.type == 'dynamic',
+          type: 'smoothstep',
+          style: {
+            strokeWidth: 2,
+            stroke: '#FF0072',
+          },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: '#FF0072',
+          },
+        } as Edge<FlowEdge>;
+      });
     }
     return [];
   });
 
-  return { nodes, edges };
+  return { nodes: Object.values(nodes), edges };
 };

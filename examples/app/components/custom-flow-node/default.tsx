@@ -7,8 +7,6 @@ import { MousePointer2 } from 'lucide-react';
 type Props = NodeProps<Node<FlowNode>>;
 
 export default function CustomDefaultNode({ data, isConnectable }: Props) {
-  // const isEndNode = !data.outEdgeCount && data.inEdgeCount;
-
   return (
     <div className={clsx(data.status == 'running' && 'wobbling-square', 'relative')}>
       {data.isStartNode && (
@@ -25,17 +23,26 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
         </div>
       )}
 
-      {data.inEdgeCount ? (
-        <Handle type="target" position={Position.Top} isConnectable={isConnectable} className="w-2 h-2 bg-gray-400" />
-      ) : null}
-      {data.outEdgeCount ? (
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          isConnectable={isConnectable}
-          className="w-2 h-2 bg-gray-400"
-        />
-      ) : null}
+      <Handle
+        id="top"
+        type="target"
+        position={Position.Top}
+        isConnectable={isConnectable}
+        className="w-2 h-2 bg-gray-400"
+      />
+
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        isConnectable={isConnectable}
+        className="w-2 h-2 bg-gray-400"
+      />
+
+      <Handle type="source" position={Position.Left} id="left" />
+      <Handle type="target" position={Position.Left} id="left" />
+      <Handle type="source" position={Position.Right} id="right" />
+      <Handle type="target" position={Position.Right} id="right" />
 
       <div
         className={clsx(

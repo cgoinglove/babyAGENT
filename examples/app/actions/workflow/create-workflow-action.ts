@@ -29,10 +29,7 @@ export type NodeThread = {
 };
 
 export type NodeStructure = GraphNodeStructure & {
-  toMergeNode: boolean;
   isStartNode: boolean;
-  inEdgeCount: number;
-  outEdgeCount: number;
 };
 
 const isStart = (e: GraphEvent): e is GraphNodeStartEvent => e.eventType == 'NODE_START';
@@ -50,26 +47,9 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
 
   const runner = workflow.compile(start);
 
-  const { inEdgeCountMap, mergeNodeList } = runner.getStructure().reduce(
-    (prev, node) => {
-      if (node.isMergeNode) prev.mergeNodeList.push(node.name);
-      node.edge?.name.forEach((out) => {
-        prev.inEdgeCountMap[out] = (prev.inEdgeCountMap[out] ?? 0) + 1;
-      });
-      return prev;
-    },
-    {
-      mergeNodeList: [] as string[],
-      inEdgeCountMap: {} as Record<string, number>,
-    }
-  );
-
   const structure: NodeStructure[] = runner.getStructure().map((node) => ({
     ...node,
-    inEdgeCount: inEdgeCountMap[node.name] ?? 0,
-    outEdgeCount: node.edge?.name.length || 0,
     isStartNode: node.name == start,
-    toMergeNode: mergeNodeList.includes(node.name),
   }));
 
   runner.use(async () => {
