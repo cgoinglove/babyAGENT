@@ -13,10 +13,11 @@
     "ui": "pnpm check-model && next dev --turbopack --port 5001"
   },
   "dependencies": {
+    "@shared/env": "workspace:*",
+    "@shared/util": "workspace:*",
     "@xyflow/react": "^12.4.4",
     "clsx": "^2.1.1",
-    "@shared/env": "workspace:*",
-    "@shared/util": "workspace:*"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@ai-sdk/openai": "^1.1.13",
