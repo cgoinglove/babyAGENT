@@ -1,7 +1,10 @@
+'use server';
+
 import { createRewooWorkflow } from '@examples/agentic/rewoo';
 import { createWorkflowActions } from './create-workflow-action';
 import { stupidCalculator } from '@examples/tools/stupid-calculator';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
+import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 
 const agent = createRewooWorkflow();
 
@@ -25,7 +28,7 @@ const api = createWorkflowActions(agent, 'start', {
             },
             {
               label: 'prompt',
-              value: node.output.plan.plan_prompt!,
+              value: node.output.plan.prompt!,
             },
             {
               label: 'plan_tokens',
@@ -92,7 +95,7 @@ const api = createWorkflowActions(agent, 'start', {
 export async function rewooStartAction(prompt: string) {
   api.start({
     prompt,
-    tools: [stupidCalculator, stupidSearchEngine, stupidSearchEngine],
+    tools: [stupidCalculator, stupidSearchEngine, stupidStringCounter],
   });
 }
 

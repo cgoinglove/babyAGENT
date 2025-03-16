@@ -13,12 +13,12 @@ export const rewooStartNode = graphNode({
       planIndex: 0,
       plan: {
         tokens: 0,
-        plan_prompt: undefined as unknown as string,
+        prompt: [],
         list: [],
       },
       integration: {
         tokens: 0,
-        prompt: '',
+        prompt: [],
         answer: '',
       },
       debug,

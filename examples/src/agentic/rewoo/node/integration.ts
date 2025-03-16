@@ -46,7 +46,7 @@ export const rewooIntegrationNode = graphNode({
       console.log(`\n\n🧐 INTEGRATION NODE PROMPT\n`);
       console.dir(prompt, { depth: null });
     }
-    state.integration.prompt = JSON.stringify(prompt, null, 2);
+    state.integration.prompt = prompt;
 
     const response = await generateText({
       model: models.custom.standard,

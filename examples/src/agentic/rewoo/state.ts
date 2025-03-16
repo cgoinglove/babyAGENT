@@ -1,11 +1,12 @@
 import { ToolCall } from '@interface';
+import { CoreMessage } from 'ai';
 
 type RewooPlan = {
   id: string; // 계획 아이디
   plan: string; // 계획 내용
   step: 'ready' | 'completed' | 'acting' | 'reasoning';
   reasoning?: {
-    prompt: string; // 이유 질문
+    prompt: CoreMessage[]; // 이유 질문
     answer: string; // 이유 답변
     tokens: number; // 이유 토큰 수
   };
@@ -23,12 +24,12 @@ export type RewooState = {
   tools: ToolCall[]; // 사용 가능한 툴
   planIndex: number; // 계획 인덱스
   plan: {
-    plan_prompt: string; // 계획 질문
+    prompt: CoreMessage[]; // 계획 질문
     list: RewooPlan[]; // 계획들
     tokens: number; // 계획 토큰 수
   };
   integration: {
-    prompt: string; // 통합 질문
+    prompt: CoreMessage[]; // 통합 질문
     answer: string; // 통합 답변
     tokens: number; // 통합 토큰 수
   };

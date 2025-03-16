@@ -32,7 +32,7 @@ export const rewooPlanningNode = graphNode({
     의존성이 없는 독립적인 작업은 병렬로 실행될 수 있음을 고려하세요.`;
 
     const plan: RewooState['plan'] = {
-      plan_prompt: '',
+      prompt: [],
       list: [],
       tokens: 0,
     };
@@ -41,7 +41,7 @@ export const rewooPlanningNode = graphNode({
       { role: 'system', content: system },
       { role: 'user', content: userPrompt },
     ];
-    plan.plan_prompt = JSON.stringify(messages, null, 2);
+    plan.prompt = messages;
 
     if (debug) {
       console.log(`PLANNING_NODE: ✨ ...계획 생각중`);
@@ -71,7 +71,7 @@ export const rewooPlanningNode = graphNode({
       dependency: plan.dependency,
       step: 'ready',
       reasoning: {
-        prompt: '',
+        prompt: [],
         answer: '',
         tokens: 0,
       },

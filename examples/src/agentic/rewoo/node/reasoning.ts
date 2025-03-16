@@ -48,7 +48,7 @@ export const rewooReasoningNode = graphNode({
     }
 
     plan.reasoning = {
-      prompt: JSON.stringify(prompt, null, 2),
+      prompt,
       answer: '',
       tokens: 0,
     };

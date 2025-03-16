@@ -3,6 +3,7 @@
 import { NodeThread, WorkflowStatus } from '@ui/actions/workflow/create-workflow-action';
 import clsx from 'clsx';
 import { ArrowLeft, Clock, CheckCircle, XCircle, AlertCircle, Pause } from 'lucide-react';
+import JsonView from './shared/json-view';
 
 // Update the type definition to include potential description
 type ExtendedNodeThread = NodeThread & {
@@ -120,9 +121,7 @@ export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeT
                 className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <p className="text-sm font-medium text-gray-700 mb-2">{item.label}</p>
-                <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm whitespace-pre-wrap break-all max-h-96">
-                  {formatValue(item.value)}
-                </pre>
+                <JsonView data={item.value} />
               </div>
             ))}
           </div>

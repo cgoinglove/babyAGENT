@@ -17,6 +17,7 @@ export const rewooCheckPlanNode = graphNode({
       console.dir(plan, { depth: null });
     }
     state.planIndex++;
+
     return state;
   },
 });

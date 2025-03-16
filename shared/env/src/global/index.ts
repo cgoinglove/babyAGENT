@@ -3,7 +3,6 @@
 if (process.env.NODE_ENV != 'production') {
   console.log(`LOAD GLOBAL ENV`);
 }
-console.log(typeof window, 'typeof window');
 import path from 'path';
 import { load } from '../load';
 import { fileURLToPath } from 'url';

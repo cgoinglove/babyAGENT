@@ -18,10 +18,10 @@ import {
   reActAgentReset,
 } from '@ui/actions/workflow/re-act.actions';
 import { NodeStructure, NodeThread, WorkflowStatus } from '@ui/actions/workflow/create-workflow-action';
-import { rewooResetAction, rewooResumeAction, rewooStopAction } from '@ui/actions/workflow/rewoo.action';
-import { rewooStartAction } from '@ui/actions/workflow/rewoo.action';
-import { rewooGetStructuresAction } from '@ui/actions/workflow/rewoo.action';
-import { rewooGetStatusAction } from '@ui/actions/workflow/rewoo.action';
+import { rewooResetAction, rewooResumeAction, rewooStopAction } from '@ui/actions/workflow/rewoo.actions';
+import { rewooStartAction } from '@ui/actions/workflow/rewoo.actions';
+import { rewooGetStructuresAction } from '@ui/actions/workflow/rewoo.actions';
+import { rewooGetStatusAction } from '@ui/actions/workflow/rewoo.actions';
 
 const agents: {
   name: string;
