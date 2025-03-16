@@ -14,16 +14,16 @@
   },
   "dependencies": {
     "@xyflow/react": "^12.4.4",
-    "clsx": "^2.1.1"
+    "clsx": "^2.1.1",
+    "@shared/env": "workspace:*",
+    "@shared/util": "workspace:*"
   },
   "devDependencies": {
     "@ai-sdk/openai": "^1.1.13",
     "@ai-sdk/xai": "^1.1.12",
     "@dagrejs/dagre": "^1.1.4",
-    "@shared/env": "workspace:*",
     "@shared/eslint-config": "workspace:*",
     "@shared/typescript-config": "workspace:*",
-    "@shared/util": "workspace:*",
     "@tailwindcss/postcss": "^4.0.11",
     "@types/node": "^22.13.8",
     "@types/react": "19.0.8",

@@ -1,6 +1,6 @@
 import { type ZodType } from 'zod';
 
-export interface Tool<Input = unknown, Output = unknown> {
+export interface ToolCall<Input = any, Output = any> {
   name: string;
   description: string;
   execute: (param: Input) => Output;

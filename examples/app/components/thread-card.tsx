@@ -1,3 +1,4 @@
+'use client';
 import { NodeThread } from '@ui/actions/workflow/create-workflow-action';
 import clsx from 'clsx';
 import { Check, Pause, RefreshCw, X } from 'lucide-react';

@@ -75,6 +75,12 @@ importers:
 
   examples:
     dependencies:
+      '@shared/env':
+        specifier: workspace:*
+        version: link:../shared/env
+      '@shared/util':
+        specifier: workspace:*
+        version: link:../shared/util
       '@xyflow/react':
         specifier: ^12.4.4
         version: 12.4.4(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -91,18 +97,12 @@ importers:
       '@dagrejs/dagre':
         specifier: ^1.1.4
         version: 1.1.4
-      '@shared/env':
-        specifier: workspace:*
-        version: link:../shared/env
       '@shared/eslint-config':
         specifier: workspace:*
         version: link:../shared/eslint-config
       '@shared/typescript-config':
         specifier: workspace:*
         version: link:../shared/typescript-config
-      '@shared/util':
-        specifier: workspace:*
-        version: link:../shared/util
       '@tailwindcss/postcss':
         specifier: ^4.0.11
         version: 4.0.11

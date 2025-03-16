@@ -23,26 +23,26 @@ const api = createWorkflowActions(agent, 'input', {
           case 'reasoning': {
             return [
               { label: 'prompt', value: latestHistory.reasoing_prompt },
-              { label: 'answer', value: latestHistory.reasoing_output },
+              { label: 'answer', value: latestHistory.reasoing_answer },
             ];
           }
           case 'reflecting': {
             return [
               { label: 'prompt', value: latestHistory.reflection_prompt },
-              { label: 'answer', value: latestHistory.reflection_output },
+              { label: 'answer', value: latestHistory.reflection_answer },
             ];
           }
           case 'acting': {
             return [
-              { label: 'tool', value: latestHistory.tool.name },
-              { label: 'tool input', value: latestHistory.tool.input },
-              { label: 'tool output', value: latestHistory.tool.output },
+              { label: 'tool', value: latestHistory.tool?.name },
+              { label: 'tool input', value: latestHistory.tool?.input },
+              { label: 'tool output', value: latestHistory.tool?.output },
             ];
           }
           case 'output': {
             return [
               { label: 'prompt', value: latestHistory.output_prompt },
-              { label: 'answer', value: latestHistory.output_output },
+              { label: 'answer', value: latestHistory.output_answer },
             ];
           }
         }

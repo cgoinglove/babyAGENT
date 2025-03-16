@@ -29,24 +29,24 @@ export const reasoningNode = graphNode({
 
     const prompt = `당신은 Self-Reflection 능력을 갖춘 AI 에이전트입니다. 문제를 분석하고 도구 사용 여부를 결정하세요.
 
-사용자 질문: "${state.userPrompt}"
+    사용자 질문: "${state.userPrompt}"
 
-사용 가능한 도구:
-${toolsDesc}
+    사용 가능한 도구:
+    ${toolsDesc}
 
-${historyText ? `이전 작업: ${historyText}` : ''}
-${historyText ? '이전 작업 내용을 바탕으로 다음 단계를 결정하세요. 아직 해결되지 않은 부분이 있는지 확인하세요.' : ''}
+    ${historyText ? `이전 작업: ${historyText}` : ''}
+    ${historyText ? '이전 작업 내용을 바탕으로 다음 단계를 결정하세요. 아직 해결되지 않은 부분이 있는지 확인하세요.' : ''}
 
-도구 사용 결정:
-1. 도구가 필요하다면: 이전 사용된 도구와 도구의 결과를 바탕으로 현 단계에 가장 적합한 도구를 하나만 선택하세요, 
-2. 도구가 필요없다면: 직접 답변할 수 있는 이유를 설명하세요
+    도구 사용 결정:
+    1. 도구가 필요하다면: 이전 사용된 도구와 도구의 결과를 바탕으로 현 단계에 가장 적합한 도구를 하나만 선택하세요, 
+    2. 도구가 필요없다면: 직접 답변할 수 있는 이유를 설명하세요
 
-다음 형식으로 응답하세요:
-{
-  "thought": "질문 분석 및 도구 사용 여부와 도구를 사용하게 된다면 어떤 도구를 어떤 값으로 사용할지에 대한 계획",
-  "needTool": true/false,
-  "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 \"\")"
-}`;
+    다음 형식으로 응답하세요:
+    {
+      "thought": "질문 분석 및 도구 사용 여부와 도구를 사용하게 된다면 어떤 도구를 어떤 값으로 사용할지에 대한 계획",
+      "needTool": true/false,
+      "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 \"\")"
+    }`;
 
     const newHistory: ReflectiveState['history'][number] = {
       reasoing_prompt: prompt,
@@ -61,13 +61,13 @@ ${historyText ? '이전 작업 내용을 바탕으로 다음 단계를 결정하
       console.log(`생각: ${response.thought}`);
     }
 
-    newHistory.reasoing_output = response.thought;
+    newHistory.reasoing_answer = response.thought;
 
     // 다음 단계 결정
     if (response.needTool && response.toolName) {
       // 도구 선택 정보 저장
       state.stage = ReflectiveStage.ACTING;
-      newHistory.tool.name = response.toolName;
+      newHistory.tool!.name = response.toolName;
     } else {
       // 도구 불필요시 바로 반성 단계로
       state.stage = ReflectiveStage.REFLECTING;

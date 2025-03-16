@@ -1,4 +1,5 @@
 'use client';
+
 import {
   reflectionAgentGetStatusAction,
   reflectionAgentGetStructuresAction,
@@ -17,10 +18,15 @@ import {
   reActAgentReset,
 } from '@ui/actions/workflow/re-act.actions';
 import { NodeStructure, NodeThread, WorkflowStatus } from '@ui/actions/workflow/create-workflow-action';
+import { rewooResetAction, rewooResumeAction, rewooStopAction } from '@ui/actions/workflow/rewoo.action';
+import { rewooStartAction } from '@ui/actions/workflow/rewoo.action';
+import { rewooGetStructuresAction } from '@ui/actions/workflow/rewoo.action';
+import { rewooGetStatusAction } from '@ui/actions/workflow/rewoo.action';
 
 const agents: {
   name: string;
   description: string;
+  defaultPrompt: string;
   stopAction(): Promise<void>;
   resumeAction(): Promise<void>;
   startAction(prompt: string): Promise<void>;
@@ -33,6 +39,7 @@ const agents: {
 }[] = [
   {
     name: 'Reasoing Acting',
+    defaultPrompt: 'strorrrberrry 에서 r 의 개수를 알려줄래?',
     description:
       'An agent that solves problems step by step through iterative reasoning and action, systematically handling complex tasks.',
     fetchStatusAction: reActAgentGetStatusAction,
@@ -44,6 +51,7 @@ const agents: {
   },
   {
     name: 'Self Reflection',
+    defaultPrompt: '125* 125* 222 는 뭐야?',
     description:
       'An agent that analyzes and improves its own thought processes, continuously evaluating results to find better solutions.',
     fetchStatusAction: reflectionAgentGetStatusAction,
@@ -52,6 +60,18 @@ const agents: {
     stopAction: reflectionAgentStopAction,
     resumeAction: reflectionAgentResumeAction,
     resetAction: reflectionAgentReset,
+  },
+  {
+    name: 'Rewoo',
+    description:
+      'An agent that solves problems step by step through iterative reasoning and action, systematically handling complex tasks.',
+    defaultPrompt: '124812*15125-35의 값과 strorrrberrry 에서 r 의 개수를 알려줄래?',
+    fetchStatusAction: rewooGetStatusAction,
+    fetchStructureAction: rewooGetStructuresAction,
+    startAction: rewooStartAction,
+    stopAction: rewooStopAction,
+    resumeAction: rewooResumeAction,
+    resetAction: rewooResetAction,
   },
 ];
 

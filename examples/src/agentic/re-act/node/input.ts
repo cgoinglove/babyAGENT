@@ -1,16 +1,16 @@
 import { graphNode } from 'ts-edge';
-import { ReactState } from '../state';
-import { Tool } from '@interface';
+import { ReActState } from '../state';
+import { ToolCall } from '@interface';
 
 export const inputNode = graphNode({
   name: 'input',
-  execute(input: { prompt: string; tools: Tool<any, any>[]; debug?: boolean }) {
-    const initialState: ReactState = {
+  execute(input: { prompt: string; tools: ToolCall<any, any>[]; debug?: boolean }) {
+    const initialState: ReActState = {
       userPrompt: input.prompt,
       tools: input.tools,
-      thought: '',
-      action: {},
-      debug: input.debug,
+      thought_prompt: '',
+      thought_answer: '',
+      debug: input.debug ?? false,
     };
     if (input.debug) {
       console.log(`\n\n📝 INPUT NODE\n`);

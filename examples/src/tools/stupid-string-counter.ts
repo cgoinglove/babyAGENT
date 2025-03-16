@@ -1,12 +1,15 @@
 import z from 'zod';
-import { Tool } from '@interface';
+import { ToolCall } from '@interface';
 
 const StringCounterSchema = z.object({
   text: z.string().describe('분석할 전체 텍스트'),
   searchString: z.string().describe('찾을 문자열 (단일 문자, 단어, 또는 문장)'),
 });
 
-export const stupidStringCounter: Tool<z.infer<typeof StringCounterSchema>, { count: number; positions: number[] }> = {
+export const stupidStringCounter: ToolCall<
+  z.infer<typeof StringCounterSchema>,
+  { count: number; positions: number[] }
+> = {
   name: 'StringCounter',
   description: '텍스트에서 특정 문자열(단일 문자, 단어, 또는 문장)이 포함된 횟수와 위치를 분석합니다.',
   schema: StringCounterSchema,

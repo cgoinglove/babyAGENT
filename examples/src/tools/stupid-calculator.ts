@@ -1,5 +1,5 @@
 import z from 'zod';
-import { Tool } from '@interface';
+import { ToolCall } from '@interface';
 
 const CalculatorSchema = z.object({
   operation: z.enum(['add', 'subtract', 'multiply', 'divide']),
@@ -7,9 +7,9 @@ const CalculatorSchema = z.object({
   b: z.number(),
 });
 
-export const stupidCalculator: Tool<z.infer<typeof CalculatorSchema>, number> = {
+export const stupidCalculator: ToolCall<z.infer<typeof CalculatorSchema>, number> = {
   name: 'Calculator',
-  description: '계산이 가능한 계산기 입니다.',
+  description: 'a (add|subtract|multiply|divide) b = ?  2개의 인자를 받아서 계산을 합니다.',
   schema: CalculatorSchema,
   execute: ({ a, b, operation }) => {
     switch (operation) {

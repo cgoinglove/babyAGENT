@@ -1,18 +1,18 @@
 import { graphNode } from 'ts-edge';
 import { ReflectiveStage, ReflectiveState } from '../state';
-import { Tool } from '@interface';
+import { ToolCall } from '@interface';
 
 // 입력 노드: 초기 상태 설정
 export const inputNode = graphNode({
   name: 'input',
-  execute(input: { prompt: string; tools: Tool<any, any>[]; debug?: boolean }) {
+  execute(input: { prompt: string; tools: ToolCall<any, any>[]; debug?: boolean }) {
     const initialState: ReflectiveState = {
       userPrompt: input.prompt,
       tools: input.tools,
       stage: ReflectiveStage.REASONING,
       history: [],
       retry: 5,
-      debug: input.debug,
+      debug: Boolean(input.debug),
     };
     if (input.debug) {
       console.log(`\n\n📝 INPUT NODE\n`);

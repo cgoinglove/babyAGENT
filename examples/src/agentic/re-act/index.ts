@@ -13,7 +13,7 @@ const workflow = createGraph()
   .dynamicEdge('🧠 reasoning', {
     possibleTargets: ['output', '🛠️ acting'],
     router: (state) => {
-      return state.action.tool ? '🛠️ acting' : 'output';
+      return state.action?.tool ? '🛠️ acting' : 'output';
     },
   })
   .edge('🛠️ acting', 'output');

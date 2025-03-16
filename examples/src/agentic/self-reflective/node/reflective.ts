@@ -57,7 +57,7 @@ export const reflectingNode = graphNode({
       console.log(`이유 : ${response.reason}`);
     }
 
-    latestHistory.reflection_output = response.reflection + (response.reason || '');
+    latestHistory.reflection_answer = response.reflection + (response.reason || '');
 
     // 다음 단계 결정
     if (response.needMoreWork && state.retry > 0) {

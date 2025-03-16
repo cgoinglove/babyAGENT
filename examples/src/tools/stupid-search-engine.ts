@@ -1,5 +1,5 @@
 import z from 'zod';
-import { Tool } from '@interface';
+import { ToolCall } from '@interface';
 
 // 1. 가상 검색 엔진 도구
 export const SearchEngineSchema = z.object({
@@ -7,7 +7,7 @@ export const SearchEngineSchema = z.object({
   limit: z.number().default(3).optional(),
 });
 
-export const stupidSearchEngine: Tool<
+export const stupidSearchEngine: ToolCall<
   z.infer<typeof SearchEngineSchema>,
   Array<{ title: string; snippet: string; url: string }>
 > = {

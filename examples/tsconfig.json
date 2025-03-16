@@ -13,6 +13,7 @@
   ],
 
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "plugins": [
       {
         "name": "next"

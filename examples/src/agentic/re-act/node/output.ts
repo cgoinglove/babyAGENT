@@ -1,5 +1,5 @@
 import { graphNode } from 'ts-edge';
-import { ReactState } from '../state';
+import { ReActState } from '../state';
 import { models, pureLLM } from '@examples/models';
 
 // 간결한 출력 프롬프트 생성 함수
@@ -35,13 +35,13 @@ ${toolName ? `도구 사용 사실을 자연스럽게 언급하세요 (예: "검
 
 export const outputNode = graphNode({
   name: 'output',
-  async execute(state: ReactState): Promise<ReactState> {
+  async execute(state: ReActState): Promise<ReActState> {
     const llm = pureLLM(models.custom.standard);
     const userPrompt = state.userPrompt;
-    const toolName = state.action.tool; // optional
-    const toolInput = state.action.input; // optional
-    const toolOutput = state.action.output; // optional
-    const lastThought = state.thought;
+    const toolName = state.action?.tool; // optional
+    const toolInput = state.action?.input; // optional
+    const toolOutput = state.action?.output; // optional
+    const lastThought = state.thought_answer;
 
     const prompt = outputPrompt({ userPrompt, toolName, toolInput, toolOutput, lastThought });
     const answer = await llm(prompt);
@@ -50,7 +50,7 @@ export const outputNode = graphNode({
       console.log(`최종답변 : ${answer}`);
     }
     state.output_prompt = prompt;
-    state.output_output = answer;
+    state.output_answer = answer;
     return state;
   },
 });

@@ -27,24 +27,24 @@ const api = createWorkflowActions(agent, 'input', {
           ];
         case '🧠 reasoning': {
           return [
-            { label: 'prompt', value: node.output.prompt },
-            { label: 'answer', value: node.output.thought },
+            { label: 'prompt', value: node.output.thought_prompt },
+            { label: 'answer', value: node.output.thought_answer },
           ];
         }
         case 'output':
           return [
             { label: 'prompt', value: node.output.output_prompt },
-            { label: 'answer', value: node.output.output_output },
+            { label: 'answer', value: node.output.output_answer },
           ];
         case '🛠️ acting':
           return [
             {
               label: '도구 input',
-              value: node.output.action.input,
+              value: node.output.action?.input,
             },
             {
               label: '도구 output',
-              value: node.output.action.output,
+              value: node.output.action?.output,
             },
           ];
         default:

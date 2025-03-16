@@ -37,7 +37,7 @@ export const outputNode = graphNode({
       throw e;
     });
 
-    latestHistory.output_output = answer;
+    latestHistory.output_answer = answer;
 
     if (state.debug) {
       console.log(`최종답변: ${answer}`);

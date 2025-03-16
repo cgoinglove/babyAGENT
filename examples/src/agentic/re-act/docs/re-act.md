@@ -11,7 +11,7 @@ ReAct(Reasoning + Acting)는 LLM 기반 에이전트가 사고(Reasoning)와 행
 ### Input
 
 - 사용자 질문과 사용 가능한 도구 정보를 수집
-- 초기 상태(ReactState) 설정 및 워크플로우 시작점
+- 초기 상태(ReActState) 설정 및 워크플로우 시작점
 
 ### Reasoning
 

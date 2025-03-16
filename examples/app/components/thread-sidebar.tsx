@@ -1,9 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { CirclePause, Play, Send } from 'lucide-react';
 import { NodeThread } from '@ui/actions/workflow/create-workflow-action';
 import ThreadCard from './thread-card';
-import SelectBox from './shared/select-box';
 
 interface Props {
   onSelectThread: (thread?: NodeThread) => void;
@@ -14,9 +13,6 @@ interface Props {
   start(prompt: string);
   stop();
   resume();
-  onChangeIndex(index: number);
-  agents: { name: string; description?: string }[];
-  curreuntIndex: number;
   title: string;
   description: string;
 }
@@ -30,12 +26,10 @@ export default function ThreadSidebar({
   selectedThread,
   onSelectThread,
   threads,
-  agents,
-  onChangeIndex,
-  curreuntIndex,
   description,
   title,
-}: Props) {
+  children,
+}: PropsWithChildren<Props>) {
   const [prompt, setPrompt] = useState('');
 
   const handleSendMessage = () => {
@@ -61,16 +55,7 @@ export default function ThreadSidebar({
 
   return (
     <div className="w-full md:w-1/3 border-r h-screen flex flex-col">
-      <div className="border-b p-4 flex items-center">
-        <div className=" flex items-center gap-1 text-sub-text mr-auto">
-          <span className="text-default-text font-bold">babyAGENT</span> examples
-        </div>
-        <SelectBox
-          items={agents.map((v, i) => ({ label: v.name, value: i }))}
-          onChange={onChangeIndex}
-          value={curreuntIndex}
-        />
-      </div>
+      {children}
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col h-full">
@@ -108,7 +93,6 @@ export default function ThreadSidebar({
             <button
               className="p-1.5 m-1 rounded-full hover:bg-hover-color flex items-center justify-center cursor-pointer"
               onClick={!isRunning ? handleSendMessage : isLock ? resume : stop}
-              disabled={!prompt.trim()}
             >
               {!isRunning ? <Send size={14} /> : isLock ? <Play size={14} /> : <CirclePause size={14} />}
             </button>

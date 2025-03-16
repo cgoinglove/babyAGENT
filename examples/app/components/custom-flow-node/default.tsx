@@ -1,3 +1,4 @@
+'use client';
 import { Handle, Node, Position, type NodeProps } from '@xyflow/react';
 
 import clsx from 'clsx';
