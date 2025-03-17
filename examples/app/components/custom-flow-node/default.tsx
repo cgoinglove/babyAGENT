@@ -2,15 +2,16 @@
 import { Handle, Node, Position, type NodeProps } from '@xyflow/react';
 
 import clsx from 'clsx';
-import { FlowNode } from '../helper/create-flow';
+import { FlowNode } from '@ui/helper/create-flow';
 import { MousePointer2 } from 'lucide-react';
+import { memo } from 'react';
 
 type Props = NodeProps<Node<FlowNode>>;
 
-export default function CustomDefaultNode({ data, isConnectable }: Props) {
+export default memo(function CustomDefaultNode({ data, isConnectable }: Props) {
   return (
     <div className={clsx(data.status == 'running' && 'wobbling-square', 'relative')}>
-      {data.isStartNode && (
+      {data.level == 0 && (
         <div className="shadow-xl shadow-default-text/30 diagonal-arrow absolute flex left-[-125px] top-[-30px] bg-default-text text-soft-background px-4 py-2 rounded-full">
           <h2 className="font-bold text-xs">
             Start Here. 😉
@@ -51,7 +52,7 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
           data.status == 'fail'
             ? 'ring-red-400/40 bg-red-50'
             : data.status == 'running'
-              ? 'bg-soft-background'
+              ? 'bg-default-text text-soft-background ring-12'
               : data.masterStatus != 'running'
                 ? 'bg-background'
                 : 'bg-background opacity-50',
@@ -64,4 +65,4 @@ export default function CustomDefaultNode({ data, isConnectable }: Props) {
       </div>
     </div>
   );
-}
+});

@@ -87,9 +87,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      zustand:
-        specifier: ^5.0.3
-        version: 5.0.3(@types/react@19.0.8)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
     devDependencies:
       '@ai-sdk/openai':
         specifier: ^1.1.13
@@ -152,8 +149,8 @@ importers:
         specifier: ^4.0.11
         version: 4.0.11
       ts-edge:
-        specifier: ^0.1.3
-        version: 0.1.3
+        specifier: ^0.1.4
+        version: 0.1.4
       ts-safe:
         specifier: ^0.0.4
         version: 0.0.4
@@ -2572,8 +2569,8 @@ packages:
     resolution: {integrity: sha512-vYJzrifrHb/h67jX/dFHRx0idv09OAYlAs9S5KVmk9xufyvdrf4/yaBI6Xkh0dNB7WvNqU3Mz81bVcKaD6gaAg==}
     engines: {node: '>=14.0.0'}
 
-  ts-edge@0.1.3:
-    resolution: {integrity: sha512-zg5W9u/WXWN2MJIOOwMC072lNCGzQ5uOt18/YgdnVILej1VSqdWbFGFzq8A/AK6gEEdRiFWV56sfgb85kFgdbA==}
+  ts-edge@0.1.4:
+    resolution: {integrity: sha512-rLp2T2qgMhvukxZ6GfduVaMhb0Ug/L67rZ5YKDq/rkh75vdguXc/O/YFxvNigxcFThWPf/8yRni4h9D/T4FNxw==}
     engines: {node: '>=14.0.0'}
 
   ts-safe@0.0.2:
@@ -2819,24 +2816,6 @@ packages:
       immer:
         optional: true
       react:
-        optional: true
-
-  zustand@5.0.3:
-    resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}
-    engines: {node: '>=12.20.0'}
-    peerDependencies:
-      '@types/react': '>=18.0.0'
-      immer: '>=9.0.6'
-      react: '>=18.0.0'
-      use-sync-external-store: '>=1.2.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
-      use-sync-external-store:
         optional: true
 
 snapshots:
@@ -5092,7 +5071,7 @@ snapshots:
       ts-safe: 0.0.2
       zod: 3.24.2
 
-  ts-edge@0.1.3:
+  ts-edge@0.1.4:
     dependencies:
       ts-safe: 0.0.4
 
@@ -5355,9 +5334,3 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.8
       react: 19.0.0
-
-  zustand@5.0.3(@types/react@19.0.8)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
-    optionalDependencies:
-      '@types/react': 19.0.8
-      react: 19.0.0
-      use-sync-external-store: 1.4.0(react@19.0.0)

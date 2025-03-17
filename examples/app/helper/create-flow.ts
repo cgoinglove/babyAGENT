@@ -1,11 +1,11 @@
-import { NodeStructure, NodeThread } from '@ui/actions/workflow/create-workflow-action';
+import { NodeThread } from '@ui/interface';
 
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { calculateRanker } from './circulate-ranker';
+import { GraphNodeStructure } from 'ts-edge';
 
-export type FlowNode = NodeStructure & {
+export type FlowNode = GraphNodeStructure & {
   status: NodeThread['status'];
-  duration?: NodeThread['duration'];
   masterStatus: NodeThread['status'];
   level: number;
   index: number;
@@ -14,7 +14,7 @@ export type FlowNode = NodeStructure & {
 export type FlowEdge = Record<string, any>;
 
 export const createFlow = (
-  structures: NodeStructure[],
+  structures: GraphNodeStructure[],
   options?: {
     width?: number;
     height?: number;
@@ -90,7 +90,7 @@ export const createFlow = (
           targetHandle,
           target,
           animated: node.edge?.type == 'dynamic',
-          type: 'smoothstep',
+          // type: 'smoothstep',
           style: {
             strokeWidth: 2,
           },

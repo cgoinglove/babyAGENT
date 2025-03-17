@@ -1,12 +1,11 @@
 import { graphStateNode } from 'ts-edge';
 import { ReActState } from '../state';
-import { models, objectLLM } from '@examples/models';
+import { models } from '@examples/models';
 import { streamObject } from 'ai';
 
 export const actingNode = graphStateNode({
   name: '🛠️ acting',
   async execute(state: ReActState, { stream }) {
-    const llm = objectLLM(models.custom.standard);
     const action = state.action!;
     const tool = state.tools.find((tool) => tool.name == action?.tool)!;
 

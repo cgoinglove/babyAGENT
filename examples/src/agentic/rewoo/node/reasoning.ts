@@ -1,7 +1,7 @@
 import { models } from '@examples/models';
 import { RewooState } from '../state';
 import { graphStateNode } from 'ts-edge';
-import { CoreMessage, generateObject, streamObject } from 'ai';
+import { CoreMessage, streamObject } from 'ai';
 import { z } from 'zod';
 import { parsePlans } from './helper';
 export const rewooReasoningNode = graphStateNode({

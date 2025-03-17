@@ -1,6 +1,6 @@
 import { graphStateNode } from 'ts-edge';
 import { ReflectiveStage, ReflectiveState } from '../state';
-import { models, objectLLM } from '@examples/models';
+import { models } from '@examples/models';
 import { z } from 'zod';
 import { getHistoryText } from './helper';
 import { streamObject } from 'ai';

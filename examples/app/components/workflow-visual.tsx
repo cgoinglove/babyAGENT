@@ -3,26 +3,22 @@ import React, { useEffect } from 'react';
 
 import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, Node, Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { NodeStructure, NodeThread } from '@ui/actions/workflow/create-workflow-action';
+import { WorkflowStatus } from '@ui/interface';
 import CustomDefaultNode from './custom-flow-node/default';
-import { createFlow, FlowEdge, FlowNode } from './helper/create-flow';
-
-type NodeStatus = {
-  status: NodeThread['status'];
-  duration: NodeThread['duration'];
-};
-
+import { FlowEdge, FlowNode, createFlow } from '@ui/helper/create-flow';
+import { GraphNodeStructure } from 'ts-edge';
 interface Props {
-  structures: NodeStructure[];
-  nodeStatusByName: Record<string, NodeStatus>;
-  workflowStatus: NodeThread['status'];
+  structures: GraphNodeStructure[];
+  nodeStatusByName: Record<string, WorkflowStatus>;
+  workflowStatus: WorkflowStatus;
+  onSelectNode: (name: string) => void;
 }
 
 const nodeTypes = {
   customDefault: CustomDefaultNode,
 };
 
-export default function WorkFlowVisual({ structures, nodeStatusByName, workflowStatus }: Props) {
+export default function WorkFlowVisual({ onSelectNode, structures, nodeStatusByName, workflowStatus }: Props) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<FlowNode>>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<FlowEdge>>([]);
 
@@ -38,8 +34,8 @@ export default function WorkFlowVisual({ structures, nodeStatusByName, workflowS
     };
     setNodes((nodes) => {
       return nodes.map((node) => {
-        const prev = { duration: node.data.duration, status: node.data.status, masterStatus: node.data.masterStatus };
-        const next = { ...nodeStatusByName[node.data.name], masterStatus: workflowStatus };
+        const prev = { status: node.data.status, masterStatus: node.data.masterStatus };
+        const next = { status: nodeStatusByName[node.data.name], masterStatus: workflowStatus };
         if (isDiff(prev, next)) {
           return {
             ...node,
@@ -54,6 +50,9 @@ export default function WorkFlowVisual({ structures, nodeStatusByName, workflowS
   return (
     <div className="w-full h-full bg-hover-color">
       <ReactFlow
+        onNodeClick={(_, node) => {
+          onSelectNode(node.data.name);
+        }}
         nodeTypes={nodeTypes}
         nodes={nodes}
         edges={edges}

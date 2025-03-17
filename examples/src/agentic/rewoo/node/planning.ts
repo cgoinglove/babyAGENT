@@ -1,6 +1,6 @@
 import { graphStateNode } from 'ts-edge';
 import { RewooState } from '../state';
-import { CoreMessage, generateObject, streamObject } from 'ai';
+import { CoreMessage, streamObject } from 'ai';
 import { models } from '@examples/models';
 import { z } from 'zod';
 export const rewooPlanningNode = graphStateNode({

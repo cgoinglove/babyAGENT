@@ -10,8 +10,11 @@ const workflow = createStateGraph(sampleStore)
   .addNode(sampleANode)
   .addNode(sampleBNode)
   .addNode(sampleEndNode)
-  .dynamicEdge('start', (state) => {
-    return state.nextStage === 'A' ? 'A' : 'B';
+  .dynamicEdge('start', {
+    possibleTargets: ['A', 'B'],
+    router: (state) => {
+      return state.nextStage === 'A' ? 'A' : 'B';
+    },
   })
   .edge('A', 'End')
   .edge('B', 'End');

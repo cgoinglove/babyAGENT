@@ -24,10 +24,11 @@ export type ReflectiveState = {
     };
     reflection_prompt?: string;
     reflection_answer?: string;
-    output_prompt?: string;
-    output_answer?: string;
   }[];
+  output_prompt?: string;
+  output_answer?: string;
   retry: number;
+  setOutput: (prompt: string, answer: string) => void;
   setStage: (stage: ReflectiveStage) => void;
   pushHistory: (history: ReflectiveState['history'][number]) => void;
   getLatestHistory: () => ReflectiveState['history'][number];
@@ -40,6 +41,9 @@ export const reflectiveStore = graphStore<ReflectiveState>((set, get) => ({
   stage: ReflectiveStage.REASONING,
   history: [],
   retry: 5,
+  output_prompt: '',
+  output_answer: '',
+  setOutput: (prompt: string, answer: string) => set({ output_prompt: prompt, output_answer: answer }),
   setStage: (stage: ReflectiveStage) => set({ stage }),
   pushHistory: (history: ReflectiveState['history'][number]) =>
     set((prev) => {

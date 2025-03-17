@@ -17,7 +17,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ agent: 
   if (action == 'start') {
     const { prompt } = await req.json();
 
-    const stream = api.start(prompt);
+    const stream = api.start({
+      text: prompt,
+    });
 
     return new Response(stream);
   }

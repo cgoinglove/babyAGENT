@@ -1,76 +1,54 @@
 'use client';
 
-import { NodeThread, WorkflowStatus } from '@ui/actions/workflow/create-workflow-action';
+import { NodeThread, WorkflowStatus } from '@ui/interface';
 import clsx from 'clsx';
-import { ArrowLeft, Clock, CheckCircle, XCircle, AlertCircle, Pause } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, AlertCircle, Pause, ChevronLeft } from 'lucide-react';
 import JsonView from './shared/json-view';
+import { useState } from 'react';
 
-// Update the type definition to include potential description
-type ExtendedNodeThread = NodeThread & {
-  description?: string;
+const formatTimestamp = (timestamp?: number) => {
+  if (!timestamp) return '-';
+  return new Date(timestamp).toLocaleString();
 };
 
-export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeThread; goBack: () => void }) {
-  // Helper function to format timestamp
-  const formatTimestamp = (timestamp?: number) => {
-    if (!timestamp) return '-';
-    return new Date(timestamp).toLocaleString();
-  };
+const getStatusIcon = (status: WorkflowStatus) => {
+  switch (status) {
+    case 'ready':
+      return <Clock className="h-5 w-5 text-blue-500" />;
+    case 'running':
+      return <Clock className="h-5 w-5 text-yellow-500 animate-pulse" />;
+    case 'success':
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
+    case 'fail':
+      return <XCircle className="h-5 w-5 text-red-500" />;
+    case 'stop':
+      return <Pause className="h-5 w-5 text-gray-500" />;
+    default:
+      return <AlertCircle className="h-5 w-5 text-gray-500" />;
+  }
+};
 
-  // Get status icon
-  const getStatusIcon = (status: WorkflowStatus) => {
-    switch (status) {
-      case 'ready':
-        return <Clock className="h-5 w-5 text-blue-500" />;
-      case 'running':
-        return <Clock className="h-5 w-5 text-yellow-500 animate-pulse" />;
-      case 'success':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'fail':
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      case 'stop':
-        return <Pause className="h-5 w-5 text-gray-500" />;
-      default:
-        return <AlertCircle className="h-5 w-5 text-gray-500" />;
-    }
-  };
+export default function ThreadDetail({ thread, goBack }: { thread: NodeThread; goBack: () => void }) {
+  const [openTab, setOpenTab] = useState<'stream' | 'input' | 'output' | 'error' | undefined>('stream');
 
-  // Get all process items (inputs and outputs) in a flat structure
-  const getAllProcessItems = () => {
-    const inputItems = thread.input.map((item) => ({
-      label: item.label,
-      value: item.value,
-    }));
-
-    const outputItems = thread.output
-      ? thread.output.map((item) => ({
-          label: item.label,
-          value: item.value,
-        }))
-      : [];
-
-    return [...inputItems, ...outputItems];
-  };
-
-  const processItems = getAllProcessItems();
+  const duration = thread.startedAt
+    ? (((thread.endedAt ?? Date.now()) - thread.startedAt) / 1000).toFixed(0) + 's'
+    : '';
 
   return (
-    <div className="w-full h-full bg-white p-6 overflow-auto">
-      {/* Header with back button */}
-      <div className="flex items-center mb-8 cursor-pointer" onClick={goBack}>
-        <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Go back">
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
+    <div className="w-full h-full bg-soft-background p-8 overflow-auto">
+      <div className="mb-8" onClick={goBack}>
+        <button className="px-3 py-2 rounded-full hover:bg-hover-color transition-colors cursor-pointer flex justify-center items-center">
+          <ChevronLeft className="h-5 w-5 " />
+          <h1 className="text-2xl ml-2 font-bold">{thread.name}</h1>
         </button>
-        <div className="ml-4">
-          <h1 className="text-2xl font-bold text-gray-900">{thread.name}</h1>
-          {thread.description && <p className="text-gray-600 mt-1">{thread.description}</p>}
-        </div>
       </div>
 
       {/* Thread information */}
-      <div className="mb-8 bg-gray-50 p-5 rounded-xl shadow-sm">
-        <div className="grid grid-cols-3 gap-6">
-          <div>
+      <div className="mb-8 bg-background p-4 rounded-xl ring">
+        <div className="flex flex-row items-center justify-between px-4">
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-sub-text">Status</p>
             <div className="flex items-center">
               {getStatusIcon(thread.status)}
               <span
@@ -86,35 +64,57 @@ export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeT
               </span>
             </div>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Duration</p>
-            <p className="font-medium">{thread.duration || '-'}</p>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-sub-text">Duration</p>
+            <p className="font-medium">{duration}</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Started At</p>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-sub-text">Started At</p>
             <p className="font-medium">{formatTimestamp(thread.startedAt)}</p>
           </div>
         </div>
       </div>
 
-      {/* Process Flow (Combined Input/Output as a simple flat list) */}
-      <div>
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Process Items</h2>
+      <div className="flex flex-col gap-6">
+        <div>
+          <JsonView
+            key={thread.streamText}
+            data={thread.streamText}
+            label="Stream"
+            open={openTab == 'stream'}
+            onClick={() => setOpenTab(openTab == 'stream' ? undefined : 'stream')}
+          />
+        </div>
 
-        {processItems.length > 0 ? (
-          <div className="space-y-4">
-            {processItems.map((item, index) => (
-              <div
-                key={`process-${index}`}
-                className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <p className="text-sm font-medium text-gray-700 mb-2">{item.label}</p>
-                <JsonView data={item.value} />
-              </div>
-            ))}
+        {thread.input && (
+          <div>
+            <JsonView
+              data={thread.input}
+              label="Input"
+              open={openTab == 'input'}
+              onClick={() => setOpenTab(openTab == 'input' ? undefined : 'input')}
+            />
           </div>
-        ) : (
-          <p className="text-gray-500 italic">No process data available</p>
+        )}
+        {thread.output && (
+          <div>
+            <JsonView
+              data={thread.output}
+              label="Output"
+              open={openTab == 'output'}
+              onClick={() => setOpenTab(openTab == 'output' ? undefined : 'output')}
+            />
+          </div>
+        )}
+        {thread.error && (
+          <div>
+            <JsonView
+              data={thread.error}
+              label="Error"
+              open={openTab == 'error'}
+              onClick={() => setOpenTab(openTab == 'error' ? undefined : 'error')}
+            />
+          </div>
         )}
       </div>
     </div>

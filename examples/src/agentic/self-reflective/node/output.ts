@@ -11,9 +11,6 @@ export const outputNode = graphStateNode({
   async execute(state: ReflectiveState, { stream }) {
     stream(`\n✨ OUTPUT`);
 
-    const latestHistory = { ...state.getLatestHistory() };
-
-    // 워크플로우 요약 (도구 사용 결과만 포함)
     const historyText = getHistoryText(state.history);
 
     const prompt = `당신은 Self-Reflection 능력을 갖춘 AI 에이전트입니다. 수집한 정보를 바탕으로 사용자에게 답변하세요.
@@ -31,7 +28,7 @@ export const outputNode = graphStateNode({
 
     stream(`${prompt}\n`);
 
-    latestHistory.output_prompt = prompt;
+    state.setOutput(prompt, '');
 
     const response = streamText({
       model: models.custom.standard,
@@ -44,8 +41,6 @@ export const outputNode = graphStateNode({
 
     const answer = await response.text;
 
-    latestHistory.output_answer = answer;
-
-    state.updateLatestHistory(latestHistory);
+    state.setOutput(prompt, answer);
   },
 });

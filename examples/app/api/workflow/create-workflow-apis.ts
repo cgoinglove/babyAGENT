@@ -1,53 +1,7 @@
-import { GraphEvent, GraphNodeStructure, GraphRegistry, StateGraphRegistry } from 'ts-edge';
+import { GraphEvent, GraphNodeStructure, GraphRunnable, StateGraphRunnable } from 'ts-edge';
 import { Locker } from '@shared/util';
-
-export type WorkflowStatus = 'ready' | 'running' | 'success' | 'fail' | 'stop';
-
-export type NodeThread = {
-  status: WorkflowStatus;
-  startedAt?: number;
-  endedAt?: number;
-  threadId?: string;
-  input: any;
-  output?: any;
-  name: string;
-  id: string;
-  duration?: string;
-};
-
-export type WorkflowStreamData =
-  | {
-      type: 'WORKFLOW_START';
-    }
-  | {
-      type: 'WORKFLOW_END';
-      isOk: boolean;
-      error?: any;
-    }
-  | {
-      type: 'NODE_START';
-      name: string;
-      id: string;
-      input: any;
-    }
-  | {
-      type: 'NODE_STREAM';
-      name: string;
-      id: string;
-      chunk: string;
-    }
-  | {
-      type: 'NODE_END';
-      name: string;
-      id: string;
-      output: any;
-      isOk: boolean;
-      error?: any;
-    };
-
-export type NodeStructure = GraphNodeStructure & {
-  isStartNode: boolean;
-};
+import { WorkflowStatus, WorkflowStreamData } from '@ui/interface';
+import { STREAM_END_DELIMITER, STREAM_START_DELIMITER } from '@ui/helper/stream';
 
 const createEventStream = () => {
   const encoder = new TextEncoder();
@@ -60,29 +14,22 @@ const createEventStream = () => {
   });
 
   const write = (data: WorkflowStreamData) => {
-    controller.enqueue(encoder.encode(JSON.stringify(data)));
+    controller.enqueue(encoder.encode(STREAM_START_DELIMITER + JSON.stringify(data) + STREAM_END_DELIMITER));
   };
 
   return { stream, write, getController: () => controller };
 };
 
-export const createWorkflowActions = <Workflow extends GraphRegistry<any> | StateGraphRegistry<any, any>>(
-  workflow: Workflow,
-  start: Workflow extends GraphRegistry<infer T>
-    ? T['name']
-    : Workflow extends StateGraphRegistry<any, infer U>
-      ? U
-      : never
+export const createWorkflowActions = <Runnable extends GraphRunnable<any> | StateGraphRunnable<any>>(
+  runner: Runnable,
+  parser: {
+    inputParser: (input: { text?: string; file?: File }) => Parameters<Runnable['run']>[0];
+    outputParser: (output: Awaited<ReturnType<Runnable['run']>>['output']) => string;
+  }
 ) => {
   let workflowStatus: WorkflowStatus = 'ready';
   const locker = new Locker();
-
-  const runner = workflow.compile(start);
-
-  const structure: NodeStructure[] = runner.getStructure().map((node) => ({
-    ...node,
-    isStartNode: node.name == start,
-  }));
+  const structure: GraphNodeStructure[] = runner.getStructure();
 
   runner.use(async () => {
     await locker.wait();
@@ -113,21 +60,41 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any> | Stat
     reset() {
       reset();
     },
-    start(...params: Parameters<typeof runner.run>) {
+    start(inputs: { text?: string; file?: File }) {
       reset();
       const { stream, write, getController } = createEventStream();
+
       const streamHandler = (event: GraphEvent) => {
         if (event.eventType == 'WORKFLOW_END') {
-          write({ type: 'WORKFLOW_END', isOk: event.isOk, error: event.error });
+          write({
+            type: 'WORKFLOW_END',
+            isOk: event.isOk,
+            error: {
+              name: event.error?.name,
+              message: event.error?.message,
+              stack: event.error?.stack,
+            },
+            output: parser.outputParser(event.output),
+          });
           workflowStatus = 'ready';
           runner.unsubscribe(streamHandler);
           getController().close();
         } else if (event.eventType == 'WORKFLOW_START') {
           write({ type: 'WORKFLOW_START' });
         } else if (event.eventType == 'NODE_START') {
-          write({ type: 'NODE_START', name: event.node.name, id: event.nodeExecutionId, input: event.node.input });
+          write({
+            type: 'NODE_START',
+            name: event.node.name,
+            id: event.nodeExecutionId,
+            input: event.node.input,
+          });
         } else if (event.eventType == 'NODE_STREAM') {
-          write({ type: 'NODE_STREAM', name: event.node.name, id: event.nodeExecutionId, chunk: event.node.chunk });
+          write({
+            type: 'NODE_STREAM',
+            name: event.node.name,
+            id: event.nodeExecutionId,
+            chunk: event.node.chunk,
+          });
         } else if (event.eventType == 'NODE_END') {
           write({
             type: 'NODE_END',
@@ -135,13 +102,18 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any> | Stat
             id: event.nodeExecutionId,
             output: event.node.output,
             isOk: event.isOk,
-            error: event.error,
+            error: {
+              name: event.error?.name,
+              message: event.error?.message,
+              stack: event.error?.stack,
+            },
           });
         }
       };
-
       runner.subscribe(streamHandler);
-      runner.run(params[0], params[1]);
+      runner.run(parser.inputParser(inputs)).then(() => {
+        runner.unsubscribe(streamHandler);
+      });
       return stream;
     },
   };

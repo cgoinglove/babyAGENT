@@ -10,7 +10,7 @@
   --default-ring-color: hsla(0, 0%, 0%, 0.08);
   --default-border-color: hsla(0, 0%, 0%, 0.08);
   --animate-fade-in: fadeIn 0.5s ease-out;
-  --animate-fade-in-slow: fadeIn 4s ease-in;
+  --animate-fade-in-slow: fadeIn 0.8s ease-in;
 
   @keyframes fadeIn {
     from {
@@ -63,17 +63,17 @@
     transform: rotate(0deg);
   }
   25% {
-    transform: rotate(1deg) scale(1.01);
+    transform: rotate(1.2deg) scale(1.05);
   }
   50% {
     transform: rotate(0deg);
   }
   75% {
-    transform: rotate(-1deg) scale(0.99);
+    transform: rotate(-1.2deg) scale(1.05);
   }
 }
 
 .wobbling-square {
-  animation: squareWobble 2s ease-in-out infinite;
+  animation: squareWobble 2s ease-out infinite;
   display: inline-block;
 }
