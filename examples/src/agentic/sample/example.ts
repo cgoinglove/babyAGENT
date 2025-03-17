@@ -14,6 +14,6 @@ const prompt = await inquirer
   .then((res) => res.prompt);
 
 agent.run({
-  prompt,
+  userPrompt: prompt,
   debug: true,
 });

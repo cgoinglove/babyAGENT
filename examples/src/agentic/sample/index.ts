@@ -1,10 +1,11 @@
-import { createGraph } from 'ts-edge';
+import { createStateGraph } from 'ts-edge';
 import { sampleStartNode } from './node/start-node';
 import { sampleANode } from './node/a-node';
 import { sampleBNode } from './node/b-node';
 import { sampleEndNode } from './node/end-node';
+import { sampleStore } from './state';
 
-const workflow = createGraph()
+const workflow = createStateGraph(sampleStore)
   .addNode(sampleStartNode)
   .addNode(sampleANode)
   .addNode(sampleBNode)
