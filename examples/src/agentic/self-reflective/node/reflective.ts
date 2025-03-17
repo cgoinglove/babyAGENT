@@ -1,24 +1,21 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReflectiveStage, ReflectiveState } from '../state';
-import { models, objectLLM } from '@examples/models';
+import { models } from '@examples/models';
 import { z } from 'zod';
 import { getHistoryText } from './helper';
+import { streamObject } from 'ai';
 
 // 반성 노드
-export const reflectingNode = graphNode({
+export const reflectingNode = graphStateNode({
   name: 'reflecting',
   metadata: { description: 'Evaluates approach and decides next steps' },
-  async execute(state: ReflectiveState): Promise<ReflectiveState> {
-    const latestHistory = state.history[state.history.length - 1];
+  async execute(state: ReflectiveState, { stream }) {
+    const latestHistory = { ...state.getLatestHistory() };
 
-    if (state.debug) {
-      console.log(`\n🔍 REFLECTING`);
-    }
+    stream(`🔍 REFLECTING\n`);
 
     // 이전 기록 요약
     const historyText = getHistoryText(state.history);
-
-    const llm = objectLLM(models.custom.standard);
 
     const ReflectionSchema = z.object({
       reflection: z.string(),
@@ -43,29 +40,24 @@ export const reflectingNode = graphNode({
       "needMoreWork": true/false,
       "reason": "판단 이유, 다음엔 어떻게 행동 해야 할지 명확한 피드백."
     }`;
-
+    stream(`${prompt}\n`);
     latestHistory.reflection_prompt = prompt;
 
-    const response = await llm(prompt, ReflectionSchema).catch((e) => {
-      latestHistory.error = e.message;
-      throw e;
+    const response = streamObject({
+      model: models.custom.standard,
+      schema: ReflectionSchema,
+      prompt,
     });
 
-    if (state.debug) {
-      console.log(`반성: ${response.reflection}`);
-      console.log(`추가 작업 필요: ${response.needMoreWork}`);
-      console.log(`이유 : ${response.reason}`);
+    for await (const text of response.textStream) {
+      stream(text);
     }
 
-    latestHistory.reflection_answer = response.reflection + (response.reason || '');
+    const result = await response.object;
 
-    // 다음 단계 결정
-    if (response.needMoreWork && state.retry > 0) {
-      state.stage = ReflectiveStage.REASONING;
-    } else {
-      state.stage = ReflectiveStage.COMPLETED;
-    }
+    latestHistory.reflection_answer = result.reflection + (result.reason || '');
 
-    return state;
+    state.updateLatestHistory(latestHistory);
+    state.setStage(result.needMoreWork && state.retry > 0 ? ReflectiveStage.REASONING : ReflectiveStage.COMPLETED);
   },
 });

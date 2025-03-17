@@ -1,16 +1,15 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReActState } from '../state';
 import { ToolCall } from '@interface';
-import { objectLLM, models } from '@examples/models';
 import { z } from 'zod';
+import { streamObject } from 'ai';
+import { models } from '@examples/models';
 
-export const reasoningNode = graphNode({
+export const reasoningNode = graphStateNode({
   name: '🧠 reasoning',
-  async execute(state: ReActState): Promise<ReActState> {
+  async execute(state: ReActState, { stream }) {
     // 도구 정보 포맷팅
     const toolsDescription = state.tools.map((tool: ToolCall) => `- ${tool.name}: ${tool.description}`).join('\n');
-
-    const llm = objectLLM(models.custom.standard);
 
     const ReasoningSchema = z.object({
       thought: z.string(),
@@ -33,22 +32,26 @@ export const reasoningNode = graphNode({
       "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 '')"
     }`;
 
-    state.thought_prompt = prompt;
+    const response = streamObject({
+      model: models.custom.standard,
+      schema: ReasoningSchema,
+      prompt,
+    });
 
-    const response = await llm(prompt, ReasoningSchema);
-    if (state.debug) {
-      console.log(`\n\n🧠 REASONING NODE\n`);
-      console.log(`생각    : ${response.thought}`);
+    for await (const text of response.textStream) {
+      stream(text);
     }
-    state.thought_answer = response.thought;
 
-    if (response.toolName) {
-      state.action = {
-        tool: response.toolName,
+    const result = await response.object;
+
+    state.setThought(prompt, result.thought);
+
+    if (result.toolName) {
+      state.setAction({
+        tool: result.toolName,
         input: '',
         output: '',
-      };
+      });
     }
-    return state;
   },
 });

@@ -1,16 +1,14 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { RewooState } from '../state';
-import { CoreMessage, generateObject } from 'ai';
+import { CoreMessage, generateObject, streamObject } from 'ai';
 import { models } from '@examples/models';
 import { z } from 'zod';
-export const rewooPlanningNode = graphNode({
+export const rewooPlanningNode = graphStateNode({
   name: '📝 Planning',
   metadata: {
     description: '사용자 질문을 분석하고, 이를 해결하기 위한 논리적인 계획 단계를 생성합니다.',
   },
-  execute: async (state: RewooState): Promise<RewooState> => {
-    const { userPrompt, debug } = state;
-
+  execute: async (state: RewooState, { stream }) => {
     const system = `당신은 ReWOO(Reasoning Without Observation) 아키텍처의 Planning 단계를 담당하는 AI입니다.
     사용자 질문을 분석하고, 이를 해결하기 위한 논리적인 계획 단계를 생성해야 합니다.
     
@@ -39,14 +37,11 @@ export const rewooPlanningNode = graphNode({
 
     const messages: CoreMessage[] = [
       { role: 'system', content: system },
-      { role: 'user', content: userPrompt },
+      { role: 'user', content: state.userPrompt },
     ];
     plan.prompt = messages;
 
-    if (debug) {
-      console.log(`PLANNING_NODE: ✨ ...계획 생각중`);
-      console.dir(messages, { depth: null });
-    }
+    stream(`PROMPT:\n\n${JSON.stringify(plan, null, 2)}\n\n`);
 
     const planSchema = z.object({
       plans: z.array(
@@ -58,14 +53,22 @@ export const rewooPlanningNode = graphNode({
       ),
     });
 
-    const response = await generateObject({
+    const response = streamObject({
       model: models.custom.smart,
       messages,
       schema: planSchema,
     });
 
-    plan.tokens = response.usage.totalTokens;
-    plan.list = response.object.plans.map((plan) => ({
+    stream('ASSISTANT:\n\n');
+    for await (const chunk of response.textStream) {
+      stream(chunk);
+    }
+    stream('\n\n');
+
+    const result = await response.object;
+
+    plan.tokens = (await response.usage).totalTokens;
+    plan.list = result.plans.map((plan) => ({
       plan: plan.plan,
       id: plan.id,
       dependency: plan.dependency,
@@ -77,13 +80,6 @@ export const rewooPlanningNode = graphNode({
       },
       completed: false,
     }));
-    state.plan = plan;
-    if (debug) {
-      console.log(`\n\n📝 PLANNING NODE RESPONSE\n`);
-      console.dir(response.object, { depth: null });
-      console.log('\n\n\n');
-    }
-
-    return state;
+    state.setPlan(plan);
   },
 });

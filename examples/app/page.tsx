@@ -2,23 +2,15 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import ThreadSidebar from '@ui/components/thread-sidebar';
-import { NodeStructure, NodeThread, WorkflowStatus } from '@ui/actions/workflow/create-workflow-action';
 
 import ThreadDetail from '@ui/components/thread-detail';
 import { safe } from 'ts-safe';
 import WorkFlowVisual from '@ui/components/workflow-visual';
 import { PromiseChain, wait } from '@shared/util';
-import { api } from './api/client';
 import SelectBox from './components/shared/select-box';
+import { NodeStructure, NodeThread, WorkflowStatus } from './api/workflow/create-workflow-apis';
 
 const asyncChain = PromiseChain();
-
-const agents = api.agents;
-
-const agentsInfo = agents.map((v) => ({
-  name: v.name,
-  description: v.description,
-}));
 
 export default function WorkFlow() {
   const [index, setIndex] = useState(0);
@@ -27,7 +19,9 @@ export default function WorkFlow() {
   const [threads, setThreads] = useState<NodeThread[]>([]);
   const [structures, setStructures] = useState<NodeStructure[]>([]);
 
-  const agentApi = useMemo(() => agents[index]!, [index]);
+  const [agents, setApis] = useState([]);
+
+  const agentApi = useMemo(() => [][index]!, [index]);
   const fetchStatus = async () => {
     return safe()
       .map(agentApi.fetchStatusAction)
@@ -88,15 +82,16 @@ export default function WorkFlow() {
     agentApi.stopAction();
   };
 
-  const init = async () => {
-    await agentApi.resetAction();
-    fetchStatus();
-    fetchStructures();
-  };
-
   useEffect(() => {
-    init();
-  }, [agentApi]);
+    fetch('/api/workflow')
+      .then((res) => res.json())
+      .then(setApis);
+  }, []);
+
+  // useEffect(() => {
+  //   init();
+  // }, [agentApi]);
+  if (!agents.length) return <div>waiy</div>;
 
   return (
     <div className="flex h-screen w-full">
@@ -105,8 +100,8 @@ export default function WorkFlow() {
         isLock={workflowStatus === 'stop'}
         start={start}
         stop={stop}
-        title={agentsInfo[index].name}
-        description={agentsInfo[index].description}
+        title={agents[index].name}
+        description={agents[index].description}
         resume={resume}
         threads={threads}
         onSelectThread={setSelectedThread}

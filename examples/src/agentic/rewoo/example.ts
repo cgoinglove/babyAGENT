@@ -3,6 +3,7 @@ import { createRewooWorkflow } from '.';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 import inquirer from 'inquirer';
+import { simpleDebug } from '../simple-debug';
 
 const agent = createRewooWorkflow().compile('start');
 
@@ -14,9 +15,9 @@ const answer = await inquirer.prompt([
     default: '124812*15125-35의 값과 strorrrberrry 에서 r 의 개수를 알려줄래?',
   },
 ]);
+agent.subscribe(simpleDebug);
 
 agent.run({
-  prompt: answer.input,
+  userPrompt: answer.input,
   tools: [stupidCalculator, stupidSearchEngine, stupidStringCounter],
-  debug: true,
 });

@@ -1,26 +1,24 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReflectiveState } from '../state';
-import { models, objectLLM } from '@examples/models';
+import { models } from '@examples/models';
+import { streamObject } from 'ai';
 
 // 도구 실행 노드
-export const actingNode = graphNode({
+export const actingNode = graphStateNode({
   name: 'acting',
   metadata: { description: 'Executes selected tools and collects results' },
-  async execute(state: ReflectiveState): Promise<ReflectiveState> {
-    const latestHistory = state.history[state.history.length - 1];
+  async execute(state: ReflectiveState, { stream }) {
+    const latestHistory = { ...state.getLatestHistory() };
     const latestUseTool = [...state.history].reverse().find((h) => h.tool?.name)?.tool;
     const toolName = latestHistory.tool?.name;
-    if (state.debug) {
-      console.log(`\n🛠️ ACTING: ${toolName}`);
-    }
+
+    stream(`\n🛠️ ACTING: ${toolName}`);
 
     const tool = state.tools.find((t) => t.name === toolName);
     if (!tool) {
       latestHistory.error = `도구를 찾을 수 없습니다: ${toolName}`;
       throw new Error(`도구를 찾을 수 없습니다: ${toolName}`);
     }
-
-    const llm = objectLLM(models.custom.standard);
 
     const prompt = `사용자 질문: "${state.userPrompt}"
     선택한 도구: "${tool.name}"
@@ -33,28 +31,31 @@ export const actingNode = graphNode({
     이 도구를 실행하기 위한 정확한 입력을 생성하세요.
     JSON 형식으로 응답하세요:
     `;
-    // 도구 입력 생성
-    const toolInput = await llm(prompt, tool.schema).catch((e) => {
-      latestHistory.error = e.message;
-      throw e;
+
+    stream(`${prompt}\n`);
+
+    const response = streamObject({
+      model: models.custom.standard,
+      schema: tool.schema,
     });
 
+    for await (const text of response.textStream) {
+      stream(text);
+    }
+
+    const toolInput = await response.object;
     // 도구 실행
     const result = await tool.execute(toolInput);
 
     const inputStr = typeof toolInput === 'string' ? toolInput : JSON.stringify(toolInput);
     const outputStr = typeof result === 'string' ? result : JSON.stringify(result);
 
-    if (state.debug) {
-      console.log(`입력: ${inputStr}`);
-      console.log(`출력: ${outputStr}`);
-    }
+    stream(`입력: ${inputStr}\n`);
+    stream(`출력: ${outputStr}\n`);
 
-    // 마지막 기록 업데이트
     latestHistory.tool!.input = inputStr;
     latestHistory.tool!.output = outputStr;
 
-    // 상태 업데이트
-    return state;
+    state.updateLatestHistory(latestHistory);
   },
 });

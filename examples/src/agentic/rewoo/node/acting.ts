@@ -1,12 +1,12 @@
-import { generateObject } from 'ai';
+import { streamObject } from 'ai';
 import { RewooState } from '../state';
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { models } from '@examples/models';
 
-export const rewooActingNode = graphNode({
+export const rewooActingNode = graphStateNode({
   name: '🛠️ Acting',
-  execute: async (state: RewooState): Promise<RewooState> => {
-    const plan = state.plan.list[state.planIndex];
+  execute: async (state: RewooState, { stream }) => {
+    const plan = state.getCurrentPlan();
 
     const tool = state.tools.find((tool) => tool.name === plan.acting!.name)!;
 
@@ -18,26 +18,26 @@ export const rewooActingNode = graphNode({
     추론 결과: "${plan.reasoning!.answer}"
 
     위 정보를 바탕으로 ${tool.name} 도구에 전달할 입력값을 생성하세요.`;
-    if (state.debug) {
-      console.log(`\n\n🛠️ ACTING NODE PROMPT\n`);
-      console.dir([system, user], { depth: null });
-    }
+    stream(`PROMPT:\n\n${JSON.stringify([system, user], null, 2)}\n\n`);
 
-    const response = await generateObject({
+    const response = await streamObject({
       model: models.custom.standard,
       system,
       prompt: user,
       schema: tool.schema,
     });
 
-    if (state.debug) {
-      console.log(`\n\n🛠️ ACTING NODE RESPONSE\n`);
-      console.dir(response.object, { depth: null });
+    stream('ASSISTANT:\n\n');
+    for await (const chunk of response.textStream) {
+      stream(chunk);
     }
-    plan.acting!.input = response.object;
-    plan.acting!.tokens = response.usage.totalTokens;
-    const result = await tool.execute(response.object);
-    plan.acting!.output = result;
-    return state;
+    stream('\n\n');
+
+    const result = await response.object;
+    plan.acting!.input = result;
+    plan.acting!.tokens = (await response.usage).totalTokens;
+    const output = await tool.execute(result);
+    plan.acting!.output = output;
+    state.updatePlan(plan.id, plan);
   },
 });

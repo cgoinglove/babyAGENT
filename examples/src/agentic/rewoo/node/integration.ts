@@ -1,15 +1,15 @@
 import { RewooState } from '../state';
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { parsePlans } from './helper';
-import { CoreMessage, generateText } from 'ai';
+import { CoreMessage, streamText } from 'ai';
 import { models } from '@examples/models';
 
-export const rewooIntegrationNode = graphNode({
+export const rewooIntegrationNode = graphStateNode({
   name: '🧐 Integration',
   metadata: {
     description: '모든 계획을 통합하여 최종 답변을 생성합니다.',
   },
-  execute: async (state: RewooState): Promise<RewooState> => {
+  execute: async (state: RewooState, { stream }) => {
     const completedPlans = parsePlans(state.plan.list);
     const originalPrompt = state.userPrompt;
 
@@ -42,25 +42,30 @@ export const rewooIntegrationNode = graphNode({
         content: user,
       },
     ];
-    if (state.debug) {
-      console.log(`\n\n🧐 INTEGRATION NODE PROMPT\n`);
-      console.dir(prompt, { depth: null });
-    }
-    state.integration.prompt = prompt;
+    stream(`PROMPT:\n\n${JSON.stringify(prompt, null, 2)}\n\n`);
 
-    const response = await generateText({
+    const integration: RewooState['integration'] = {
+      prompt,
+      answer: '',
+      tokens: 0,
+    };
+
+    const response = await streamText({
       model: models.custom.standard,
       messages: prompt,
     });
 
-    if (state.debug) {
-      console.log(`\n\n🧐 INTEGRATION NODE RESPONSE\n`);
-      console.log(`${response.text}`);
+    stream('ASSISTANT:\n\n');
+    for await (const chunk of response.textStream) {
+      stream(chunk);
     }
+    stream('\n\n');
 
-    state.integration.answer = response.text;
-    state.integration.tokens = response.usage.totalTokens;
+    const result = await response.text;
 
-    return state;
+    integration.answer = result;
+    integration.tokens = (await response.usage).totalTokens;
+
+    state.setIntegration(integration);
   },
 });

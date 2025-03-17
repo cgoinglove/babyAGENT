@@ -1,11 +1,12 @@
-import { createGraph } from 'ts-edge';
+import { createStateGraph } from 'ts-edge';
 import { rewooPlanningNode } from './node/planning';
 import { rewooStartNode } from './node/start';
 import { rewooReasoningNode } from './node/reasoning';
 import { rewooIntegrationNode } from './node/integration';
 import { rewooActingNode } from './node/acting';
 import { rewooCheckPlanNode } from './node/check-plan';
-const rewooWorkflow = createGraph()
+import { rewooStore } from './state';
+const rewooWorkflow = createStateGraph(rewooStore)
   .addNode(rewooStartNode)
   .addNode(rewooPlanningNode)
   .addNode(rewooReasoningNode)
@@ -18,7 +19,7 @@ const rewooWorkflow = createGraph()
   .dynamicEdge('🧠 Reasoning', {
     possibleTargets: ['🛠️ Acting', '✅ Check Plan'],
     router: (state) => {
-      const plan = state.plan.list[state.planIndex];
+      const plan = state.getCurrentPlan();
       if (plan?.step === 'acting') {
         return '🛠️ Acting';
       } else {
@@ -29,7 +30,7 @@ const rewooWorkflow = createGraph()
   .dynamicEdge('✅ Check Plan', {
     possibleTargets: ['🧠 Reasoning', '🧐 Integration'],
     router: (state) => {
-      if (state.plan.list[state.planIndex]) {
+      if (state.hasNextPlan()) {
         return '🧠 Reasoning';
       } else {
         return '🧐 Integration';

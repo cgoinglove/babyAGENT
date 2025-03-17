@@ -1,5 +1,6 @@
 import { ToolCall } from '@interface';
 import { CoreMessage } from 'ai';
+import { graphStore } from 'ts-edge';
 
 type RewooPlan = {
   id: string; // 계획 아이디
@@ -33,5 +34,54 @@ export type RewooState = {
     answer: string; // 통합 답변
     tokens: number; // 통합 토큰 수
   };
-  debug?: boolean; // 디버그 여부
+  next(): void;
+  hasNextPlan(): boolean;
+  getCurrentPlan(): RewooPlan;
+  setPlan(plan: RewooState['plan']): void;
+  updatePlan(id: string, plan: Partial<RewooPlan>): void;
+  setIntegration(integration: RewooState['integration']): void;
 };
+
+export const rewooStore = graphStore<RewooState>((set, get) => {
+  return {
+    userPrompt: '',
+    tools: [],
+    planIndex: 0,
+    plan: {
+      prompt: [],
+      list: [],
+      tokens: 0,
+    },
+    integration: {
+      prompt: [],
+      answer: '',
+      tokens: 0,
+    },
+    getCurrentPlan() {
+      const state = get();
+      return { ...state.plan.list[state.planIndex] };
+    },
+    next() {
+      set((prev) => ({ planIndex: prev.planIndex + 1 }));
+    },
+    hasNextPlan() {
+      const state = get();
+      return state.planIndex < state.plan.list.length;
+    },
+    setPlan(plan) {
+      set({ plan });
+    },
+    updatePlan(id, plan) {
+      set((prev) => {
+        const index = prev.plan.list.findIndex((p) => p.id === id);
+        if (index !== -1) {
+          prev.plan.list[index] = { ...prev.plan.list[index], ...plan };
+        }
+        return prev;
+      });
+    },
+    setIntegration(integration) {
+      set({ integration });
+    },
+  };
+});

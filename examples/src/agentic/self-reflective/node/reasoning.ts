@@ -1,25 +1,23 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReflectiveStage, ReflectiveState } from '../state';
 import { models, objectLLM } from '@examples/models';
 import { z } from 'zod';
 import { getHistoryText } from './helper';
+import { streamObject } from 'ai';
 
 // 추론 노드: 문제 분석 및 도구 선택
-export const reasoningNode = graphNode({
+export const reasoningNode = graphStateNode({
   name: 'reasoning',
   metadata: { description: 'Decides if and which tools to use' },
-  async execute(state: ReflectiveState): Promise<ReflectiveState> {
-    if (state.debug) {
-      console.log(`\n🧠 REASONING (남은 시도: ${state.retry})`);
-    }
+  async execute(state: ReflectiveState, { stream }) {
+    stream(`🧠 REASONING (남은 시도: ${state.retry})\n`);
+
     --state.retry;
     // 도구 정보 포맷팅
     const toolsDesc = state.tools.map((t) => `- ${t.name}: ${t.description}`).join('\n');
 
     // 이전 기록 요약
     const historyText = getHistoryText(state.history);
-
-    const llm = objectLLM(models.custom.standard);
 
     const ReasoningSchema = z.object({
       thought: z.string(),
@@ -52,27 +50,29 @@ export const reasoningNode = graphNode({
       reasoing_prompt: prompt,
       tool: { name: undefined, input: undefined, output: undefined },
     };
-    state.history.push(newHistory);
-    const response = await llm(prompt, ReasoningSchema).catch((e) => {
-      newHistory.error = e.message;
-      throw e;
+
+    stream(`${prompt}\n`);
+    const response = streamObject({
+      model: models.custom.standard,
+      schema: ReasoningSchema,
+      prompt,
     });
-    if (state.debug) {
-      console.log(`생각: ${response.thought}`);
+
+    for await (const text of response.textStream) {
+      stream(text);
     }
 
-    newHistory.reasoing_answer = response.thought;
+    const result = await response.object;
+
+    newHistory.reasoing_answer = result.thought;
 
     // 다음 단계 결정
-    if (response.needTool && response.toolName) {
-      // 도구 선택 정보 저장
-      state.stage = ReflectiveStage.ACTING;
-      newHistory.tool!.name = response.toolName;
+    if (result.needTool && result.toolName) {
+      state.setStage(ReflectiveStage.ACTING);
+      newHistory.tool!.name = result.toolName;
     } else {
-      // 도구 불필요시 바로 반성 단계로
-      state.stage = ReflectiveStage.REFLECTING;
+      state.setStage(ReflectiveStage.REFLECTING);
     }
-
-    return state;
+    state.pushHistory(newHistory);
   },
 });

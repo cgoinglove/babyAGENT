@@ -1,5 +1,5 @@
-import { createGraph } from 'ts-edge';
-import { ReflectiveStage } from './state';
+import { createStateGraph } from 'ts-edge';
+import { ReflectiveStage, reflectiveStore } from './state';
 import { inputNode } from './node/input';
 import { reasoningNode } from './node/reasoning';
 import { actingNode } from './node/acting';
@@ -7,7 +7,7 @@ import { reflectingNode } from './node/reflective';
 import { outputNode } from './node/output';
 
 // Self-Reflection 워크플로우
-const workflow = createGraph()
+const workflow = createStateGraph(reflectiveStore)
   .addNode(inputNode)
   .addNode(reasoningNode)
   .addNode(actingNode)

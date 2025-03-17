@@ -1,6 +1,7 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReActState } from '../state';
 import { models, pureLLM } from '@examples/models';
+import { streamText } from 'ai';
 
 // 간결한 출력 프롬프트 생성 함수
 function outputPrompt({
@@ -33,10 +34,9 @@ ${toolName ? `도구 사용 사실을 자연스럽게 언급하세요 (예: "검
 답변:`;
 }
 
-export const outputNode = graphNode({
+export const outputNode = graphStateNode({
   name: 'output',
-  async execute(state: ReActState): Promise<ReActState> {
-    const llm = pureLLM(models.custom.standard);
+  async execute(state: ReActState, { stream }) {
     const userPrompt = state.userPrompt;
     const toolName = state.action?.tool; // optional
     const toolInput = state.action?.input; // optional
@@ -44,13 +44,13 @@ export const outputNode = graphNode({
     const lastThought = state.thought_answer;
 
     const prompt = outputPrompt({ userPrompt, toolName, toolInput, toolOutput, lastThought });
-    const answer = await llm(prompt);
-    if (state.debug) {
-      console.log(`\n\n✨ OUTPUT NODE\n`);
-      console.log(`최종답변 : ${answer}`);
+    const answer = streamText({
+      model: models.custom.standard,
+      prompt,
+    });
+    for await (const text of answer.textStream) {
+      stream(text);
     }
-    state.output_prompt = prompt;
-    state.output_answer = answer;
-    return state;
+    state.setOutput(prompt, await answer.text);
   },
 });

@@ -1,10 +1,11 @@
-import { createGraph } from 'ts-edge';
+import { createStateGraph } from 'ts-edge';
 import { reasoningNode } from './node/reasoning';
 import { actingNode } from './node/acting';
 import { outputNode } from './node/output';
 import { inputNode } from './node/input';
+import { reActStore } from './state';
 
-const workflow = createGraph()
+const workflow = createStateGraph(reActStore)
   .addNode(inputNode)
   .addNode(reasoningNode)
   .addNode(actingNode)

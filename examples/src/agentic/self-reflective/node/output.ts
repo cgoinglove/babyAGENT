@@ -1,18 +1,17 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReflectiveState } from '../state';
-import { models, pureLLM } from '@examples/models';
+import { models } from '@examples/models';
 import { getHistoryText } from './helper';
+import { streamText } from 'ai';
 
 // 출력 노드
-export const outputNode = graphNode({
+export const outputNode = graphStateNode({
   name: 'output',
   metadata: { description: 'Generates final user-friendly response' },
-  async execute(state: ReflectiveState): Promise<ReflectiveState> {
-    console.log(`\n✨ OUTPUT`);
+  async execute(state: ReflectiveState, { stream }) {
+    stream(`\n✨ OUTPUT`);
 
-    const llm = pureLLM(models.custom.standard);
-
-    const latestHistory = state.history[state.history.length - 1];
+    const latestHistory = { ...state.getLatestHistory() };
 
     // 워크플로우 요약 (도구 사용 결과만 포함)
     const historyText = getHistoryText(state.history);
@@ -30,18 +29,23 @@ export const outputNode = graphNode({
 - 명확하고 정확한 답변을 제공하세요
 답변:`;
 
+    stream(`${prompt}\n`);
+
     latestHistory.output_prompt = prompt;
 
-    const answer = await llm(prompt).catch((e) => {
-      latestHistory.error = e.message;
-      throw e;
+    const response = streamText({
+      model: models.custom.standard,
+      prompt,
     });
+
+    for await (const text of response.textStream) {
+      stream(text);
+    }
+
+    const answer = await response.text;
 
     latestHistory.output_answer = answer;
 
-    if (state.debug) {
-      console.log(`최종답변: ${answer}`);
-    }
-    return state;
+    state.updateLatestHistory(latestHistory);
   },
 });

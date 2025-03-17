@@ -1,22 +1,10 @@
-import { graphNode } from 'ts-edge';
+import { graphStateNode } from 'ts-edge';
 import { ReActState } from '../state';
-import { ToolCall } from '@interface';
 
-export const inputNode = graphNode({
+export const inputNode = graphStateNode({
   name: 'input',
-  execute(input: { prompt: string; tools: ToolCall<any, any>[]; debug?: boolean }) {
-    const initialState: ReActState = {
-      userPrompt: input.prompt,
-      tools: input.tools,
-      thought_prompt: '',
-      thought_answer: '',
-      debug: input.debug ?? false,
-    };
-    if (input.debug) {
-      console.log(`\n\n📝 INPUT NODE\n`);
-      console.log(`질문    : ${input.prompt}`);
-      console.log(`사용가능 도구 : '${input.tools.map((v) => v.name).join(',')}'`);
-    }
-    return initialState;
+  execute(state: ReActState, { stream }) {
+    stream(`질문    : ${state.userPrompt}`);
+    stream(`사용가능 도구 : '${state.tools.map((v) => v.name).join(',')}'`);
   },
 });

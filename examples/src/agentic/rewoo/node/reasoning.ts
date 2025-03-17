@@ -1,16 +1,16 @@
 import { models } from '@examples/models';
 import { RewooState } from '../state';
-import { graphNode } from 'ts-edge';
-import { CoreMessage, generateObject } from 'ai';
+import { graphStateNode } from 'ts-edge';
+import { CoreMessage, generateObject, streamObject } from 'ai';
 import { z } from 'zod';
 import { parsePlans } from './helper';
-export const rewooReasoningNode = graphNode({
+export const rewooReasoningNode = graphStateNode({
   name: '🧠 Reasoning',
   metadata: {
     description: '계획을 이유를 생각하고 답변을 생성합니다.',
   },
-  execute: async (state: RewooState): Promise<RewooState> => {
-    const plan = state.plan.list[state.planIndex];
+  execute: async (state: RewooState, { stream }) => {
+    const plan = state.getCurrentPlan();
     if (!plan) {
       return state;
     }
@@ -42,10 +42,7 @@ export const rewooReasoningNode = graphNode({
       { role: 'user', content: user },
     ];
 
-    if (state.debug) {
-      console.log(`\n\n🧠 REASONING NODE PROMPT\n`);
-      console.dir(prompt, { depth: null });
-    }
+    stream(`PROMPT:\n\n${JSON.stringify(prompt, null, 2)}\n\n`);
 
     plan.reasoning = {
       prompt,
@@ -53,7 +50,7 @@ export const rewooReasoningNode = graphNode({
       tokens: 0,
     };
 
-    const response = await generateObject({
+    const response = await streamObject({
       model: models.custom.standard,
       messages: prompt,
       schema: z.object({
@@ -62,15 +59,18 @@ export const rewooReasoningNode = graphNode({
       }),
     });
 
-    if (state.debug) {
-      console.log(`\n\n🧠 REASONING NODE RESPONSE\n`);
-      console.log(`${response.object.reason}`);
+    stream('ASSISTANT:\n\n');
+    for await (const chunk of response.textStream) {
+      stream(chunk);
     }
+    stream('\n\n');
 
-    plan.reasoning.answer = response.object.reason;
-    plan.reasoning.tokens = response.usage.totalTokens;
-    plan.step = response.object.tool.trim() ? 'acting' : 'completed';
-    plan.acting = { name: response.object.tool, input: '', output: '', tokens: 0 };
-    return state;
+    const result = await response.object;
+
+    plan.reasoning.answer = result.reason;
+    plan.reasoning.tokens = (await response.usage).totalTokens;
+    plan.step = result.tool.trim() ? 'acting' : 'completed';
+    plan.acting = { name: result.tool, input: '', output: '', tokens: 0 };
+    state.updatePlan(plan.id, plan);
   },
 });
