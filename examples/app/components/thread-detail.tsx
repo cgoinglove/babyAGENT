@@ -4,7 +4,7 @@ import { NodeThread, WorkflowStatus } from '@ui/interface';
 import clsx from 'clsx';
 import { Clock, CheckCircle, XCircle, AlertCircle, Pause, ChevronLeft } from 'lucide-react';
 import JsonView from './shared/json-view';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const formatTimestamp = (timestamp?: number) => {
   if (!timestamp) return '-';
@@ -34,6 +34,10 @@ export default function ThreadDetail({ thread, goBack }: { thread: NodeThread; g
   const duration = thread.startedAt
     ? (((thread.endedAt ?? Date.now()) - thread.startedAt) / 1000).toFixed(0) + 's'
     : '';
+
+  useEffect(() => {
+    setOpenTab('stream');
+  }, [thread.id]);
 
   return (
     <div className="w-full h-full bg-soft-background p-8 overflow-auto">
