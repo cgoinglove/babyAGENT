@@ -30,7 +30,7 @@ export const reasoningNode = graphNode({
     다음 JSON 형식으로 응답하세요:
     {
       "thought": "질문 분석 및 도구 사용 여부에 대한 간결한 추론",
-      "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 \"\")"
+      "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 '')"
     }`;
 
     state.thought_prompt = prompt;

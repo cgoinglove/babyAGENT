@@ -45,7 +45,7 @@ export const reasoningNode = graphNode({
     {
       "thought": "질문 분석 및 도구 사용 여부와 도구를 사용하게 된다면 어떤 도구를 어떤 값으로 사용할지에 대한 계획",
       "needTool": true/false,
-      "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 \"\")"
+      "toolName": "사용할 도구 이름 (도구가 필요 없으면 빈 문자열 '')"
     }`;
 
     const newHistory: ReflectiveState['history'][number] = {

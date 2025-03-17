@@ -17,18 +17,6 @@ export default function ThreadDetail({ thread, goBack }: { thread: ExtendedNodeT
     return new Date(timestamp).toLocaleString();
   };
 
-  // Helper function to display JSON or other data properly
-  const formatValue = (value: any) => {
-    if (typeof value === 'object') {
-      try {
-        return JSON.stringify(value, null, 2);
-      } catch {
-        return String(value);
-      }
-    }
-    return String(value);
-  };
-
   // Get status icon
   const getStatusIcon = (status: WorkflowStatus) => {
     switch (status) {

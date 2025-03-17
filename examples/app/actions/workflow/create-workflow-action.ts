@@ -74,6 +74,9 @@ export const createWorkflowActions = <Workflow extends GraphRegistry<any>>(
       runner.unsubscribe(updateThread);
       return;
     }
+    if (event.eventType == 'NODE_STREAM') {
+      return;
+    }
     const nodeThread: Partial<NodeThread> = {
       status: isStart(event) ? 'running' : event.isOk ? 'success' : 'fail',
       threadId: event.threadId,
