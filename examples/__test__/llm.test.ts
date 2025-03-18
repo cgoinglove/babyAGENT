@@ -32,32 +32,6 @@ suite('llm', () => {
     console.log(result);
   });
 
-  test('string -> json', async () => {
-    // JSON 형식으로 출력하는 모델
-
-    // type schema = {name:string, age:number}
-    const personSchema = z.object({
-      name: z.string().describe('이름을 입력해주세요'),
-      age: z.number().describe('나이를 입력해주세요'),
-    });
-
-    type Person = z.infer<typeof personSchema>;
-
-    const person: Person = {
-      name: 'John',
-      age: 20,
-    };
-
-    const response = await generateObject({
-      model: models.custom.basic,
-      schema: personSchema,
-      prompt: `나의 이름은 ${person.name}이고 나는 ${person.age}살입니다.`,
-    });
-
-    const result = await response.object;
-    console.log(result);
-  });
-
   test('string -> json ', async () => {
     // JSON 형식으로 출력하는 모델
 
@@ -105,7 +79,7 @@ suite('llm', () => {
      *
      * return result; // {name:'Jhon', age:20}
      *
-     * 이런 형태로 사용된다.
+     * 이런 형태로 구성 되어있다고 생각하면 된다 .
      *
      */
   });
