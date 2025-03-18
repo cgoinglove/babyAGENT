@@ -13,6 +13,7 @@ const prompt = await inquirer
     },
   ])
   .then((res) => res.prompt);
+
 agent.subscribe(simpleDebug);
 agent.run({
   userPrompt: prompt,
