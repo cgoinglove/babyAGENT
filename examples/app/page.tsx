@@ -27,7 +27,7 @@ export default function WorkFlow() {
   const nodeStatusByName = useMemo(() => {
     return Object.fromEntries(threads.map((v) => [v.name, v.status]));
   }, [threads]);
-
+// 시작해야함
   const agent = useMemo(() => agents[index], [index, agents]);
 
   const api = useMemo(() => {
