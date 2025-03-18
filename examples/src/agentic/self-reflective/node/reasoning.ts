@@ -53,7 +53,7 @@ export const reasoningNode = graphStateNode({
 
     stream(`${prompt}\n`);
     const response = streamObject({
-      model: models.standardstandard,
+      model: models.standard,
       schema: ReasoningSchema,
       prompt,
     });
