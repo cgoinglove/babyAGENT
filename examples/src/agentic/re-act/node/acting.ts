@@ -27,7 +27,7 @@ export const actingNode = graphStateNode({
 
     // 도구 스키마를 사용하여 입력 생성
     const toolInput = streamObject({
-      model: models.standardstandard,
+      model: models.standard,
       schema: tool.schema,
       prompt: inputPrompt,
     });

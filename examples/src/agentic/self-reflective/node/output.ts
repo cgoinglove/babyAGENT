@@ -31,7 +31,7 @@ export const outputNode = graphStateNode({
     state.setOutput(prompt, '');
 
     const response = streamText({
-      model: models.standardstandard,
+      model: models.standard,
       prompt,
     });
 

@@ -45,7 +45,7 @@ export const outputNode = graphStateNode({
 
     const prompt = outputPrompt({ userPrompt, toolName, toolInput, toolOutput, lastThought });
     const answer = streamText({
-      model: models.standardstandard,
+      model: models.standard,
       prompt,
     });
     for await (const text of answer.textStream) {

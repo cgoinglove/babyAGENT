@@ -25,7 +25,7 @@ export const rewooActingNode = graphStateNode({
     stream(`PROMPT:\n\n${JSON.stringify([system, user], null, 2)}\n\n`);
 
     const response = await streamObject({
-      model: models.standardstandard,
+      model: models.standard,
       system,
       prompt: user,
       schema: tool.schema,
