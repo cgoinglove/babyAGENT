@@ -2,7 +2,8 @@ import { createGraph, createStateGraph, graphStore } from 'ts-edge';
 import { suite, test } from 'vitest';
 
 suite('graph', () => {
-  test('default graph', async () => {
+  // only 하니씩 하면서 실행
+  test.only('default graph', async () => {
     const graph = createGraph()
       .addNode({
         name: 'A',
