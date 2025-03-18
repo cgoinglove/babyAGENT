@@ -2,12 +2,12 @@ import '@shared/env/global';
 import chalk from 'chalk';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { STANDARD_MODEL, STUPID_MODEL } from '@examples/models';
+import { STANDARD_MODEL, STUPID_MODEL, VECTOR_EMBEDDING_MODEL } from '@examples/models';
 import { exit } from 'process';
 import fs from 'fs';
 import path from 'path';
 
-const VERSION = '0.3.1';
+const VERSION = '0.3.2';
 
 const FLAG_FILE = path.join(process.cwd(), `node_modules/.__check__${VERSION}`);
 
@@ -91,3 +91,4 @@ async function checkOllamaAndModel(model: string) {
 
 await checkOllamaAndModel(STUPID_MODEL);
 await checkOllamaAndModel(STANDARD_MODEL);
+await checkOllamaAndModel(VECTOR_EMBEDDING_MODEL);

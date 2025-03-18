@@ -36,7 +36,7 @@ export const actingNode = graphStateNode({
     stream(`${prompt}\n`);
 
     const response = streamObject({
-      model: models.custom.standard,
+      model: models.standardstandard,
       schema: tool.schema,
     });
 

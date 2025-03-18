@@ -7,7 +7,7 @@ suite('llm', () => {
   // only 하니씩 하면서 실행
   test.only('string -> string', async () => {
     const response = await generateText({
-      model: models.custom.basic,
+      model: models.stupid,
       prompt: '안녕하세요',
     });
 
@@ -18,7 +18,7 @@ suite('llm', () => {
 
   test('string -> string stream', async () => {
     const response = streamText({
-      model: models.custom.basic,
+      model: models.stupid,
       prompt: '안녕하세요',
     });
 
@@ -49,7 +49,7 @@ suite('llm', () => {
     };
 
     const response = await generateObject({
-      model: models.custom.basic,
+      model: models.stupid,
       schema: personSchema,
       prompt: `나의 이름은 ${person.name}이고 나는 ${person.age}살입니다.`,
     });
@@ -93,7 +93,7 @@ suite('llm', () => {
     });
 
     const response = await generateObject({
-      model: models.custom.basic,
+      model: models.stupid,
       schema: numberSchema,
       prompt: `100 + 200 을 계산 하려고합니다. a와 b에 숫자를 입력해주세요.`,
     });

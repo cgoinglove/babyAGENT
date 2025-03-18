@@ -13,6 +13,7 @@
     "ui": "pnpm check-model && next dev --turbopack --port 5001"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^1.1.17",
     "@shared/env": "workspace:*",
     "@shared/util": "workspace:*",
     "@tavily/core": "^0.3.1",
