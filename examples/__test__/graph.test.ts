@@ -169,4 +169,46 @@ suite('graph', () => {
     const result2 = await app2.run();
     console.log('result2:', result2.output?.count);
   });
+
+  test.only('graph event handler', async () => {
+    const graph = createGraph()
+      .addNode({
+        name: 'A',
+        execute: (input: string) => {
+          return input + ' A ';
+        },
+      })
+      .addNode({
+        name: 'B',
+        execute: (input: string, { stream }) => {
+          stream('B 노드 실행중...');
+          return input + ' B ';
+        },
+      })
+      .edge('A', 'B');
+
+    const app = graph.compile('A');
+
+    // 이벤트 핸들러 등록
+    app.subscribe((event) => {
+      console.log(`\n\n\n`);
+
+      // event type은  총 5개
+
+      // 1. WORKFLOW_START 그래프 시작  최초 input 값이 있음
+
+      // 2. NODE_START 노드 시작    노드의 input 값이 있음
+
+      // 3. NODE_STREAM 노드 실행중에 이벤트 생성
+
+      // 4. NODE_END 노드 종료 노드의 output 값이 있음
+
+      // 5. WORKFLOW_END 그래프 종료 최종 node의 output 값이 있음
+
+      console.dir(event, { depth: null });
+      console.log(`\n\n\n`);
+    });
+
+    app.run('Hello');
+  });
 });
