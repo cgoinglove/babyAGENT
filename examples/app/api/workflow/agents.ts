@@ -7,6 +7,7 @@ import { createSampleAgent } from '@examples/agentic/sample';
 import { stupidCalculator } from '@examples/tools/stupid-calculator';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
+import { tavilySearch } from '@examples/tools/tavily-search';
 
 export const agents: Agent[] = [
   {
@@ -39,11 +40,11 @@ export const agents: Agent[] = [
     name: 'Rewoo',
     description:
       'An agent that solves problems step by step through iterative reasoning and action, systematically handling complex tasks.',
-    defaultPrompt: '124812*15125-35의 값과 strorrrberrry 에서 r 의 개수를 알려줄래?',
+    defaultPrompt: '권지용 최근 앨범이 뭐야? 그리고 그 앨범에 대한 평가를 알려줘',
     api: createWorkflowActions(createRewooWorkflow().compile('start'), {
       inputParser: (input) => ({
         userPrompt: input.text!,
-        tools: [stupidCalculator, stupidSearchEngine, stupidStringCounter],
+        tools: [stupidCalculator, stupidStringCounter, tavilySearch],
       }),
       outputParser: (output) => output?.integration.answer ?? '',
     }),

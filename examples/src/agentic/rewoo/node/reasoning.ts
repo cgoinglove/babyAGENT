@@ -51,7 +51,7 @@ export const rewooReasoningNode = graphStateNode({
     };
 
     const response = await streamObject({
-      model: models.custom.standard,
+      model: models.standard,
       messages: prompt,
       schema: z.object({
         reason: z.string().describe('현재 계획 단계의 목적과 필요성에 대한 간결한 추론'),

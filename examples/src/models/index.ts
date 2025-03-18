@@ -1,9 +1,11 @@
 import '@shared/env/global';
 import { ollama } from 'ollama-ai-provider';
-import { xai } from '@ai-sdk/xai';
-import { openai } from '@ai-sdk/openai';
-import { generateObject, generateText, LanguageModelV1 } from 'ai';
+// import { xai } from '@ai-sdk/xai';
+// import { openai } from '@ai-sdk/openai';
+// import { anthropic } from '@ai-sdk/anthropic';
+import { generateObject, generateText, embed, type LanguageModel, type EmbeddingModel } from 'ai';
 import { ZodSchema } from 'zod';
+import { LiteMemoryVectorStore, VectorStoreOptions } from '@examples/helper/memory-vector-store';
 
 /**
  * STUPID_MODEL: 의도적으로 수준이 낮은 모델을 사용함으로써
@@ -15,27 +17,36 @@ export const STUPID_MODEL = 'gemma3:1b' as const;
 
 export const STANDARD_MODEL = 'gemma3:4b' as const;
 
+export const VECTOR_EMBEDDING_MODEL = 'nomic-embed-text' as const;
+
 export const models = {
+  /** @ollama */
   stupid: ollama(STUPID_MODEL),
+  standard: ollama(STANDARD_MODEL),
+  smart: ollama('gemma3:12b'),
+  reasoning: ollama('deepseek-r1:8b'),
+  // vector
+  embedding: ollama.embedding(VECTOR_EMBEDDING_MODEL) as EmbeddingModel<string>,
+
+  /** @claude */
+  // standard: anthropic('claude-3-5-haiku-latest'),
+  // smart: anthropic('claude-3-7-sonnet-20250219'),
+
+  /** @grok */
+  // standard: xai('grok-2-1212'),
+
+  /** @openai */
+  // stupid: gpt4omini: openai('gpt-4o-mini'),
+  // standard: gpt4o: openai('gpt-4o'),
+  // reasoning: o3mini: openai('o3-mini'),
+  // embedding:openai.embedding('text-embedding-3-small')
+
+  /** @deprecated */
   custom: {
-    /** 1~2B */
     basic: ollama(STUPID_MODEL),
-    /** 3~7B */
     standard: ollama(STANDARD_MODEL),
-    /** 8B~?B */
     smart: ollama('gemma3:12b'),
-    /** 추론모델 */
     reasoning: ollama('deepseek-r1:8b'),
-  },
-  grok: {
-    grok2: xai('grok-2-1212'),
-    beta: xai('grok-beta'),
-  },
-  openai: {
-    o1mini: openai('o1-mini'),
-    o3mini: openai('o3-mini'),
-    gpt4omini: openai('gpt-4o-mini'),
-    gpt4o: openai('gpt-4o'),
   },
 };
 
@@ -55,7 +66,7 @@ export const models = {
  *
  * 이는 LLM의 내부 작동 방식을 이해하고 학습하기 위한 의도적인 제약입니다.
  */
-export const pureLLM = (model: LanguageModelV1) => (prompt: string) => {
+export const pureLLM = (model: LanguageModel) => (prompt: string) => {
   return generateText({
     prompt,
     model,
@@ -63,7 +74,7 @@ export const pureLLM = (model: LanguageModelV1) => (prompt: string) => {
 };
 
 export const objectLLM =
-  (model: LanguageModelV1) =>
+  (model: LanguageModel) =>
   <T>(prompt: string, schema: ZodSchema<T>) => {
     return generateObject({
       prompt,
@@ -71,3 +82,16 @@ export const objectLLM =
       model,
     }).then((res) => res.object as T);
   };
+
+export const memoryVectorStore = (model: EmbeddingModel<string>, option?: VectorStoreOptions) => {
+  const vectorParsor = async (text: string) => {
+    const result = await embed({
+      model,
+      value: text,
+    });
+
+    return result.embedding;
+  };
+
+  return new LiteMemoryVectorStore(vectorParsor, option);
+};

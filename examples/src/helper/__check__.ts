@@ -2,12 +2,12 @@ import '@shared/env/global';
 import chalk from 'chalk';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { STANDARD_MODEL, STUPID_MODEL } from '@examples/models';
+import { STANDARD_MODEL, STUPID_MODEL, VECTOR_EMBEDDING_MODEL } from '@examples/models';
 import { exit } from 'process';
 import fs from 'fs';
 import path from 'path';
 
-const VERSION = '0.3';
+const VERSION = '0.3.2';
 
 const FLAG_FILE = path.join(process.cwd(), `node_modules/.__check__${VERSION}`);
 
@@ -53,6 +53,17 @@ if (!process.env.OPENAI_API_KEY) {
   console.warn(instructionMessage);
 }
 
+if (!process.env.TAVILY_API_KEY) {
+  let instructionMessage = chalk.yellow('\n⚠️  경고: TAVILY_API_KEY 환경 변수가 설정되지 않았습니다!\n\n');
+  instructionMessage += `다음 디렉토리에서 ${chalk.cyan('.env.example')} 템플릿을 ${chalk.cyan('.env')}로 복사해주세요:\n`;
+  instructionMessage += `📂 ${chalk.cyan('shared/env/src/global')}\n\n`;
+  instructionMessage += `그런 다음 .env 파일에 TAVILY_API_KEY를 추가하세요:\n`;
+  instructionMessage += `${chalk.green('TAVILY_API_KEY=your_api_key_here')}\n`;
+  instructionMessage += `TAVILY_API_KEY를 얻으려면 https://tavily.com/ 에서 회원가입 후 키를 발급받으세요.\n`;
+  instructionMessage += `월 1,000회 무료 사용 가능합니다.\n`;
+  console.warn(instructionMessage);
+}
+
 const execAsync = promisify(exec);
 
 async function checkOllamaAndModel(model: string) {
@@ -80,3 +91,4 @@ async function checkOllamaAndModel(model: string) {
 
 await checkOllamaAndModel(STUPID_MODEL);
 await checkOllamaAndModel(STANDARD_MODEL);
+await checkOllamaAndModel(VECTOR_EMBEDDING_MODEL);

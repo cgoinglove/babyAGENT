@@ -44,7 +44,7 @@ export const reflectingNode = graphStateNode({
     latestHistory.reflection_prompt = prompt;
 
     const response = streamObject({
-      model: models.custom.standard,
+      model: models.standard,
       schema: ReflectionSchema,
       prompt,
     });

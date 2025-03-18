@@ -54,7 +54,7 @@ export const rewooPlanningNode = graphStateNode({
     });
 
     const response = streamObject({
-      model: models.custom.smart,
+      model: models.smart,
       messages,
       schema: planSchema,
     });

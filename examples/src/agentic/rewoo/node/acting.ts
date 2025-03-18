@@ -8,7 +8,11 @@ export const rewooActingNode = graphStateNode({
   execute: async (state: RewooState, { stream }) => {
     const plan = state.getCurrentPlan();
 
-    const tool = state.tools.find((tool) => tool.name === plan.acting!.name)!;
+    const tool = state.tools.find((tool) => tool.name === plan.acting!.name.trim())!;
+    if (!tool) {
+      stream(`도구를 찾을 수 없습니다. ${plan.acting!.name}`);
+      throw new Error(`도구를 찾을 수 없습니다. ${plan.acting!.name}`);
+    }
 
     const system = `당신은 도구를 사용하여 작업을 수행하는 AI 도우미입니다.
     현재 ${tool.name} 도구에 전달할 입력값을 생성해야 합니다.
@@ -21,7 +25,7 @@ export const rewooActingNode = graphStateNode({
     stream(`PROMPT:\n\n${JSON.stringify([system, user], null, 2)}\n\n`);
 
     const response = await streamObject({
-      model: models.custom.standard,
+      model: models.standard,
       system,
       prompt: user,
       schema: tool.schema,

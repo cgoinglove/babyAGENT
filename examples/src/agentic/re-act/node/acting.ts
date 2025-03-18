@@ -7,7 +7,12 @@ export const actingNode = graphStateNode({
   name: '🛠️ acting',
   async execute(state: ReActState, { stream }) {
     const action = state.action!;
-    const tool = state.tools.find((tool) => tool.name == action?.tool)!;
+    const tool = state.tools.find((tool) => tool.name == action?.tool.trim())!;
+
+    if (!tool) {
+      stream(`도구를 찾을 수 없습니다. ${action?.tool}`);
+      throw new Error(`도구를 찾을 수 없습니다. ${action?.tool}`);
+    }
 
     // 도구 입력 생성을 위한 프롬프트 - 간결하게 수정
     const inputPrompt = `
@@ -22,7 +27,7 @@ export const actingNode = graphStateNode({
 
     // 도구 스키마를 사용하여 입력 생성
     const toolInput = streamObject({
-      model: models.custom.standard,
+      model: models.standard,
       schema: tool.schema,
       prompt: inputPrompt,
     });

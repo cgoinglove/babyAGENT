@@ -8,11 +8,14 @@ import WorkFlowVisual from '@ui/components/workflow-visual';
 
 import SelectBox from './components/shared/select-box';
 
+import remarkGfm from 'remark-gfm';
+
 import { Agent, NodeThread, WorkflowStatus, WorkflowStreamData } from './interface';
 import ThreadCard from './components/thread-card';
 import { Send } from 'lucide-react';
 import { streamReader } from './helper/stream';
 import { GraphNodeStructure } from 'ts-edge';
+import Markdown from 'react-markdown';
 export default function WorkFlow() {
   const [index, setIndex] = useState(0);
   const [agents, setAgents] = useState<(Omit<Agent, 'api'> & { structure: GraphNodeStructure[] })[]>([]);
@@ -180,8 +183,8 @@ export default function WorkFlow() {
                   ))}
                 </div>
                 {answer && (
-                  <div className="text-sm font-semibold animate-fade-in-slow rounded-lg ring text-sub-text  px-6 py-2">
-                    {answer}
+                  <div className="prose text-sm font-semibold animate-fade-in-slow rounded-lg ring text-sub-text  px-6 py-2">
+                    <Markdown remarkPlugins={[remarkGfm]}>{answer}</Markdown>
                   </div>
                 )}
               </>

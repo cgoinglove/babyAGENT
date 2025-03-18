@@ -14,8 +14,9 @@ export const actingNode = graphStateNode({
 
     stream(`\n🛠️ ACTING: ${toolName}`);
 
-    const tool = state.tools.find((t) => t.name === toolName);
+    const tool = state.tools.find((t) => t.name === toolName?.trim());
     if (!tool) {
+      stream(`도구를 찾을 수 없습니다: ${toolName}`);
       latestHistory.error = `도구를 찾을 수 없습니다: ${toolName}`;
       throw new Error(`도구를 찾을 수 없습니다: ${toolName}`);
     }
@@ -35,7 +36,7 @@ export const actingNode = graphStateNode({
     stream(`${prompt}\n`);
 
     const response = streamObject({
-      model: models.custom.standard,
+      model: models.standard,
       schema: tool.schema,
     });
 

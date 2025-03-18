@@ -51,7 +51,7 @@ export const rewooIntegrationNode = graphStateNode({
     };
 
     const response = await streamText({
-      model: models.custom.standard,
+      model: models.standard,
       messages: prompt,
     });
 

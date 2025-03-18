@@ -22,6 +22,7 @@ export const config = [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-wrapper-object-types': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
   {
@@ -30,6 +31,6 @@ export const config = [
     },
   },
   {
-    ignores: ['dist/**', 'node_modules', '.*'],
+    ignores: ['dist/**', 'node_modules', '.*', '__test__'],
   },
 ];
