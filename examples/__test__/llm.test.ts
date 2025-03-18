@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 suite('llm', () => {
   // only 하니씩 하면서 실행
-  test.only('string -> string', async () => {
+  test('string -> string', async () => {
     const response = await generateText({
       model: models.custom.basic,
       prompt: '안녕하세요',
