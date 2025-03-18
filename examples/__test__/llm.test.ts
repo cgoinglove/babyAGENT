@@ -4,6 +4,7 @@ import { generateObject, generateText, streamText } from 'ai';
 import { z } from 'zod';
 
 suite('llm', () => {
+  // only 하니씩 하면서 실행
   test.only('string -> string', async () => {
     const response = await generateText({
       model: models.custom.basic,
