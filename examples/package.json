@@ -15,6 +15,7 @@
   "dependencies": {
     "@shared/env": "workspace:*",
     "@shared/util": "workspace:*",
+    "@tavily/core": "^0.3.1",
     "@xyflow/react": "^12.4.4",
     "clsx": "^2.1.1"
   },
