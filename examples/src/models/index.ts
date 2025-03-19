@@ -5,7 +5,7 @@ import { ollama } from 'ollama-ai-provider';
 // import { anthropic } from '@ai-sdk/anthropic';
 import { generateObject, generateText, embed, type LanguageModel, type EmbeddingModel } from 'ai';
 import { ZodSchema } from 'zod';
-import { LiteMemoryVectorStore, VectorStoreOptions } from '@examples/helper/memory-vector-store';
+import { memoryVectorStore, MemoryVectorParser, MemoryVectorStoreOptions } from 'memory-vector-store';
 
 /**
  * STUPID_MODEL: 의도적으로 수준이 낮은 모델을 사용함으로써
@@ -83,8 +83,8 @@ export const objectLLM =
     }).then((res) => res.object as T);
   };
 
-export const memoryVectorStore = (model: EmbeddingModel<string>, option?: VectorStoreOptions) => {
-  const vectorParsor = async (text: string) => {
+export const createVectorStore = (model: EmbeddingModel<string>, option?: Partial<MemoryVectorStoreOptions>) => {
+  const vectorParsor: MemoryVectorParser = async (text) => {
     const result = await embed({
       model,
       value: text,
@@ -93,5 +93,5 @@ export const memoryVectorStore = (model: EmbeddingModel<string>, option?: Vector
     return result.embedding;
   };
 
-  return new LiteMemoryVectorStore(vectorParsor, option);
+  return memoryVectorStore(vectorParsor, option);
 };

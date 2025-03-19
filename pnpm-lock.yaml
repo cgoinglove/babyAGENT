@@ -93,12 +93,18 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      memory-vector-store:
+        specifier: ^1.0.6
+        version: 1.0.6
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.0.8)(react@19.0.0)
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
+      zustand:
+        specifier: ^5.0.3
+        version: 5.0.3(@types/react@19.0.8)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
     devDependencies:
       '@ai-sdk/openai':
         specifier: ^1.2.5
@@ -2718,6 +2724,10 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
+  memory-vector-store@1.0.6:
+    resolution: {integrity: sha512-wszLdvHFHYiQUoQvwMMeOCytaNJw56lf3lJCs8UEgjgoOVqQvSNLmuzoX3bXwT9UM7a+fqTkj69B7vNtFtLSdQ==}
+    engines: {node: '>=14.0.0'}
+
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
@@ -3596,6 +3606,24 @@ packages:
       immer:
         optional: true
       react:
+        optional: true
+
+  zustand@5.0.3:
+    resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
         optional: true
 
   zwitch@2.0.4:
@@ -6035,6 +6063,8 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
 
+  memory-vector-store@1.0.6: {}
+
   merge2@1.4.1: {}
 
   micromark-core-commonmark@2.0.3:
@@ -7211,5 +7241,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.8
       react: 19.0.0
+
+  zustand@5.0.3(@types/react@19.0.8)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+    optionalDependencies:
+      '@types/react': 19.0.8
+      react: 19.0.0
+      use-sync-external-store: 1.4.0(react@19.0.0)
 
   zwitch@2.0.4: {}
