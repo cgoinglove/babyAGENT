@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "example": "pnpm -F examples example",
+    "ui": "pnpm -F examples ui",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
