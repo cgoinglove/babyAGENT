@@ -6,13 +6,12 @@ import { useRef } from 'react';
 interface Props {
   thread: NodeThread;
   onClick: () => void;
-  isSelected: boolean;
   isLast: boolean;
   isFirst: boolean;
 }
 const calcDuration = (a?: number, b?: number) => (a ? (((b || Date.now()) - a) / 1000).toFixed(0) : undefined);
 
-export default function ThreadCard({ isFirst, thread, onClick, isLast, isSelected }: Props) {
+export default function ThreadCard({ isFirst, thread, onClick, isLast }: Props) {
   const duration = calcDuration(thread.startedAt, thread.endedAt);
 
   const latestRef = useRef({ s: thread.startedAt, e: thread.endedAt });
@@ -34,12 +33,7 @@ export default function ThreadCard({ isFirst, thread, onClick, isLast, isSelecte
             'absolute top-0 left-[27.5px] w-[1px] bg-zinc-200'
           )}
         />
-        <div
-          className={clsx(
-            isSelected && 'bg-hover-color',
-            'transition-all flex gap-2 py-1 my-0.5 px-2 rounded-lg hover:bg-hover-color'
-          )}
-        >
+        <div className={clsx('transition-all flex gap-2 py-1 my-0.5 px-2 rounded-lg hover:bg-hover-color')}>
           <div
             className={clsx(thread.status == 'running' && 'bg-default-text/20 ring', 'rounded-full p-1 relative z-10')}
           >

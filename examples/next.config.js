@@ -3,6 +3,7 @@ const nextConfig = {
   devIndicators: {
     position: undefined,
   },
+  reactStrictMode: false,
 };
 
 export default nextConfig;
