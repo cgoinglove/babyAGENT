@@ -1,6 +1,18 @@
 import { join } from 'path';
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
+import { Locker } from '@shared/util';
+
+const _debounce = (() => {
+  const cache = new Map<string, ReturnType<typeof setTimeout>>();
+  return (key: string, func: () => void, delay: number) => {
+    const timeout = cache.get(key);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    cache.set(key, setTimeout(func, delay));
+  };
+})();
 
 /**
  * Represents the structure of vector data
@@ -21,6 +33,7 @@ interface VectorData {
  */
 export interface VectorStoreOptions {
   autoSave?: boolean;
+  debug?: boolean;
   filePath?: string;
 }
 
@@ -36,6 +49,8 @@ export class LiteMemoryVectorStore {
   /** @private */
   private dirty: boolean = false;
 
+  private saveLock = new Locker();
+
   /**
    * Create a new MemoryVectorStoreLite instance
    * @constructor
@@ -46,15 +61,20 @@ export class LiteMemoryVectorStore {
     private vectorParsor: (text: string) => Promise<number[]>,
     options?: VectorStoreOptions
   ) {
+    this.saveLock.unLock();
     this.options = {
       autoSave: true,
-      filePath: options?.autoSave ? join(process.cwd(), 'node_modules/__mvsl__/data.json') : undefined,
+      filePath: (options?.autoSave ?? true) ? join(process.cwd(), 'node_modules/__mvsl__/data.json') : undefined,
       ...options,
     };
 
     this.load();
   }
 
+  private truncateLog(text: string, maxLength: number = 50): string {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
   /**
    * Add a new piece of data to the vector store
    * @param {string} data - The text data to add
@@ -62,9 +82,11 @@ export class LiteMemoryVectorStore {
    */
   async add(data: string): Promise<VectorData> {
     if (this.cache.has(data)) {
+      if (this.options.debug) console.log(`[LiteMemoryVectorStore] Cache hit for: "${this.truncateLog(data)}"`);
       return this.cache.get(data)!;
     }
 
+    if (this.options.debug) console.log(`[LiteMemoryVectorStore] Adding new item: "${this.truncateLog(data)}"`);
     const vector = await this.vectorParsor(data);
     const vectorData = { data, vector };
 
@@ -109,6 +131,7 @@ export class LiteMemoryVectorStore {
    * @returns {Promise<VectorData[]>} Sorted array of most similar vector data
    */
   async similaritySearch(query: string, k: number = 4, filter?: (doc: VectorData) => boolean): Promise<VectorData[]> {
+    await this.saveLock.wait();
     const queryVector = this.cache.get(query)?.vector ?? (await this.vectorParsor(query));
 
     let candidates = Array.from(this.cache.values());
@@ -178,21 +201,32 @@ export class LiteMemoryVectorStore {
   /**
    * Save the current state of the vector store to disk
    */
-  save(): void {
-    if (!this.dirty || !this.options.filePath) return;
+  async save(): Promise<void> {
+    if (!this.dirty || !this.options.filePath) return Promise.resolve();
 
-    try {
-      // Create directory if it doesn't exist
-      const dir = dirname(this.options.filePath);
-      if (!existsSync(dir)) {
-        mkdirSync(dir, { recursive: true });
-      }
-
-      writeFileSync(this.options.filePath, JSON.stringify(this.cache), 'utf8');
-      this.dirty = false;
-    } catch (error) {
-      console.error('Error saving vector store:', error);
-    }
+    this.saveLock.lock();
+    _debounce(
+      this.options.filePath,
+      () => {
+        try {
+          // Create directory if it doesn't exist
+          const dir = dirname(this.options.filePath!);
+          if (!existsSync(dir)) {
+            mkdirSync(dir, { recursive: true });
+          }
+          writeFileSync(this.options.filePath!, JSON.stringify(this.getAll()), 'utf8');
+          this.dirty = false;
+          if (this.options.debug)
+            console.log(`[LiteMemoryVectorStore] Save completed. ${this.cache.size} items saved.`);
+        } catch (error) {
+          console.error('Error saving vector store:', error);
+        } finally {
+          this.saveLock.unLock();
+        }
+      },
+      100
+    );
+    return this.saveLock.wait();
   }
 
   /**
@@ -205,7 +239,13 @@ export class LiteMemoryVectorStore {
     try {
       if (existsSync(this.options.filePath)) {
         const data = readFileSync(this.options.filePath, 'utf8');
-        this.cache = JSON.parse(data);
+        const vectorDatas = JSON.parse(data ?? '[]');
+        for (const vectorData of vectorDatas) {
+          this.cache.set(vectorData.data, vectorData);
+        }
+        if (this.options.debug) console.log(`[LiteMemoryVectorStore] Loaded ${this.cache.size} items.`);
+      } else if (this.options.debug) {
+        console.log(`[LiteMemoryVectorStore] No data file found at: ${this.options.filePath}`);
       }
     } catch (error) {
       console.error('Error loading vector store:', error);
