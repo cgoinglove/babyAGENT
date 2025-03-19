@@ -34,6 +34,7 @@ interface VectorData {
 export interface VectorStoreOptions {
   autoSave?: boolean;
   debug?: boolean;
+  maxFileSizeMB?: number;
   filePath?: string;
 }
 
@@ -64,6 +65,7 @@ export class LiteMemoryVectorStore {
     this.saveLock.unLock();
     this.options = {
       autoSave: true,
+      maxFileSizeMB: 500, // 기본값 500MB
       filePath: (options?.autoSave ?? true) ? join(process.cwd(), 'node_modules/__mvsl__/data.json') : undefined,
       ...options,
     };
@@ -209,15 +211,50 @@ export class LiteMemoryVectorStore {
       this.options.filePath,
       () => {
         try {
-          // Create directory if it doesn't exist
           const dir = dirname(this.options.filePath!);
           if (!existsSync(dir)) {
             mkdirSync(dir, { recursive: true });
           }
-          writeFileSync(this.options.filePath!, JSON.stringify(this.getAll().map(this.serializeItem)), 'utf8');
+
+          const allData = this.getAll();
+          const maxSizeBytes = (this.options.maxFileSizeMB || 500) * 1024 * 1024;
+
+          const serializedData = allData.map(this.serializeItem);
+          let jsonData = JSON.stringify(serializedData);
+          let dataSize = Buffer.byteLength(jsonData, 'utf8');
+
+          if (dataSize > maxSizeBytes && serializedData.length > 0) {
+            if (this.options.debug) {
+              console.log(
+                `[LiteMemoryVectorStore] Data size (${this.formatSize(dataSize)}) exceeds limit (${this.formatSize(maxSizeBytes)})`
+              );
+            }
+
+            while (dataSize > maxSizeBytes && serializedData.length > 0) {
+              serializedData.shift();
+              jsonData = JSON.stringify(serializedData);
+              dataSize = Buffer.byteLength(jsonData, 'utf8');
+            }
+
+            if (this.options.debug) {
+              console.log(
+                `[LiteMemoryVectorStore] Trimmed to ${serializedData.length} items (${this.formatSize(dataSize)})`
+              );
+            }
+            this.cache.clear();
+            for (const item of serializedData.map(this.deserializeItem)) {
+              this.cache.set(item.data, item);
+            }
+          }
+
+          writeFileSync(this.options.filePath!, jsonData, 'utf8');
           this.dirty = false;
-          if (this.options.debug)
-            console.log(`[LiteMemoryVectorStore] Save completed. ${this.cache.size} items saved.`);
+
+          if (this.options.debug) {
+            console.log(
+              `[LiteMemoryVectorStore] Save completed. ${serializedData.length} items saved (${this.formatSize(dataSize)})`
+            );
+          }
         } catch (error) {
           console.error('Error saving vector store:', error);
         } finally {
@@ -227,6 +264,11 @@ export class LiteMemoryVectorStore {
       100
     );
     return this.saveLock.wait();
+  }
+  private formatSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} bytes`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   }
 
   /**
