@@ -52,3 +52,15 @@ export type WorkflowStreamData =
       isOk: boolean;
       error?: any;
     };
+
+export type ChatMessage = {
+  prompt: {
+    text: string;
+    file?: File;
+  };
+  threads: NodeThread[];
+  answer?: {
+    text: string;
+    file?: File;
+  };
+};
