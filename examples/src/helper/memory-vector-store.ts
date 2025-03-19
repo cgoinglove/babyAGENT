@@ -214,7 +214,7 @@ export class LiteMemoryVectorStore {
           if (!existsSync(dir)) {
             mkdirSync(dir, { recursive: true });
           }
-          writeFileSync(this.options.filePath!, JSON.stringify(this.getAll()), 'utf8');
+          writeFileSync(this.options.filePath!, JSON.stringify(this.getAll().map(this.serializeItem)), 'utf8');
           this.dirty = false;
           if (this.options.debug)
             console.log(`[LiteMemoryVectorStore] Save completed. ${this.cache.size} items saved.`);
@@ -239,7 +239,7 @@ export class LiteMemoryVectorStore {
     try {
       if (existsSync(this.options.filePath)) {
         const data = readFileSync(this.options.filePath, 'utf8');
-        const vectorDatas = JSON.parse(data ?? '[]');
+        const vectorDatas = JSON.parse(data ?? '[]').map(this.deserializeItem);
         for (const vectorData of vectorDatas) {
           this.cache.set(vectorData.data, vectorData);
         }
@@ -251,5 +251,13 @@ export class LiteMemoryVectorStore {
       console.error('Error loading vector store:', error);
       this.cache = new Map();
     }
+  }
+
+  private serializeItem(data: VectorData): [string, number[]] {
+    return [data.data, data.vector];
+  }
+
+  private deserializeItem(data: [string, number[]]): VectorData {
+    return { data: data[0], vector: data[1] };
   }
 }
