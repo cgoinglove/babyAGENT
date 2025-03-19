@@ -32,7 +32,7 @@ export class LiteMemoryVectorStore {
   /** @private */
   private options: VectorStoreOptions;
   /** @private */
-  private cache: VectorData[] = [];
+  private cache: Map<string, VectorData> = new Map();
   /** @private */
   private dirty: boolean = false;
 
@@ -48,7 +48,7 @@ export class LiteMemoryVectorStore {
   ) {
     this.options = {
       autoSave: true,
-      filePath: join(process.cwd(), 'node_modules/__mvsl__/data.json'),
+      filePath: options?.autoSave ? join(process.cwd(), 'node_modules/__mvsl__/data.json') : undefined,
       ...options,
     };
 
@@ -61,10 +61,14 @@ export class LiteMemoryVectorStore {
    * @returns {Promise<VectorData>} The added vector data
    */
   async add(data: string): Promise<VectorData> {
+    if (this.cache.has(data)) {
+      return this.cache.get(data)!;
+    }
+
     const vector = await this.vectorParsor(data);
     const vectorData = { data, vector };
 
-    this.cache.push(vectorData);
+    this.cache.set(data, vectorData);
     this.dirty = true;
 
     if (this.options.autoSave) {
@@ -105,9 +109,9 @@ export class LiteMemoryVectorStore {
    * @returns {Promise<VectorData[]>} Sorted array of most similar vector data
    */
   async similaritySearch(query: string, k: number = 4, filter?: (doc: VectorData) => boolean): Promise<VectorData[]> {
-    const queryVector = await this.vectorParsor(query);
+    const queryVector = this.cache.get(query)?.vector ?? (await this.vectorParsor(query));
 
-    let candidates = this.cache;
+    let candidates = Array.from(this.cache.values());
     if (filter) {
       candidates = candidates.filter(filter);
     }
@@ -129,10 +133,10 @@ export class LiteMemoryVectorStore {
    * @param {string} data - The text data to remove
    */
   async remove(data: string): Promise<void> {
-    const initialLength = this.cache.length;
-    this.cache = this.cache.filter((item) => item.data !== data);
+    const initialLength = this.cache.size;
+    this.cache.delete(data);
 
-    if (this.cache.length !== initialLength) {
+    if (this.cache.size !== initialLength) {
       this.dirty = true;
 
       if (this.options.autoSave) {
@@ -144,9 +148,9 @@ export class LiteMemoryVectorStore {
   /**
    * Clear all data from the vector store
    */
-  async clear(): Promise<void> {
-    if (this.cache.length > 0) {
-      this.cache = [];
+  clear(): void {
+    if (this.cache.size > 0) {
+      this.cache.clear();
       this.dirty = true;
 
       if (this.options.autoSave) {
@@ -160,7 +164,7 @@ export class LiteMemoryVectorStore {
    * @returns {VectorData[]} Array of all stored vector data
    */
   getAll(): VectorData[] {
-    return [...this.cache];
+    return Array.from(this.cache.values());
   }
 
   /**
@@ -168,7 +172,7 @@ export class LiteMemoryVectorStore {
    * @returns {number} Total number of vector data items
    */
   count(): number {
-    return this.cache.length;
+    return this.cache.size;
   }
 
   /**
@@ -205,7 +209,7 @@ export class LiteMemoryVectorStore {
       }
     } catch (error) {
       console.error('Error loading vector store:', error);
-      this.cache = [];
+      this.cache = new Map();
     }
   }
 }

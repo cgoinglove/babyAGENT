@@ -1,7 +1,7 @@
 import { memoryVectorStore, models } from '@examples/models';
 import { suite, test } from 'vitest';
 
-suite.skip('vector', () => {
+suite('vector', () => {
   test('default', async () => {
     const vectorstore = memoryVectorStore(models.embedding, {
       autoSave: false,
