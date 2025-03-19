@@ -1,10 +1,11 @@
-import { memoryVectorStore, models } from '@examples/models';
+import { createVectorStore, models } from '@examples/models';
 import { suite, test } from 'vitest';
 
 suite('vector', () => {
   test('default', async () => {
-    const vectorstore = memoryVectorStore(models.embedding, {
+    const vectorstore = createVectorStore(models.embedding, {
       autoSave: false,
+      debug: true,
     });
 
     const dataList = [
