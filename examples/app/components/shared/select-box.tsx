@@ -9,12 +9,13 @@ interface Props {
     value: any;
     label: ReactNode;
   }[];
+  disabled?: boolean;
   value?: any;
   onChange: (value: any) => void;
   placeholder?: string;
 }
 
-export default function SelectBox({ items, onChange, value }: Props) {
+export default function SelectBox({ items, onChange, value, disabled }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +49,9 @@ export default function SelectBox({ items, onChange, value }: Props) {
       <div className="relative text-sm">
         <button
           type="button"
+          disabled={disabled}
           className={clsx(
+            disabled && 'text-sub-text bg-hover-color',
             'relative w-full rounded-lg py-2 text-left cursor-pointer flex items-center px-4',
             'ring shadow-sm hover:bg-soft-background',
             isOpen && 'bg-soft-background',
