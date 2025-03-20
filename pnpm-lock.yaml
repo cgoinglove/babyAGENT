@@ -94,8 +94,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       memory-vector-store:
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.7
+        version: 1.0.7
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.0.8)(react@19.0.0)
@@ -170,8 +170,8 @@ importers:
         specifier: ^4.0.14
         version: 4.0.14
       ts-edge:
-        specifier: ^0.1.6
-        version: 0.1.6
+        specifier: ^1.0.0
+        version: 1.0.0
       ts-safe:
         specifier: ^0.0.4
         version: 0.0.4
@@ -2724,8 +2724,8 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
-  memory-vector-store@1.0.6:
-    resolution: {integrity: sha512-wszLdvHFHYiQUoQvwMMeOCytaNJw56lf3lJCs8UEgjgoOVqQvSNLmuzoX3bXwT9UM7a+fqTkj69B7vNtFtLSdQ==}
+  memory-vector-store@1.0.7:
+    resolution: {integrity: sha512-2Hp+/vOTawl92Ev68qsFCv0SQIYl8U92RmE+awfXQdMsZODZx0bxLoAiHbi7tEVYpJ7oy3vVBRA70OrAq/SMhw==}
     engines: {node: '>=14.0.0'}
 
   merge2@1.4.1:
@@ -3322,8 +3322,8 @@ packages:
     resolution: {integrity: sha512-vYJzrifrHb/h67jX/dFHRx0idv09OAYlAs9S5KVmk9xufyvdrf4/yaBI6Xkh0dNB7WvNqU3Mz81bVcKaD6gaAg==}
     engines: {node: '>=14.0.0'}
 
-  ts-edge@0.1.6:
-    resolution: {integrity: sha512-j8nr9zQuNbqXMkkgoYZg2wUg9bv4VA8t8nld1ekKi2s/7s8jEaJU5Uef3NG5CUWdxbFl5INhWvJXvnWbYSexug==}
+  ts-edge@1.0.0:
+    resolution: {integrity: sha512-Ks5j7vLzObmlfSwCpjG3ePjRzqBCj3weaMUyoZa9UIqVJed4qJKnTEwzcNsEZMQ1WXecAD1dW90KQJmPX5V0Qg==}
     engines: {node: '>=14.0.0'}
 
   ts-safe@0.0.2:
@@ -6063,7 +6063,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
 
-  memory-vector-store@1.0.6: {}
+  memory-vector-store@1.0.7: {}
 
   merge2@1.4.1: {}
 
@@ -6864,7 +6864,7 @@ snapshots:
       ts-safe: 0.0.2
       zod: 3.24.2
 
-  ts-edge@0.1.6:
+  ts-edge@1.0.0:
     dependencies:
       ts-safe: 0.0.4
 

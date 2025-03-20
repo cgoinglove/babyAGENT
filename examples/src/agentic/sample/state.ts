@@ -3,14 +3,14 @@ import { graphStore } from 'ts-edge';
 export type SampleState = {
   userPrompt: string;
   nextStage: 'A' | 'B';
-  setNextStage: (stage: 'A' | 'B') => void;
+  updateStage(stage: 'A' | 'B'): void;
 };
 
 export const sampleStore = graphStore<SampleState>((set) => {
   return {
-    nextStage: 'A',
     userPrompt: '',
-    setNextStage(stage) {
+    nextStage: 'A',
+    updateStage(stage) {
       set({ nextStage: stage });
     },
   };
