@@ -16,5 +16,8 @@ const prompt = await inquirer
 
 agent.subscribe(simpleDebug);
 agent.run({
-  userPrompt: prompt,
+  state: {
+    userPrompt: prompt,
+    nextStage: 'A',
+  },
 });

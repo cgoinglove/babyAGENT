@@ -1,5 +1,5 @@
 import { ToolCall } from '@interface';
-import { graphStore } from 'ts-edge';
+import { createGraphStore } from 'ts-edge';
 
 // 단순화된 단계 정의
 export enum ReflectiveStage {
@@ -35,7 +35,7 @@ export type ReflectiveState = {
   updateLatestHistory: (history: Partial<ReflectiveState['history'][number]>) => void;
 };
 
-export const reflectiveStore = graphStore<ReflectiveState>((set, get) => ({
+export const reflectiveStore = createGraphStore<ReflectiveState>((set, get) => ({
   userPrompt: '',
   tools: [],
   stage: ReflectiveStage.REASONING,

@@ -1,5 +1,5 @@
 import { ToolCall } from '@interface';
-import { graphStore } from 'ts-edge';
+import { createGraphStore } from 'ts-edge';
 
 export type ReActState = {
   userPrompt: string;
@@ -18,7 +18,7 @@ export type ReActState = {
   setOutput: (prompt: string, answer: string) => void;
 };
 
-export const reActStore = graphStore<ReActState>((set) => {
+export const reActStore = createGraphStore<ReActState>((set) => {
   return {
     userPrompt: '',
     thought_prompt: '',

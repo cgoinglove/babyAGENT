@@ -1,6 +1,6 @@
 import { ToolCall } from '@interface';
 import { CoreMessage } from 'ai';
-import { graphStore } from 'ts-edge';
+import { createGraphStore } from 'ts-edge';
 
 type RewooPlan = {
   id: string; // 계획 아이디
@@ -42,7 +42,7 @@ export type RewooState = {
   setIntegration(integration: RewooState['integration']): void;
 };
 
-export const rewooStore = graphStore<RewooState>((set, get) => {
+export const rewooStore = createGraphStore<RewooState>((set, get) => {
   return {
     userPrompt: '',
     tools: [],
