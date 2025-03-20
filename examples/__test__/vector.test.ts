@@ -25,6 +25,6 @@ suite('vector', () => {
     }
 
     const result = await vectorstore.similaritySearch('foot', 2);
-    console.log(result.map((item) => item.data));
+    console.log(result);
   });
 });

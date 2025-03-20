@@ -94,8 +94,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       memory-vector-store:
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.7
+        version: 1.0.7
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.0.8)(react@19.0.0)
@@ -2724,8 +2724,8 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
-  memory-vector-store@1.0.6:
-    resolution: {integrity: sha512-wszLdvHFHYiQUoQvwMMeOCytaNJw56lf3lJCs8UEgjgoOVqQvSNLmuzoX3bXwT9UM7a+fqTkj69B7vNtFtLSdQ==}
+  memory-vector-store@1.0.7:
+    resolution: {integrity: sha512-2Hp+/vOTawl92Ev68qsFCv0SQIYl8U92RmE+awfXQdMsZODZx0bxLoAiHbi7tEVYpJ7oy3vVBRA70OrAq/SMhw==}
     engines: {node: '>=14.0.0'}
 
   merge2@1.4.1:
@@ -6063,7 +6063,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
 
-  memory-vector-store@1.0.6: {}
+  memory-vector-store@1.0.7: {}
 
   merge2@1.4.1: {}
 
