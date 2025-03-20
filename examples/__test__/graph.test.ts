@@ -1,5 +1,4 @@
-import { sampleStore } from '@examples/agentic/sample/state';
-import { createGraph, createStateGraph, createGraphStore, graphStore, graphStateNode } from 'ts-edge';
+import { createGraph, createStateGraph, graphStore } from 'ts-edge';
 import { suite, test } from 'vitest';
 
 suite('graph', () => {
@@ -126,7 +125,7 @@ suite('graph', () => {
       decrement: () => void;
     };
     // store 생성
-    const countStore = createGraphStore<CounterStore>((set) => {
+    const countStore = graphStore<CounterStore>((set) => {
       return {
         count: 0,
         setCount: (count) => set({ count }),
@@ -169,29 +168,6 @@ suite('graph', () => {
     const app2 = graph.compile('DECREMENT');
     const result2 = await app2.run();
     console.log('result2:', result2.output?.count);
-  });
-
-  test('state graph - 2', async () => {
-    type CouterState = {
-      count: number;
-      name: string;
-    };
-
-    const counterStore = graphStore<CouterState>({ count: 0, name: 'counter' });
-
-    type CounterStore = graphStore.infer<CouterState>;
-
-    const node = graphStateNode({
-      name: 'increment-node',
-      execute: ({ state, setState }: CounterStore) => {
-        state.name;
-        state.count;
-        setState((prev) => ({ ...prev, count: prev.count + 1 }));
-        setState({ count: 10 });
-      },
-    });
-
-    const graph = createStateGraph(counterStore).addNode(node);
   });
 
   test.only('graph event handler', async () => {

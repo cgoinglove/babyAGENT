@@ -1,13 +1,17 @@
 import { graphStore } from 'ts-edge';
 
-type SampleState = {
+export type SampleState = {
   userPrompt: string;
   nextStage: 'A' | 'B';
+  updateStage(stage: 'A' | 'B'): void;
 };
 
-export const sampleStore = graphStore<SampleState>({
-  userPrompt: '',
-  nextStage: 'A',
+export const sampleStore = graphStore<SampleState>((set) => {
+  return {
+    userPrompt: '',
+    nextStage: 'A',
+    updateStage(stage) {
+      set({ nextStage: stage });
+    },
+  };
 });
-
-export type SampleStore = graphStore.infer<SampleState>;

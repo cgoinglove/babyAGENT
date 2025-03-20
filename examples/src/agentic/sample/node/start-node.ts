@@ -1,10 +1,10 @@
 import { graphStateNode } from 'ts-edge';
-import { SampleStore } from '../state';
+import { SampleState } from '../state';
 import { wait } from '@shared/util';
 
 export const sampleStartNode = graphStateNode({
   name: 'start',
-  execute: async ({ state, setState }: SampleStore, { stream }) => {
+  execute: async (state: SampleState, { stream }) => {
     const random = Number(Math.random().toFixed(2));
 
     stream(`✨ 유저 질문: ${state.userPrompt}\n`);
@@ -12,9 +12,7 @@ export const sampleStartNode = graphStateNode({
 
     await wait(1000);
 
-    setState({
-      nextStage: random > 0.5 ? 'A' : 'B',
-    });
+    state.updateStage(random > 0.5 ? 'A' : 'B');
 
     stream(`\n ${random > 0.5 ? 'A' : 'B'}로 이동합니다.`);
   },

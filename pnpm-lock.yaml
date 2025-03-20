@@ -170,8 +170,8 @@ importers:
         specifier: ^4.0.14
         version: 4.0.14
       ts-edge:
-        specifier: ^0.1.7
-        version: 0.1.7
+        specifier: ^1.0.0
+        version: 1.0.0
       ts-safe:
         specifier: ^0.0.4
         version: 0.0.4
@@ -3322,8 +3322,8 @@ packages:
     resolution: {integrity: sha512-vYJzrifrHb/h67jX/dFHRx0idv09OAYlAs9S5KVmk9xufyvdrf4/yaBI6Xkh0dNB7WvNqU3Mz81bVcKaD6gaAg==}
     engines: {node: '>=14.0.0'}
 
-  ts-edge@0.1.7:
-    resolution: {integrity: sha512-1zBHeVcwdG7BHC17xIaFGQ5EwoWrDd1sy96yv2ls/MWDmgkHpk8efrQfWco7X0xeSsniVQ2aQqKwc+WK/nzQWg==}
+  ts-edge@1.0.0:
+    resolution: {integrity: sha512-Ks5j7vLzObmlfSwCpjG3ePjRzqBCj3weaMUyoZa9UIqVJed4qJKnTEwzcNsEZMQ1WXecAD1dW90KQJmPX5V0Qg==}
     engines: {node: '>=14.0.0'}
 
   ts-safe@0.0.2:
@@ -6864,7 +6864,7 @@ snapshots:
       ts-safe: 0.0.2
       zod: 3.24.2
 
-  ts-edge@0.1.7:
+  ts-edge@1.0.0:
     dependencies:
       ts-safe: 0.0.4
 
