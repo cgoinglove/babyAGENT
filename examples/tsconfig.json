@@ -5,6 +5,7 @@
     "__test__",
     "interface.ts",
     "app",
+    "scripts",
     "vitest.setup.ts",
     "vitest.config.ts",
     "next-env.d.ts",
