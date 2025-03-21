@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 suite('llm', () => {
   // only 하니씩 하면서 실행
-  test.only('string -> string', async () => {
+  test('string -> string', async () => {
     const response = await generateText({
       model: models.stupid,
       prompt: '안녕하세요',
@@ -14,6 +14,65 @@ suite('llm', () => {
     // llm 이 모든 문자열을 한번에 출력
     const result = await response.text;
     console.log(result);
+  });
+
+  test.only('string -> string chat bot 과 같은 상태로 사용', async () => {
+    /**
+     *
+     * ❌ Fail Case step-1
+     *
+     * @desc 나의 이름을 알려줌
+     */
+    const response = await generateText({
+      model: models.stupid,
+      prompt: '나의 이름은 "Park" 입니다.',
+    });
+    const result = await response.text;
+    console.log(result);
+    console.log(`reponse-token: ${response.usage.totalTokens}`);
+
+    /**
+     * ❌ Fail Case step-2
+     *
+     * @desc 내 이름을 물어봄
+     */
+    const response2 = await generateText({
+      model: models.stupid,
+      prompt: '내 이름이 뭐라고?',
+    });
+    const result2 = await response2.text;
+    //대화 컨텍스트가 이어지지 않았기 때문에 알수 없다는 응답
+    console.log(result2);
+    console.log(`reponse2-token: ${response2.usage.totalTokens}`);
+
+    /**
+     * ✅ Success Case
+     *
+     * @desc 이전 대화내용을 추가하여 대화 컨텍스트를 이어감
+     */
+    const response3 = await generateText({
+      model: models.stupid,
+      messages: [
+        {
+          role: 'user',
+          content: '나의 이름은 "Park" 입니다.',
+        },
+        {
+          role: 'assistant',
+          content: '안녕하세요, Park님! 만나서 반갑습니다. 무엇을 도와드릴까요?',
+        },
+        {
+          role: 'user',
+          content: '내 이름이 뭐라고?',
+        },
+      ],
+    });
+
+    const result3 = await response3.text;
+    // 내 이름을 알고있음
+    console.log(result3);
+    // 더 많은 토큰을 사용하게 됨
+    console.log(`reponse3-token: ${response3.usage.totalTokens}`);
   });
 
   test('string -> string stream', async () => {

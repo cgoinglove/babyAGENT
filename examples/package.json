@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "example": "pnpm check-model && pnpm tsx src/helper/__example_execute__.ts",
+    "example": "pnpm check-model && pnpm tsx scripts/__example_execute__.ts",
     "test": "pnpm check-model && vitest run",
     "test:watch": "pnpm check-model && vitest",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
-    "check-model": "pnpm tsx src/helper/__check__.ts",
+    "check-model": "pnpm tsx scripts/__check__.ts",
     "postinstall": "pnpm run check-model",
     "ui": "pnpm check-model && next dev --turbopack --port 5001"
   },

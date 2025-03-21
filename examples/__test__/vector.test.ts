@@ -1,4 +1,6 @@
-import { createVectorStore, models } from '@examples/models';
+import { models } from '@examples/models';
+import { createVectorStore } from '@examples/models/vector';
+
 import { suite, test } from 'vitest';
 
 suite('vector', () => {

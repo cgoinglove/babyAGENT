@@ -10,7 +10,7 @@ export const sampleStore = graphStore<SampleState>((set) => {
   return {
     userPrompt: '',
     nextStage: 'A',
-    updateStage(stage) {
+    updateStage(stage: 'A' | 'B') {
       set({ nextStage: stage });
     },
   };
