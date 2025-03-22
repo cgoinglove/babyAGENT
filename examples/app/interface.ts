@@ -10,6 +10,7 @@ export type NodeThread = {
   status: WorkflowStatus;
   startedAt?: number;
   endedAt?: number;
+  report: Record<string, any>;
   streamText: string;
   metadata?: Record<string, any>;
   error?: any;
@@ -49,6 +50,7 @@ export type WorkflowStreamData =
       name: string;
       id: string;
       output: any;
+      report: Record<string, any>;
       isOk: boolean;
       error?: any;
     };

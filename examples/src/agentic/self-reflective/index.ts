@@ -1,6 +1,6 @@
 import { createStateGraph } from 'ts-edge';
 import { ReflectiveStage, reflectiveStore } from './state';
-import { inputNode } from './node/input';
+
 import { reasoningNode } from './node/reasoning';
 import { actingNode } from './node/acting';
 import { reflectingNode } from './node/reflective';
@@ -8,14 +8,10 @@ import { outputNode } from './node/output';
 
 // Self-Reflection 워크플로우
 const workflow = createStateGraph(reflectiveStore)
-  .addNode(inputNode)
   .addNode(reasoningNode)
   .addNode(actingNode)
   .addNode(reflectingNode)
   .addNode(outputNode)
-
-  // 시작: input -> reasoning
-  .edge('input', 'reasoning')
 
   // 동적 엣지: 단계에 따라 다음 노드 결정
   .dynamicEdge('reasoning', {

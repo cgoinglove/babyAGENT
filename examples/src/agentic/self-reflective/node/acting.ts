@@ -11,9 +11,6 @@ export const actingNode = graphStateNode({
     const latestHistory = { ...state.getLatestHistory() };
     const latestUseTool = [...state.history].reverse().find((h) => h.tool?.name)?.tool;
     const toolName = latestHistory.tool?.name;
-
-    stream(`\n🛠️ ACTING: ${toolName}`);
-
     const tool = state.tools.find((t) => t.name === toolName?.trim());
     if (!tool) {
       stream(`도구를 찾을 수 없습니다: ${toolName}`);
@@ -33,11 +30,10 @@ export const actingNode = graphStateNode({
     JSON 형식으로 응답하세요:
     `;
 
-    stream(`${prompt}\n`);
-
     const response = streamObject({
       model: models.standard,
       schema: tool.schema,
+      prompt,
     });
 
     for await (const text of response.textStream) {
@@ -50,9 +46,6 @@ export const actingNode = graphStateNode({
 
     const inputStr = typeof toolInput === 'string' ? toolInput : JSON.stringify(toolInput);
     const outputStr = typeof result === 'string' ? result : JSON.stringify(result);
-
-    stream(`입력: ${inputStr}\n`);
-    stream(`출력: ${outputStr}\n`);
 
     latestHistory.tool!.input = inputStr;
     latestHistory.tool!.output = outputStr;

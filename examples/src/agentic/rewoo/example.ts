@@ -5,7 +5,7 @@ import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 import inquirer from 'inquirer';
 import { simpleDebug } from '../simple-debug';
 
-const agent = createRewooWorkflow().compile('start');
+const agent = createRewooWorkflow().compile('📝 Planning');
 
 const answer = await inquirer.prompt([
   {

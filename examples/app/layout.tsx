@@ -22,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`bg-background text-default-text ${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`bg-soft-background text-default-text ${geistSans.variable} ${geistMono.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }

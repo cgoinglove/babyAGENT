@@ -52,11 +52,11 @@ export default memo(function CustomDefaultNode({ data, isConnectable }: Props) {
           data.status == 'fail'
             ? 'ring-red-400/40 bg-red-50'
             : data.status == 'running'
-              ? 'bg-default-text text-soft-background ring-12'
+              ? 'bg-background text-default-text ring-3'
               : data.masterStatus != 'running'
                 ? 'bg-background'
-                : 'bg-background opacity-50',
-          'hover:opacity-80 flex items-center justify-center rounded-3xl ring-2 shadow-lg w-[150px] h-[150px] transition-all'
+                : 'bg-background opacity-30',
+          'hover:opacity-80 flex items-center justify-center rounded-lg ring-1 shadow-lg min-w-[140px] py-2 px-1 transition-all'
         )}
       >
         <div className={clsx(data.status == 'fail' && 'text-red-400', 'w-ful font-semibold truncate text-center')}>

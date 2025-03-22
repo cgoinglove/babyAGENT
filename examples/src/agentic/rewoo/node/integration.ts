@@ -42,7 +42,6 @@ export const rewooIntegrationNode = graphStateNode({
         content: user,
       },
     ];
-    stream(`PROMPT:\n\n${JSON.stringify(prompt, null, 2)}\n\n`);
 
     const integration: RewooState['integration'] = {
       prompt,
@@ -55,11 +54,9 @@ export const rewooIntegrationNode = graphStateNode({
       messages: prompt,
     });
 
-    stream('ASSISTANT:\n\n');
     for await (const chunk of response.textStream) {
       stream(chunk);
     }
-    stream('\n\n');
 
     const result = await response.text;
 

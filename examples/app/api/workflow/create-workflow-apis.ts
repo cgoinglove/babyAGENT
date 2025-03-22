@@ -1,4 +1,4 @@
-import { GraphEvent, GraphNodeStructure, GraphRunnable, StateGraphRunnable } from 'ts-edge';
+import { GraphEvent, GraphNodeEndEvent, GraphNodeStructure, GraphRunnable, StateGraphRunnable } from 'ts-edge';
 import { Locker } from '@shared/util';
 import { WorkflowStatus, WorkflowStreamData } from '@ui/interface';
 import { STREAM_END_DELIMITER, STREAM_START_DELIMITER } from '@ui/helper/stream';
@@ -13,7 +13,7 @@ const createEventStream = () => {
     },
   });
 
-  const write = (data: WorkflowStreamData) => {
+  const write = async (data: WorkflowStreamData) => {
     controller.enqueue(encoder.encode(STREAM_START_DELIMITER + JSON.stringify(data) + STREAM_END_DELIMITER));
   };
 
@@ -25,6 +25,13 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any> | Stat
   parser: {
     inputParser: (input: { text?: string; file?: File }) => Parameters<Runnable['run']>[0];
     outputParser: (output: Awaited<ReturnType<Runnable['run']>>['output']) => string;
+    reportParser?: (
+      event: Runnable extends GraphRunnable<infer T>
+        ? GraphNodeEndEvent<T>
+        : Runnable extends StateGraphRunnable<infer T>
+          ? GraphNodeEndEvent<T>
+          : never
+    ) => Record<string, any>;
   }
 ) => {
   let workflowStatus: WorkflowStatus = 'ready';
@@ -64,7 +71,8 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any> | Stat
       reset();
       const { stream, write, getController } = createEventStream();
 
-      const streamHandler = (event: GraphEvent) => {
+      const streamHandler = async (event: GraphEvent) => {
+        console.log(`streamHandler ${event.eventType}`);
         if (event.eventType == 'WORKFLOW_END') {
           write({
             type: 'WORKFLOW_END',
@@ -101,6 +109,13 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any> | Stat
             name: event.node.name,
             id: event.nodeExecutionId,
             output: event.node.output,
+            report:
+              parser.reportParser?.(event as any) ||
+              (typeof event.node.output == 'string'
+                ? {
+                    output: event.node.output,
+                  }
+                : event.node.output),
             isOk: event.isOk,
             error: {
               name: event.error?.name,

@@ -1,4 +1,3 @@
-import { CoreMessage } from 'ai';
 import { type ZodType } from 'zod';
 
 export interface ToolCall<Input = any, Output = any> {

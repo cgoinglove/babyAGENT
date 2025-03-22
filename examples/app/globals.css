@@ -23,15 +23,6 @@
 }
 
 @layer theme {
-  .dark {
-    --color-background: black;
-    --color-soft-background: rgb(27, 27, 27);
-    --color-default-text: white;
-    --color-sub-text: hsla(0, 0%, 63%, 1);
-    --color-hover-color: hsla(0, 0%, 100%, 0.09);
-    --default-ring-color: hsla(0, 0%, 100%, 0.14);
-    --default-border-color: hsla(0, 0%, 100%, 0.14);
-  }
 }
 @layer base {
   *,
