@@ -6,9 +6,9 @@ import { lc } from '@examples/prompts/llm-context';
 
 suite('llm', () => {
   // only 하니씩 하면서 실행
-  test('string -> string', async () => {
+  test.only('string -> string', async () => {
     const response = await generateText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '안녕하세요',
     });
 
@@ -25,7 +25,7 @@ suite('llm', () => {
      * @desc 나의 이름을 알려줌
      */
     const response = await generateText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '나의 이름은 "Park" 입니다.',
     });
     const result = response.text;
@@ -38,7 +38,7 @@ suite('llm', () => {
      * @desc 내 이름을 물어봄
      */
     const response2 = await generateText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '내 이름이 뭐라고?',
     });
     const result2 = response2.text;
@@ -52,7 +52,7 @@ suite('llm', () => {
      * @desc 이전 대화내용을 추가하여 대화 컨텍스트를 이어감
      */
     const response3 = await generateText({
-      model: models.stupid,
+      model: models.standard,
       messages: [
         {
           role: 'user',
@@ -78,7 +78,7 @@ suite('llm', () => {
 
   test('string -> string stream', async () => {
     const response = streamText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '안녕하세요',
     });
 
@@ -109,7 +109,7 @@ suite('llm', () => {
     };
 
     const response = await generateObject({
-      model: models.stupid,
+      model: models.standard,
       schema: personSchema,
       prompt: `나의 이름은 ${person.name}이고 나는 ${person.age}살입니다.`,
     });
@@ -153,7 +153,7 @@ suite('llm', () => {
     });
 
     const response = await generateObject({
-      model: models.stupid,
+      model: models.standard,
       schema: numberSchema,
       prompt: `100 + 200 을 계산 하려고합니다. a와 b에 숫자를 입력해주세요.`,
     });
@@ -168,7 +168,7 @@ suite('llm', () => {
     console.log(result);
   });
 
-  test.only('llm-context', async () => {
+  test('llm-context', async () => {
     // 새로운 대화 컨텍스트 생성
     // 첫 번째 메시지 설정
     let context = lc({ prompt: '나의 이름은 "Park" 입니다.' });
@@ -179,7 +179,7 @@ suite('llm', () => {
 
     // LLM 호출
     const response1 = await generateText({
-      model: models.stupid,
+      model: models.standard,
       messages: context.asMessages(),
     });
 
@@ -198,7 +198,7 @@ suite('llm', () => {
 
     // 두 번째 LLM 호출
     const response2 = await generateText({
-      model: models.stupid,
+      model: models.standard,
       messages: context.asMessages(),
     });
 

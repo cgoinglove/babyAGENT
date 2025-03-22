@@ -15,7 +15,7 @@ export const agents: Agent[] = [
     description:
       'An agent that solves problems step by step through iterative reasoning and action, systematically handling complex tasks.',
     defaultPrompt: 'strorrrberrry 에서 r 의 개수를 알려줄래?',
-    api: createWorkflowActions(createReactAgent().compile('input'), {
+    api: createWorkflowActions(createReactAgent().compile('🧠 reasoning'), {
       inputParser: (input) => ({
         userPrompt: input.text!,
         tools: [stupidCalculator, stupidSearchEngine, stupidStringCounter],

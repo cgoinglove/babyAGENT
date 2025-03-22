@@ -1,9 +1,10 @@
 import '@shared/env/global';
 import { ollama } from 'ollama-ai-provider';
+import { google } from '@ai-sdk/google';
 // import { xai } from '@ai-sdk/xai';
 // import { openai } from '@ai-sdk/openai';
 // import { anthropic } from '@ai-sdk/anthropic';
-import { type EmbeddingModel } from 'ai';
+import { LanguageModelV1, type EmbeddingModel } from 'ai';
 
 /**
  * STUPID_MODEL: 의도적으로 수준이 낮은 모델을 사용함으로써
@@ -23,8 +24,12 @@ export const models = {
   standard: ollama(STANDARD_MODEL),
   smart: ollama('gemma3:12b'),
   reasoning: ollama('deepseek-r1:8b'),
+
   // vector
   embedding: ollama.embedding(VECTOR_EMBEDDING_MODEL) as EmbeddingModel<string>,
+
+  /** @google */
+  beta: google('gemma-3-27b-it') as LanguageModelV1,
 
   /** @claude */
   // standard: anthropic('claude-3-5-haiku-latest'),
