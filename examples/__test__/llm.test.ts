@@ -2,21 +2,22 @@ import { suite, test } from 'vitest';
 import { models } from '@examples/models';
 import { generateObject, generateText, streamText } from 'ai';
 import { z } from 'zod';
+import { lc } from '@examples/prompts/llm-context';
 
 suite('llm', () => {
   // only 하니씩 하면서 실행
-  test('string -> string', async () => {
+  test.only('string -> string', async () => {
     const response = await generateText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '안녕하세요',
     });
 
     // llm 이 모든 문자열을 한번에 출력
-    const result = await response.text;
+    const result = response.text;
     console.log(result);
   });
 
-  test.only('string -> string chat bot 과 같은 상태로 사용', async () => {
+  test('string -> string chat bot 과 같은 상태로 사용', async () => {
     /**
      *
      * ❌ Fail Case step-1
@@ -24,10 +25,10 @@ suite('llm', () => {
      * @desc 나의 이름을 알려줌
      */
     const response = await generateText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '나의 이름은 "Park" 입니다.',
     });
-    const result = await response.text;
+    const result = response.text;
     console.log(result);
     console.log(`reponse-token: ${response.usage.totalTokens}`);
 
@@ -37,10 +38,10 @@ suite('llm', () => {
      * @desc 내 이름을 물어봄
      */
     const response2 = await generateText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '내 이름이 뭐라고?',
     });
-    const result2 = await response2.text;
+    const result2 = response2.text;
     //대화 컨텍스트가 이어지지 않았기 때문에 알수 없다는 응답
     console.log(result2);
     console.log(`reponse2-token: ${response2.usage.totalTokens}`);
@@ -51,7 +52,7 @@ suite('llm', () => {
      * @desc 이전 대화내용을 추가하여 대화 컨텍스트를 이어감
      */
     const response3 = await generateText({
-      model: models.stupid,
+      model: models.standard,
       messages: [
         {
           role: 'user',
@@ -77,7 +78,7 @@ suite('llm', () => {
 
   test('string -> string stream', async () => {
     const response = streamText({
-      model: models.stupid,
+      model: models.standard,
       prompt: '안녕하세요',
     });
 
@@ -108,7 +109,7 @@ suite('llm', () => {
     };
 
     const response = await generateObject({
-      model: models.stupid,
+      model: models.standard,
       schema: personSchema,
       prompt: `나의 이름은 ${person.name}이고 나는 ${person.age}살입니다.`,
     });
@@ -152,7 +153,7 @@ suite('llm', () => {
     });
 
     const response = await generateObject({
-      model: models.stupid,
+      model: models.standard,
       schema: numberSchema,
       prompt: `100 + 200 을 계산 하려고합니다. a와 b에 숫자를 입력해주세요.`,
     });
@@ -165,5 +166,47 @@ suite('llm', () => {
     // llm 의 응답으로 함수 호출
     const result = sum(object.a, object.b);
     console.log(result);
+  });
+
+  test('llm-context', async () => {
+    // 새로운 대화 컨텍스트 생성
+    // 첫 번째 메시지 설정
+    let context = lc({ prompt: '나의 이름은 "Park" 입니다.' });
+
+    console.log(`STEP-1`);
+    console.log(context.asMessages());
+    console.log(`\n\n`);
+
+    // LLM 호출
+    const response1 = await generateText({
+      model: models.standard,
+      messages: context.asMessages(),
+    });
+
+    // 응답 저장
+    const answer1 = await response1.text;
+    context.update({ answer: answer1, tokenUsage: response1.usage.totalTokens });
+    console.log(`STEP-2`);
+    console.log(context.asMessages());
+    console.log(`\n\n`);
+
+    // 대화 이어가기
+    context = context.continueWith('내 이름이 뭐라고?');
+    console.log(`STEP-3`);
+    console.log(context.asMessages());
+    console.log(`\n\n`);
+
+    // 두 번째 LLM 호출
+    const response2 = await generateText({
+      model: models.standard,
+      messages: context.asMessages(),
+    });
+
+    // 두 번째 응답 확인
+    const answer2 = await response2.text;
+    context.update({ answer: answer2, tokenUsage: response2.usage.totalTokens });
+    console.log(`STEP-4`);
+    console.log(context.asMessages());
+    console.log(`\n\n`);
   });
 });

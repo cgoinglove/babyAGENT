@@ -1,22 +1,19 @@
 import { createStateGraph } from 'ts-edge';
 import { reasoningNode } from './node/reasoning';
 import { actingNode } from './node/acting';
-import { outputNode } from './node/output';
-import { inputNode } from './node/input';
+import { answerNode } from './node/answer';
 import { reActStore } from './state';
 
 const workflow = createStateGraph(reActStore)
-  .addNode(inputNode)
   .addNode(reasoningNode)
   .addNode(actingNode)
-  .addNode(outputNode)
-  .edge('input', '🧠 reasoning')
+  .addNode(answerNode)
   .dynamicEdge('🧠 reasoning', {
-    possibleTargets: ['output', '🛠️ acting'],
+    possibleTargets: ['answer', '🛠️ acting'],
     router: (state) => {
-      return state.action?.tool ? '🛠️ acting' : 'output';
+      return state.action?.tool ? '🛠️ acting' : 'answer';
     },
   })
-  .edge('🛠️ acting', 'output');
+  .edge('🛠️ acting', 'answer');
 
 export const createReactAgent = () => workflow;

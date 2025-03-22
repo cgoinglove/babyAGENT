@@ -9,6 +9,7 @@ export type FlowNode = GraphNodeStructure & {
   masterStatus: NodeThread['status'];
   level: number;
   index: number;
+  id: string;
 };
 
 export type FlowEdge = Record<string, any>;
@@ -20,7 +21,7 @@ export const createFlow = (
     height?: number;
   }
 ): { nodes: Node<FlowNode>[]; edges: Edge<FlowEdge>[] } => {
-  const { height, width } = { height: 250, width: 250, ...options };
+  const { height, width } = { height: 120, width: 180, ...options };
 
   const sourceToTargets = structures.reduce((acc, node) => {
     const targets = node.edge?.name || [];
@@ -52,6 +53,7 @@ export const createFlow = (
           index: levelByNode[node.name].index,
           status: 'ready',
           masterStatus: 'ready',
+          id: node.name,
         },
       };
       acc[node.name] = flowNode;

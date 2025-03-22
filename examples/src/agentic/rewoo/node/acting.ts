@@ -22,7 +22,6 @@ export const rewooActingNode = graphStateNode({
     추론 결과: "${plan.reasoning!.answer}"
 
     위 정보를 바탕으로 ${tool.name} 도구에 전달할 입력값을 생성하세요.`;
-    stream(`PROMPT:\n\n${JSON.stringify([system, user], null, 2)}\n\n`);
 
     const response = await streamObject({
       model: models.standard,
@@ -31,11 +30,9 @@ export const rewooActingNode = graphStateNode({
       schema: tool.schema,
     });
 
-    stream('ASSISTANT:\n\n');
     for await (const chunk of response.textStream) {
       stream(chunk);
     }
-    stream('\n\n');
 
     const result = await response.object;
     plan.acting!.input = result;

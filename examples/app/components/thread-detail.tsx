@@ -1,10 +1,13 @@
 'use client';
 
-import { NodeThread, WorkflowStatus } from '@ui/interface';
+import { WorkflowStatus } from '@ui/interface';
 import clsx from 'clsx';
 import { Clock, CheckCircle, XCircle, AlertCircle, Pause, ChevronLeft } from 'lucide-react';
-import JsonView from './shared/json-view';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { useShallow } from 'zustand/shallow';
+import { useAppStore } from '@ui/store';
+import ReportItem from './chat-thread/report-item';
 
 const formatTimestamp = (timestamp?: number) => {
   if (!timestamp) return '-';
@@ -28,23 +31,42 @@ const getStatusIcon = (status: WorkflowStatus) => {
   }
 };
 
-export default function ThreadDetail({ thread, goBack }: { thread: NodeThread; goBack: () => void }) {
-  const [openTab, setOpenTab] = useState<'stream' | 'input' | 'output' | 'error' | undefined>('stream');
+export default function ThreadDetail() {
+  const [selectedThread, threads, histories, setSelectedThread] = useAppStore(
+    useShallow((state) => [state.selectedThread, state.message.threads, state.histories, state.setSelectedThread])
+  );
 
-  const duration = thread.startedAt
-    ? (((thread.endedAt ?? Date.now()) - thread.startedAt) / 1000).toFixed(0) + 's'
-    : '';
+  const thread = useMemo(() => {
+    return (
+      threads.find((t) => t.id == selectedThread) ??
+      histories
+        .map((v) => v.threads)
+        .flat()
+        .find((t) => t.id == selectedThread)!
+    );
+  }, [selectedThread, threads, histories]);
+
+  const [tick, setTick] = useState(0);
+
+  const duration = useMemo(() => {
+    return thread.startedAt ? (((thread.endedAt ?? Date.now()) - thread.startedAt) / 1000).toFixed(0) + 's' : '';
+  }, [tick]);
 
   useEffect(() => {
-    setOpenTab('stream');
-  }, [thread.id]);
+    if (thread.status == 'running') {
+      const interval = setInterval(() => {
+        setTick((t) => t + 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [thread]);
 
   return (
-    <div className="w-full h-full bg-soft-background p-8 overflow-auto">
-      <div className="mb-8" onClick={goBack}>
+    <div className="w-full h-full  p-8 overflow-auto">
+      <div className="mb-8" onClick={setSelectedThread.bind(null, undefined)}>
         <button className="px-3 py-2 rounded-full hover:bg-hover-color transition-colors cursor-pointer flex justify-center items-center">
           <ChevronLeft className="h-5 w-5 " />
-          <h1 className="text-2xl ml-2 font-bold">{thread.name}</h1>
+          <h1 className="text-2xl mx-2 font-bold">{thread.name}</h1>
         </button>
       </div>
 
@@ -80,44 +102,13 @@ export default function ThreadDetail({ thread, goBack }: { thread: NodeThread; g
       </div>
 
       <div className="flex flex-col gap-6">
-        <div>
-          <JsonView
-            key={thread.streamText}
-            data={thread.streamText}
-            label="Stream"
-            open={openTab == 'stream'}
-            onClick={() => setOpenTab(openTab == 'stream' ? undefined : 'stream')}
-          />
-        </div>
+        {Object.entries(thread.report).map(([key, value]) => (
+          <ReportItem key={key} label={key} data={value} />
+        ))}
 
-        {thread.input && (
-          <div>
-            <JsonView
-              data={thread.input}
-              label="Input"
-              open={openTab == 'input'}
-              onClick={() => setOpenTab(openTab == 'input' ? undefined : 'input')}
-            />
-          </div>
-        )}
-        {thread.output && (
-          <div>
-            <JsonView
-              data={thread.output}
-              label="Output"
-              open={openTab == 'output'}
-              onClick={() => setOpenTab(openTab == 'output' ? undefined : 'output')}
-            />
-          </div>
-        )}
         {thread.error && (
           <div>
-            <JsonView
-              data={thread.error}
-              label="Error"
-              open={openTab == 'error'}
-              onClick={() => setOpenTab(openTab == 'error' ? undefined : 'error')}
-            />
+            <ReportItem label="Error" data={thread.error} />
           </div>
         )}
       </div>

@@ -1,7 +1,7 @@
 import { graphStateNode } from 'ts-edge';
 import { ReActState } from '../state';
 import { models } from '@examples/models';
-import { streamObject } from 'ai';
+import { generateObject } from 'ai';
 
 export const actingNode = graphStateNode({
   name: '🛠️ acting',
@@ -15,34 +15,29 @@ export const actingNode = graphStateNode({
     }
 
     // 도구 입력 생성을 위한 프롬프트 - 간결하게 수정
-    const inputPrompt = `
-사용자 질문: "${state.userPrompt}"
+    const prompt =
+      `## 당신은 도구를 사용하는 에이전트입니다. 사용자의 질문에 대한 답변을 생성하기 위해 도구를 사용합니다.\n\n` +
+      `### 사용 도구:\n` +
+      `${tool.name}\n\n` +
+      `### 도구 설명:\n` +
+      `${tool.description}\n\n` +
+      `### 유저의 질문:\n` +
+      `"${state.userPrompt}"`;
 
-선택한 도구: "${tool.name}"
-도구 설명: ${tool.description}
-
-추론: ${state.thought_answer}
-
-이 도구를 실행하기 위해 필요한 입력을 정확하게 생성하세요. 도구의 스키마에 맞는 형식으로 입력값을 제공해야 합니다.`;
+    stream(`도구 입력 생성 중...`);
 
     // 도구 스키마를 사용하여 입력 생성
-    const toolInput = streamObject({
+    const response = await generateObject({
       model: models.standard,
       schema: tool.schema,
-      prompt: inputPrompt,
+      prompt: prompt,
     });
-
-    for await (const text of toolInput.textStream) {
-      stream(text);
-    }
-
     // Tool 실행
-    const result = await tool.execute(await toolInput.object);
+    const result = await tool.execute(response.object);
     state.setAction({
       tool: action.tool,
-      input: JSON.stringify(toolInput),
+      input: JSON.stringify(response.object),
       output: JSON.stringify(result),
     });
-    stream(`output : ${action.output}`);
   },
 });

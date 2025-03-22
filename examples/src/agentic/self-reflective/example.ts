@@ -5,7 +5,7 @@ import inquirer from 'inquirer';
 import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 import { simpleDebug } from '../simple-debug';
 
-const agent = createReflectionAgent().compile('input');
+const agent = createReflectionAgent().compile('reasoning');
 
 const answer = await inquirer.prompt([
   {

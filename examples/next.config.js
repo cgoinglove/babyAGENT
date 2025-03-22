@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   devIndicators: {
-    position: undefined,
+    position: 'bottom-right',
   },
   reactStrictMode: false,
 };

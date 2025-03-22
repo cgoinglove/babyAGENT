@@ -1,39 +1,66 @@
 import { CoreMessage } from 'ai';
 
-export type LLmState = {
+export type LLMState = {
+  // 이전 대화 메시지들
   prevMessages: CoreMessage[];
 
+  // 현재 사용자 프롬프트
   prompt: string;
 
+  // 모델 응답
   answer?: string;
-
-  usedToken?: number;
+  // 토큰 사용량
+  tokenUsage?: number;
 };
 
-export type LLmContext = {
-  update(param: Partial<LLmState>);
-  toMessage(): CoreMessage[];
-} & LLmState;
+export type LLMContext = {
+  update(param: Partial<LLMState>): LLMContext;
+  /**
+   * 현재 상태를 메시지 배열로 반환 (LLM 요청용)
+   */
+  asMessages(): CoreMessage[];
+  /**
+   * 이전 대화 이력에 새 프롬프트 추가하여 새 컨텍스트 생성
+   */
+  continueWith(newPrompt: string): LLMContext;
+} & LLMState;
 
-export const lc = (initial: Partial<LLmState>): LLmContext => {
-  const state: LLmState = {
-    prevMessages: [],
+export const lc = (initial?: Partial<LLMState>): LLMContext => {
+  const state: LLMState = {
     prompt: '',
     answer: undefined,
-    usedToken: undefined,
+    tokenUsage: undefined,
     ...initial,
+    prevMessages: initial?.prevMessages || [],
   };
 
-  return {
+  const context = {
     ...state,
-    update: (param: Partial<LLmState>) => {
+    update: (param: Partial<LLMState>) => {
       Object.assign(state, param);
+      return context;
     },
-    toMessage: () => {
-      return state.prevMessages.concat({
+    asMessages: () => {
+      const messages = state.prevMessages.concat({
         role: 'user',
         content: state.prompt,
       } as CoreMessage);
+
+      if (state.answer) {
+        messages.push({
+          role: 'assistant',
+          content: state.answer,
+        } as CoreMessage);
+      }
+
+      return messages;
+    },
+    continueWith(newPrompt) {
+      return lc({
+        prompt: newPrompt,
+        prevMessages: context.asMessages(),
+      });
     },
   };
+  return context;
 };

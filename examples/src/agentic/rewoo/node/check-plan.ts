@@ -12,7 +12,6 @@ export const rewooCheckPlanNode = graphStateNode({
       return state;
     }
     plan.step = 'completed';
-    stream(`\n\n✅ CHECK PLAN NODE\n`);
     state.next();
   },
 });
