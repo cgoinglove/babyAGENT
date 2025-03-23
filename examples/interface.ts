@@ -8,3 +8,5 @@ export interface ToolCall<Input = any, Output = any> {
 }
 
 export type PureLLmFunction = (prompt: string) => Promise<string>;
+
+export type Setter<T> = (next: Partial<T> | ((prev: T) => Partial<T>)) => void;

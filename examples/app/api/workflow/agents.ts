@@ -8,8 +8,54 @@ import { stupidCalculator } from '@examples/tools/stupid-calculator';
 import { stupidSearchEngine } from '@examples/tools/stupid-search-engine';
 import { stupidStringCounter } from '@examples/tools/stupid-string-counter';
 import { tavilySearch } from '@examples/tools/tavily-search';
+import { createYoutubeReportAgent } from '@examples/agentic/youtube-report';
 
 export const agents: Agent[] = [
+  {
+    name: 'Youtube Analysis',
+    description: 'Youtube 영상 분석 에이전트',
+    defaultPrompt: 'https://youtu.be/skiumCzbLYo?si=-hweU8zjsQBBHyBY 요약 해줘',
+    api: createWorkflowActions(createYoutubeReportAgent().compile('analysis'), {
+      inputParser: (input) => ({
+        userPrompt: input.text!,
+      }),
+      outputParser: (output) => output?.output?.answer ?? '',
+      reportParser(event) {
+        const state = event.node.output!;
+        const name = event.node.name;
+        switch (name) {
+          case 'analysis':
+            return {
+              prompt: state.analysis?.prompt,
+              output: state.analysis?.reason,
+              tokens: state.analysis?.tokens,
+              nextStage: state.analysis?.type,
+            };
+          case 'output':
+            return {
+              prompt: state.output?.prompt,
+              output: state.output?.answer,
+              tokens: state.output?.tokens,
+            };
+          case 'youtube initializer':
+            return state.youtubeMetadata ?? {};
+          case 'contextual':
+            return state.contextualAnalysis ?? {};
+          case 'related':
+            return state.relatedVideos ?? {};
+          case 'thumbnail':
+            return state.thumbnailAnalysis ?? {};
+          case 'comments':
+            return state.commentsAnalysis ?? {};
+          case 'scripts':
+            return state.scriptAnalysis ?? {};
+          case 'summarization':
+            return state.summary ?? {};
+        }
+        return {};
+      },
+    }),
+  },
   {
     name: 'ReAct',
     description:

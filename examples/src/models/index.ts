@@ -29,6 +29,7 @@ export const models = {
   embedding: ollama.embedding(VECTOR_EMBEDDING_MODEL) as EmbeddingModel<string>,
 
   /** @google */
+  // object 지원 안됨 stream 지원 안되는것같음
   beta: google('gemma-3-27b-it') as LanguageModelV1,
 
   /** @claude */
@@ -37,9 +38,9 @@ export const models = {
 
   /** @grok */
   // standard: xai('grok-2-1212'),
-
+  // gpt4omini: openai('gpt-4o-mini'),
   /** @openai */
-  // stupid: gpt4omini: openai('gpt-4o-mini'),
+  // stupid:
   // standard: gpt4o: openai('gpt-4o'),
   // reasoning: o3mini: openai('o3-mini'),
   // embedding:openai.embedding('text-embedding-3-small')
