@@ -72,7 +72,6 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any> | Stat
       const { stream, write, getController } = createEventStream();
 
       const streamHandler = async (event: GraphEvent) => {
-        console.log(`streamHandler ${event.eventType}`);
         if (event.eventType == 'WORKFLOW_END') {
           write({
             type: 'WORKFLOW_END',

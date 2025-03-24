@@ -36,7 +36,7 @@ export const standardOutputNode = graphStateNode({
 `.trim();
 
     const response = await generateText({
-      model: models.beta,
+      model: models.standard,
       prompt: prompt,
     });
     state.update({

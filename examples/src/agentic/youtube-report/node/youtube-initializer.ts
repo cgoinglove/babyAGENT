@@ -22,7 +22,7 @@ export const youtubeInitializerNode = graphStateNode({
         '사용자가 제공한 URL에서 유효한 YouTube 비디오 ID를 추출할 수 없습니다. 유효한 YouTube URL 형식(예: youtube.com/watch?v=VIDEO_ID 또는 youtu.be/VIDEO_ID)에 대해 안내하고, 올바른 링크로 다시 시도해달라고 요청해주세요.';
       context.stream('⚠️ 유효한 YouTube URL을 찾을 수 없습니다.');
     }
-
+    console.log({ standardReason });
     if (standardReason) {
       return state.update((prev) => ({
         analysis: {
