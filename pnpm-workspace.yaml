@@ -1,5 +1,4 @@
 packages:
-  - 'ui'
   - 'shared/*'
   - 'baby'
   - 'examples'

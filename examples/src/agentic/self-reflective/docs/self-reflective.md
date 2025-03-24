@@ -40,18 +40,23 @@ Self-Reflective 에이전트는 LLM 기반 에이전트가 사고(Reasoning), �
 ## 엣지 및 실행 흐름
 
 1. **Input → Reasoning**:
+
    - 사용자 질문과 도구 정보가 Reasoning 노드로 전달
 
 2. **Reasoning → Reflecting** (No tool):
+
    - 도구 없이 답변 가능한 경우, Reflecting 노드로 이동
 
 3. **Reasoning → Acting** (Use tool):
+
    - 도구 사용이 필요한 경우, Acting 노드로 이동하여 도구 실행
 
 4. **Acting → Reflecting**:
+
    - 도구 실행 후 결과와 함께 Reflecting 노드로 이동
 
 5. **Reflecting → Reasoning** (Need more work):
+
    - 추가 분석이나 정보가 필요한 경우, Reasoning 노드로 돌아감
 
 6. **Reflecting → Output** (Complete):

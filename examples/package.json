@@ -29,7 +29,6 @@
     "lucide-react": "^0.479.0",
     "memory-vector-store": "^1.0.7",
     "next": "^15.2.3",
-    "ollama": "^0.5.14",
     "ollama-ai-provider": "^1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
