@@ -115,7 +115,7 @@ export const createWorkflowActions = <Runnable extends GraphRunnable<any> | Stat
                 ? {
                     output: event.node.output,
                   }
-                : event.node.output),
+                : { report: event.node.output }),
             isOk: event.isOk,
             error: {
               name: event.error?.name,

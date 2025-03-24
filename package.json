@@ -3,9 +3,9 @@
   "private": true,
   "scripts": {
     "example": "pnpm -F examples example",
-    "ui": "pnpm -F examples ui",
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "example:ui": "pnpm -F examples ui",
+    "build": "turbo -F baby build",
+    "dev": "turbo -F baby dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "test": "turbo run test",
@@ -13,7 +13,7 @@
     "clean": "pnpm -F @shared/scripts clean"
   },
   "devDependencies": {
-    "prettier": "^3.5.0",
+    "prettier": "^3.5.3",
     "turbo": "^2.4.4"
   },
   "packageManager": "pnpm@9.0.0",

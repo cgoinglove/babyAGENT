@@ -2,13 +2,7 @@ type ElementType<T> = T extends (infer U)[] ? U : never;
 
 type ValueOf<T extends object> = T[keyof T];
 
-type Serializable =
-  | string
-  | number
-  | boolean
-  | null
-  | SerializableArray
-  | SerializableObject;
+type Serializable = string | number | boolean | null | SerializableArray | SerializableObject;
 
 interface SerializableObject {
   [key: string]: Serializable;

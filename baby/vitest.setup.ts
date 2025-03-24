@@ -1,1 +1,1 @@
-import '@shared/env/global';
+console.log('vitest setup');
