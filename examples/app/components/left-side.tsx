@@ -129,7 +129,7 @@ export default function LeftSide({ agents }: Props) {
 
   return (
     <div className="relative h-full flex flex-col ">
-      <div className="border-b p-4 flex items-center flex-wrap gap-2 bg-background">
+      <div className="border-b p-4 border-sub-text flex items-center flex-wrap gap-2 bg-background">
         <div className=" flex items-center gap-1 text-sub-text mr-auto">
           <span className="text-default-text font-bold">babyAGENT</span> examples
         </div>
@@ -141,7 +141,7 @@ export default function LeftSide({ agents }: Props) {
       </div>
 
       <div className="px-4 bottom-0 left-0 w-full pt-2">
-        <div className="ring rounded-lg rounded-b-none p-4 bg-background ring-sub-text">
+        <div className="ring rounded-3xl mb-4 p-4 bg-background ring-sub-text">
           <div className="flex gap-2 pl-1 ">
             <textarea
               contentEditable

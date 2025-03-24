@@ -12,7 +12,7 @@ export default function WorkFlow() {
 
   return (
     <div className="flex h-screen w-full">
-      <div className="w-full md:w-1/2 border-r">
+      <div className="w-full md:w-1/2 border-r border-sub-text">
         <LeftSide agents={items} />
       </div>
       <div className="w-1/2">

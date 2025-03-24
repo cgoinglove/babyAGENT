@@ -109,7 +109,7 @@ export default function WorkFlowVisual() {
   }, [nodeByName, store.workflowStatus]);
 
   return (
-    <div className="w-full h-full ">
+    <div className="w-full h-full">
       <ReactFlow
         onNodeClick={(_, node) => {
           if (node.data.id != node.data.name) {
