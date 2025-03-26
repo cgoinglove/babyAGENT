@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-background: hsla(0, 0%, 98%, 1);
+  --color-soft-background: hsla(0, 0%, 100%, 1);
+  --color-default-text: hsla(0, 0%, 9%, 1);
+  --color-sub-text: #666666d3;
+  --color-hover-color: hsla(0, 0%, 92%, 1);
+  --default-ring-color: hsla(0, 0%, 0%, 0.08);
+  --default-border-color: hsla(0, 0%, 0%, 0.08);
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-fade-in-slow: fadeIn 0.8s ease-in;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer theme {
+}
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--default-border-color, currentColor);
+  }
+}
+@keyframes diagonalBounce {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  75% {
+    transform: translate(1.5px, 1.5px); /* 4시 방향으로 이동 */
+  }
+}
+
+.diagonal-arrow {
+  animation: diagonalBounce 2.5s ease-in-out infinite;
+}
+
+@keyframes squareWobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(1.2deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-1.2deg) scale(1.05);
+  }
+}
+
+.wobbling-square {
+  animation: squareWobble 2s ease-out infinite;
+  display: inline-block;
+}

@@ -1,0 +1,27 @@
+{
+  "extends": "@shared/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@friday/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src",
+    "__test__",
+    "interface.ts",
+    "app",
+    "scripts",
+    "vitest.setup.ts",
+    "vitest.config.ts",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}
