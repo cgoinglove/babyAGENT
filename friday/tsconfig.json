@@ -8,15 +8,13 @@
       }
     ],
     "paths": {
-      "@friday/*": ["./src/*"]
+      "@friday/*": ["./src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
     "src",
     "__test__",
-    "interface.ts",
-    "app",
-    "scripts",
     "vitest.setup.ts",
     "vitest.config.ts",
     "next-env.d.ts",
